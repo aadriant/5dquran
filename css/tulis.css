@@ -1,0 +1,338 @@
+/* ============================================================
+   5D Quran — tulis.css (Writing Practice Page)
+   ============================================================ */
+
+body.tulis-page { background: var(--bg-deep); }
+
+/* ── BREADCRUMB (sticky di bawah header) ── */
+.breadcrumb-bar {
+  position: sticky; top: 68px; z-index: 90;
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 1.5rem;
+  background: rgba(8,8,18,0.92);
+  backdrop-filter: blur(20px);
+}
+
+/* ── HEADER ── */
+.tulis-header-right {
+  display: flex; gap: 0.5rem; align-items: center; margin-left: auto;
+}
+.action-btn {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.45rem 0.9rem; border-radius: var(--radius-sm);
+  background: var(--bg-glass); border: 1px solid var(--border);
+  color: var(--text-secondary); font-family: var(--font-main);
+  font-size: 0.82rem; font-weight: 500; cursor: pointer;
+  transition: all var(--transition); text-decoration: none;
+}
+.action-btn:hover { border-color: var(--border-gold); color: var(--gold-400); }
+
+/* ── INFO BAR ── */
+.tulis-info-bar {
+  position: relative; z-index: 1;
+  background: linear-gradient(90deg, rgba(251,146,60,0.06) 0%, transparent 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 0.8rem 1.5rem;
+}
+.tulis-info-inner {
+  max-width: 900px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  flex-wrap: wrap;
+}
+.ti-surah-info { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.ti-loading { color: var(--text-muted); font-size: 0.85rem; }
+.ti-number {
+  font-size: 1.5rem; font-weight: 900; color: rgba(251,146,60,0.3);
+  line-height: 1;
+}
+.ti-name { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+.ti-arabic { font-family: var(--font-quran); font-size: 1.3rem; color: var(--gold-400); }
+.ti-badge {
+  padding: 0.2rem 0.65rem; border-radius: 100px;
+  font-size: 0.72rem; font-weight: 600;
+  background: rgba(251,146,60,0.1); border: 1px solid rgba(251,146,60,0.3);
+  color: #fb923c;
+}
+
+.ti-progress {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.82rem; color: var(--text-muted);
+}
+.ti-ayat-num {
+  font-size: 1.2rem; font-weight: 800; color: #fb923c; line-height: 1;
+}
+.ti-ayat-total { font-weight: 700; color: var(--text-secondary); }
+
+/* ── MAIN ── */
+.tulis-main {
+  position: relative; z-index: 1;
+  max-width: 900px; margin: 0 auto;
+  padding: 1.5rem;
+}
+.tulis-loading {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 1.25rem; padding: 5rem 1rem; color: var(--text-muted);
+}
+.tulis-panel { display: flex; flex-direction: column; gap: 1.25rem; }
+
+/* ── REFERENCE SECTION ── */
+.ref-section {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.ref-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(212,168,83,0.03);
+}
+.ref-badge {
+  display: flex; align-items: center; gap: 0.4rem;
+  background: rgba(212,168,83,0.1); border: 1px solid var(--border-gold);
+  color: var(--gold-400); padding: 0.25rem 0.75rem;
+  border-radius: 100px; font-size: 0.78rem; font-weight: 700;
+}
+
+/* Toggle switch */
+.toggle-ref {
+  display: flex; align-items: center; gap: 0.5rem;
+  cursor: pointer; user-select: none;
+}
+.toggle-ref input { display: none; }
+.toggle-track {
+  width: 40px; height: 22px; border-radius: 11px;
+  background: var(--bg-glass); border: 1px solid var(--border);
+  position: relative; transition: background 0.25s, border-color 0.25s;
+  flex-shrink: 0;
+}
+.toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--text-muted);
+  transition: transform 0.25s, background 0.25s;
+}
+.toggle-ref input:checked + .toggle-track {
+  background: rgba(212,168,83,0.2); border-color: var(--border-gold);
+}
+.toggle-ref input:checked + .toggle-track .toggle-thumb {
+  transform: translateX(18px); background: var(--gold-400);
+}
+.toggle-text { font-size: 0.8rem; color: var(--text-secondary); }
+
+.ref-arabic-wrap {
+  padding: 2rem 2rem; text-align: right;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+}
+.ref-arabic-wrap.hidden {
+  display: none;
+}
+.ref-arabic {
+  font-family: var(--font-quran);
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  line-height: 2.4; color: var(--text-primary); direction: rtl;
+  margin-bottom: 1rem;
+}
+.ref-transliteration {
+  font-size: 0.88rem; color: var(--text-secondary);
+  line-height: 1.7; text-align: left; direction: ltr;
+  font-style: italic;
+}
+
+/* ── NOTEBOOK SECTION ── */
+.notebook-section {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.notebook-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(251,146,60,0.03);
+}
+.notebook-title {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.82rem; font-weight: 700; color: #fb923c;
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.notebook-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.nb-btn {
+  display: flex; align-items: center; gap: 0.35rem;
+  padding: 0.4rem 0.85rem; border-radius: var(--radius-sm);
+  font-family: var(--font-main); font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; transition: all var(--transition); border: 1px solid;
+}
+.nb-clear {
+  background: rgba(255,255,255,0.03); border-color: var(--border);
+  color: var(--text-muted);
+}
+.nb-clear:hover { border-color: rgba(239,68,68,0.4); color: #ef4444; background: rgba(239,68,68,0.08); }
+.nb-save {
+  background: rgba(251,146,60,0.12); border-color: rgba(251,146,60,0.35);
+  color: #fb923c;
+}
+.nb-save:hover { background: rgba(251,146,60,0.22); }
+
+/* Notebook paper effect */
+.notebook-paper {
+  background: var(--bg-card);
+  background-image:
+    repeating-linear-gradient(
+      transparent,
+      transparent 31px,
+      rgba(212,168,83,0.1) 31px,
+      rgba(212,168,83,0.1) 32px
+    );
+  position: relative;
+}
+.notebook-paper::before {
+  content: '';
+  position: absolute; left: 60px; top: 0; bottom: 0; width: 1px;
+  background: rgba(251,146,60,0.15);
+  pointer-events: none;
+}
+.writing-textarea {
+  width: 100%; min-height: 280px; padding: 8px 1.5rem 1.5rem 80px;
+  background: transparent; border: none; outline: none; resize: vertical;
+  font-family: var(--font-quran); font-size: 1.8rem;
+  line-height: 32px; color: var(--gold-400);
+  direction: rtl; text-align: right;
+  font-family: 'Amiri Quran', serif;
+}
+.writing-textarea::placeholder {
+  font-family: var(--font-main); font-size: 0.9rem;
+  color: var(--text-muted); direction: ltr; text-align: left;
+  line-height: 2;
+}
+
+.save-status {
+  padding: 0.5rem 1.25rem; font-size: 0.75rem; color: var(--text-muted);
+  border-top: 1px solid var(--border); min-height: 32px;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.save-status.saved { color: var(--green); }
+.save-status.unsaved { color: #fb923c; }
+
+/* ── NAVIGATION ── */
+.tulis-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap;
+}
+.tulis-nav-btn {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.65rem 1.25rem; border-radius: var(--radius-md);
+  background: var(--bg-glass); border: 1px solid var(--border);
+  color: var(--text-secondary); font-family: var(--font-main);
+  font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  transition: all var(--transition);
+}
+.tulis-nav-btn:hover:not(:disabled) {
+  border-color: rgba(251,146,60,0.4); color: #fb923c;
+  background: rgba(251,146,60,0.08);
+}
+.tulis-nav-btn:disabled {
+  opacity: 0.4; cursor: not-allowed;
+}
+.tulis-nav-next { margin-left: auto; }
+
+.ayat-picker-wrap {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.82rem; color: var(--text-muted);
+}
+.ayat-picker {
+  padding: 0.4rem 0.75rem; border-radius: var(--radius-sm);
+  background-color: #141426; border: 1px solid var(--border-gold);
+  color: var(--gold-400); font-family: var(--font-main);
+  font-size: 0.84rem; font-weight: 600; cursor: pointer; outline: none;
+  color-scheme: dark;
+}
+.ayat-picker:focus {
+  border-color: var(--gold-400);
+  box-shadow: 0 0 0 2px rgba(212,168,83,0.25);
+}
+.ayat-picker option {
+  background-color: #16162a !important;
+  color: #f1f5f9 !important;
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 8px 12px;
+}
+.ayat-picker option:checked {
+  background-color: var(--gold-600) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+/* ── SAVED HISTORY ── */
+.saved-history {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.25rem;
+}
+.sh-title {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.8rem; font-weight: 700; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 0.75rem;
+}
+.history-entry {
+  padding: 0.75rem; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); margin-bottom: 0.5rem;
+  background: rgba(255,255,255,0.02);
+}
+.history-text {
+  font-family: var(--font-quran); font-size: 1.3rem;
+  color: var(--text-primary); direction: rtl; text-align: right;
+  margin-bottom: 0.35rem; line-height: 1.8;
+}
+.history-meta {
+  font-size: 0.7rem; color: var(--text-muted);
+}
+
+/* ── FOOTER ── */
+.footer-amal {
+  font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem;
+  font-style: italic;
+}
+.footer-amal strong { color: var(--gold-400); font-style: normal; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(10px);
+  background: rgba(74,222,128,0.15); border: 1px solid rgba(74,222,128,0.3);
+  color: var(--green); padding: 0.65rem 1.5rem; border-radius: 100px;
+  font-size: 0.88rem; font-weight: 600; z-index: 999;
+  opacity: 0; pointer-events: none; transition: all 0.3s ease;
+  backdrop-filter: blur(12px);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .writing-textarea { padding-left: 1.25rem; font-size: 1.4rem; }
+  .notebook-paper::before { display: none; }
+  .tulis-nav { flex-direction: column; align-items: stretch; }
+  .tulis-nav-next { margin-left: 0; }
+  .ayat-picker-wrap { justify-content: center; }
+}
+
+/* ══ HASIL PERIKSA TULISAN (kriteria 3) ══ */
+.nb-check { border-color: rgba(74,222,128,0.35); color: #4ade80; }
+.nb-check:hover { background: rgba(74,222,128,0.15); }
+.tulis-check {
+  margin-top: 1rem; padding: 1.1rem 1.2rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border, rgba(255,255,255,0.09));
+  border-radius: 14px;
+}
+.tc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; }
+.tc-title { font-size: .92rem; font-weight: 700; color: #4ade80; }
+.tc-score { font-size: 1.35rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.tc-stats { display: flex; flex-wrap: wrap; gap: .5rem 1rem; font-size: .8rem; color: var(--text-secondary, #9999bb); margin-bottom: .7rem; }
+.tc-stats b { font-variant-numeric: tabular-nums; }
+.tc-b b { color: #4ade80; } .tc-n b { color: #38bdf8; }
+.tc-w b { color: #f87171; } .tc-m b { color: #fbbf24; }
+.tc-diff { font-family: 'Amiri Quran','Noto Naskh Arabic',serif; font-size: 1.35rem; line-height: 2.3; }
+.tc-diff span { margin: 0 .18rem; }
+.w-correct { color: #4ade80; }
+.w-near    { color: #38bdf8; }
+.w-wrong   { color: #f87171; text-decoration: underline wavy #f87171; }
+.w-missing { color: #fbbf24; opacity: .75; }

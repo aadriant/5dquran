@@ -1,0 +1,150 @@
+{
+  "1": [
+    {
+      "pos": 1,
+      "ar": "قُلْ",
+      "tl": "qul",
+      "tr": "katakanlah"
+    },
+    {
+      "pos": 2,
+      "ar": "أَعُوذُ",
+      "tl": "aʿūdhu",
+      "tr": "aku berlindung"
+    },
+    {
+      "pos": 3,
+      "ar": "بِرَبِّ",
+      "tl": "birabbi",
+      "tr": "Tuhan/Pemelihara"
+    },
+    {
+      "pos": 4,
+      "ar": "ٱلْفَلَقِ",
+      "tl": "l-falaqi",
+      "tr": "subuh"
+    }
+  ],
+  "2": [
+    {
+      "pos": 1,
+      "ar": "مِن",
+      "tl": "min",
+      "tr": "dari"
+    },
+    {
+      "pos": 2,
+      "ar": "شَرِّ",
+      "tl": "sharri",
+      "tr": "kejahatan"
+    },
+    {
+      "pos": 3,
+      "ar": "مَا",
+      "tl": "mā",
+      "tr": "apa"
+    },
+    {
+      "pos": 4,
+      "ar": "خَلَقَ",
+      "tl": "khalaqa",
+      "tr": "Dia ciptakan"
+    }
+  ],
+  "3": [
+    {
+      "pos": 1,
+      "ar": "وَمِن",
+      "tl": "wamin",
+      "tr": "dan dari"
+    },
+    {
+      "pos": 2,
+      "ar": "شَرِّ",
+      "tl": "sharri",
+      "tr": "kejahatan"
+    },
+    {
+      "pos": 3,
+      "ar": "غَاسِقٍ",
+      "tl": "ghāsiqin",
+      "tr": "malam yang gelap"
+    },
+    {
+      "pos": 4,
+      "ar": "إِذَا",
+      "tl": "idhā",
+      "tr": "apabila"
+    },
+    {
+      "pos": 5,
+      "ar": "وَقَبَ",
+      "tl": "waqaba",
+      "tr": "telah gelap/kelam"
+    }
+  ],
+  "4": [
+    {
+      "pos": 1,
+      "ar": "وَمِن",
+      "tl": "wamin",
+      "tr": "dan dari"
+    },
+    {
+      "pos": 2,
+      "ar": "شَرِّ",
+      "tl": "sharri",
+      "tr": "kejahatan"
+    },
+    {
+      "pos": 3,
+      "ar": "ٱلنَّفَّـٰثَـٰتِ",
+      "tl": "l-nafāthāti",
+      "tr": "orang yang meniup-niup"
+    },
+    {
+      "pos": 4,
+      "ar": "فِى",
+      "tl": "fī",
+      "tr": "dalam"
+    },
+    {
+      "pos": 5,
+      "ar": "ٱلْعُقَدِ",
+      "tl": "l-ʿuqadi",
+      "tr": "ikatan/simpul"
+    }
+  ],
+  "5": [
+    {
+      "pos": 1,
+      "ar": "وَمِن",
+      "tl": "wamin",
+      "tr": "dan dari"
+    },
+    {
+      "pos": 2,
+      "ar": "شَرِّ",
+      "tl": "sharri",
+      "tr": "kejahatan"
+    },
+    {
+      "pos": 3,
+      "ar": "حَاسِدٍ",
+      "tl": "ḥāsidin",
+      "tr": "orang yang dengki"
+    },
+    {
+      "pos": 4,
+      "ar": "إِذَا",
+      "tl": "idhā",
+      "tr": "apabila"
+    },
+    {
+      "pos": 5,
+      "ar": "حَسَدَ",
+      "tl": "ḥasada",
+      "tr": "ia dengki"
+    }
+  ]
+}

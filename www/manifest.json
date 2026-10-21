@@ -1,0 +1,44 @@
+{
+  "name": "5D Quran",
+  "short_name": "5D Quran",
+  "description": "Al-Quran Digital — Dibaca, Didengarkan, Dihafal, Ditulis, Dipelajari",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#080812",
+  "theme_color": "#080812",
+  "orientation": "portrait",
+  "categories": ["education", "lifestyle", "utilities"],
+  "lang": "id",
+  "icons": [
+    { "src": "assets/icons/icon-48.webp", "sizes": "48x48", "type": "image/webp" },
+    { "src": "assets/icons/icon-72.webp", "sizes": "72x72", "type": "image/webp" },
+    { "src": "assets/icons/icon-96.webp", "sizes": "96x96", "type": "image/webp" },
+    { "src": "assets/icons/icon-128.webp", "sizes": "128x128", "type": "image/webp" },
+    { "src": "assets/icons/icon-192.webp", "sizes": "192x192", "type": "image/webp", "purpose": "any maskable" },
+    { "src": "assets/icons/icon-256.webp", "sizes": "256x256", "type": "image/webp" },
+    { "src": "assets/icons/icon-512.webp", "sizes": "512x512", "type": "image/webp", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Baca Surah",
+      "url": "/index.html",
+      "description": "Buka daftar Surah Al-Quran",
+      "icons": [{ "src": "assets/icons/icon-96.webp", "sizes": "96x96" }]
+    },
+    {
+      "name": "Setoran Hafalan",
+      "url": "/hafalan.html",
+      "description": "Setor hafalan Al-Quran",
+      "icons": [{ "src": "assets/icons/icon-96.webp", "sizes": "96x96" }]
+    }
+  ],
+  "screenshots": [],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.dquran.app5d",
+      "id": "com.dquran.app5d"
+    }
+  ],
+  "prefer_related_applications": false
+}

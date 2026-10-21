@@ -1,0 +1,150 @@
+{
+  "1": [
+    {
+      "pos": 1,
+      "ar": "تَبَّتْ",
+      "tl": "tabbat",
+      "tr": "binasalah"
+    },
+    {
+      "pos": 2,
+      "ar": "يَدَآ",
+      "tl": "yadā",
+      "tr": "kedua tangan"
+    },
+    {
+      "pos": 3,
+      "ar": "أَبِى",
+      "tl": "abī",
+      "tr": "Abu"
+    },
+    {
+      "pos": 4,
+      "ar": "لَهَبٍۢ",
+      "tl": "lahabin",
+      "tr": "Lahab"
+    },
+    {
+      "pos": 5,
+      "ar": "وَتَبَّ",
+      "tl": "watabba",
+      "tr": "sebenar-benar binasa"
+    }
+  ],
+  "2": [
+    {
+      "pos": 1,
+      "ar": "مَآ",
+      "tl": "mā",
+      "tr": "tidak"
+    },
+    {
+      "pos": 2,
+      "ar": "أَغْنَىٰ",
+      "tl": "aghnā",
+      "tr": "berguna"
+    },
+    {
+      "pos": 3,
+      "ar": "عَنْهُ",
+      "tl": "ʿanhu",
+      "tr": "dari padanya/kepadanya"
+    },
+    {
+      "pos": 4,
+      "ar": "مَالُهُۥ",
+      "tl": "māluhu",
+      "tr": "hartanya"
+    },
+    {
+      "pos": 5,
+      "ar": "وَمَا",
+      "tl": "wamā",
+      "tr": "dan apa"
+    },
+    {
+      "pos": 6,
+      "ar": "كَسَبَ",
+      "tl": "kasaba",
+      "tr": "yang ia usahakan"
+    }
+  ],
+  "3": [
+    {
+      "pos": 1,
+      "ar": "سَيَصْلَىٰ",
+      "tl": "sayaṣlā",
+      "tr": "kelak ia akan masuk"
+    },
+    {
+      "pos": 2,
+      "ar": "نَارًۭا",
+      "tl": "nāran",
+      "tr": "api"
+    },
+    {
+      "pos": 3,
+      "ar": "ذَاتَ",
+      "tl": "dhāta",
+      "tr": "mempunyai"
+    },
+    {
+      "pos": 4,
+      "ar": "لَهَبٍۢ",
+      "tl": "lahabin",
+      "tr": "begejolak"
+    }
+  ],
+  "4": [
+    {
+      "pos": 1,
+      "ar": "وَٱمْرَأَتُهُۥ",
+      "tl": "wa-im'ra-atuhu",
+      "tr": "dan istrinya"
+    },
+    {
+      "pos": 2,
+      "ar": "حَمَّالَةَ",
+      "tl": "ḥammālata",
+      "tr": "pembawa"
+    },
+    {
+      "pos": 3,
+      "ar": "ٱلْحَطَبِ",
+      "tl": "l-ḥaṭabi",
+      "tr": "kayu bakar"
+    }
+  ],
+  "5": [
+    {
+      "pos": 1,
+      "ar": "فِى",
+      "tl": "fī",
+      "tr": "pada"
+    },
+    {
+      "pos": 2,
+      "ar": "جِيدِهَا",
+      "tl": "jīdihā",
+      "tr": "lehernya"
+    },
+    {
+      "pos": 3,
+      "ar": "حَبْلٌۭ",
+      "tl": "ḥablun",
+      "tr": "tali"
+    },
+    {
+      "pos": 4,
+      "ar": "مِّن",
+      "tl": "min",
+      "tr": "dari"
+    },
+    {
+      "pos": 5,
+      "ar": "مَّسَدٍۭ",
+      "tl": "masadin",
+      "tr": "sabut"
+    }
+  ]
+}

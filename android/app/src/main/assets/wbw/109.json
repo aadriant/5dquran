@@ -1,0 +1,170 @@
+{
+  "1": [
+    {
+      "pos": 1,
+      "ar": "قُلْ",
+      "tl": "qul",
+      "tr": "katakanlah"
+    },
+    {
+      "pos": 2,
+      "ar": "يَـٰٓأَيُّهَا",
+      "tl": "yāayyuhā",
+      "tr": "wahai"
+    },
+    {
+      "pos": 3,
+      "ar": "ٱلْكَـٰفِرُونَ",
+      "tl": "l-kāfirūna",
+      "tr": "orang-orang kafir"
+    }
+  ],
+  "2": [
+    {
+      "pos": 1,
+      "ar": "لَآ",
+      "tl": "lā",
+      "tr": "tidak"
+    },
+    {
+      "pos": 2,
+      "ar": "أَعْبُدُ",
+      "tl": "aʿbudu",
+      "tr": "aku menyembah"
+    },
+    {
+      "pos": 3,
+      "ar": "مَا",
+      "tl": "mā",
+      "tr": "apa"
+    },
+    {
+      "pos": 4,
+      "ar": "تَعْبُدُونَ",
+      "tl": "taʿbudūna",
+      "tr": "kamu sembah"
+    }
+  ],
+  "3": [
+    {
+      "pos": 1,
+      "ar": "وَلَآ",
+      "tl": "walā",
+      "tr": "dan tidak"
+    },
+    {
+      "pos": 2,
+      "ar": "أَنتُمْ",
+      "tl": "antum",
+      "tr": "kamu"
+    },
+    {
+      "pos": 3,
+      "ar": "عَـٰبِدُونَ",
+      "tl": "ʿābidūna",
+      "tr": "menyembah"
+    },
+    {
+      "pos": 4,
+      "ar": "مَآ",
+      "tl": "mā",
+      "tr": "apa"
+    },
+    {
+      "pos": 5,
+      "ar": "أَعْبُدُ",
+      "tl": "aʿbudu",
+      "tr": "aku sembah"
+    }
+  ],
+  "4": [
+    {
+      "pos": 1,
+      "ar": "وَلَآ",
+      "tl": "walā",
+      "tr": "dan bukanlah"
+    },
+    {
+      "pos": 2,
+      "ar": "أَنَا۠",
+      "tl": "anā",
+      "tr": "aku"
+    },
+    {
+      "pos": 3,
+      "ar": "عَابِدٌۭ",
+      "tl": "ʿābidun",
+      "tr": "menjadi penyembah"
+    },
+    {
+      "pos": 4,
+      "ar": "مَّا",
+      "tl": "mā",
+      "tr": "apa"
+    },
+    {
+      "pos": 5,
+      "ar": "عَبَدتُّمْ",
+      "tl": "ʿabadttum",
+      "tr": "kamu sembah"
+    }
+  ],
+  "5": [
+    {
+      "pos": 1,
+      "ar": "وَلَآ",
+      "tl": "walā",
+      "tr": "dan bukanlah"
+    },
+    {
+      "pos": 2,
+      "ar": "أَنتُمْ",
+      "tl": "antum",
+      "tr": "kamu"
+    },
+    {
+      "pos": 3,
+      "ar": "عَـٰبِدُونَ",
+      "tl": "ʿābidūna",
+      "tr": "menyembah"
+    },
+    {
+      "pos": 4,
+      "ar": "مَآ",
+      "tl": "mā",
+      "tr": "apa"
+    },
+    {
+      "pos": 5,
+      "ar": "أَعْبُدُ",
+      "tl": "aʿbudu",
+      "tr": "aku sembah"
+    }
+  ],
+  "6": [
+    {
+      "pos": 1,
+      "ar": "لَكُمْ",
+      "tl": "lakum",
+      "tr": "bagi kalian"
+    },
+    {
+      "pos": 2,
+      "ar": "دِينُكُمْ",
+      "tl": "dīnukum",
+      "tr": "agamamu"
+    },
+    {
+      "pos": 3,
+      "ar": "وَلِىَ",
+      "tl": "waliya",
+      "tr": "bagiku"
+    },
+    {
+      "pos": 4,
+      "ar": "دِينِ",
+      "tl": "dīni",
+      "tr": "agamaku"
+    }
+  ]
+}

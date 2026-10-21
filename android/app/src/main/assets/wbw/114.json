@@ -1,0 +1,134 @@
+{
+  "1": [
+    {
+      "pos": 1,
+      "ar": "قُلْ",
+      "tl": "qul",
+      "tr": "katakanlah"
+    },
+    {
+      "pos": 2,
+      "ar": "أَعُوذُ",
+      "tl": "aʿūdhu",
+      "tr": "aku berlindung"
+    },
+    {
+      "pos": 3,
+      "ar": "بِرَبِّ",
+      "tl": "birabbi",
+      "tr": "Tuhannya"
+    },
+    {
+      "pos": 4,
+      "ar": "ٱلنَّاسِ",
+      "tl": "l-nāsi",
+      "tr": "manusia"
+    }
+  ],
+  "2": [
+    {
+      "pos": 1,
+      "ar": "مَلِكِ",
+      "tl": "maliki",
+      "tr": "Rajanya"
+    },
+    {
+      "pos": 2,
+      "ar": "ٱلنَّاسِ",
+      "tl": "l-nāsi",
+      "tr": "manusia"
+    }
+  ],
+  "3": [
+    {
+      "pos": 1,
+      "ar": "إِلَـٰهِ",
+      "tl": "ilāhi",
+      "tr": "Tuhannya"
+    },
+    {
+      "pos": 2,
+      "ar": "ٱلنَّاسِ",
+      "tl": "l-nāsi",
+      "tr": "manusia"
+    }
+  ],
+  "4": [
+    {
+      "pos": 1,
+      "ar": "مِن",
+      "tl": "min",
+      "tr": "dari"
+    },
+    {
+      "pos": 2,
+      "ar": "شَرِّ",
+      "tl": "sharri",
+      "tr": "kejahatan"
+    },
+    {
+      "pos": 3,
+      "ar": "ٱلْوَسْوَاسِ",
+      "tl": "l-waswāsi",
+      "tr": "bisikkan"
+    },
+    {
+      "pos": 4,
+      "ar": "ٱلْخَنَّاسِ",
+      "tl": "l-khanāsi",
+      "tr": "menunggu-nunggu/bersembunyi"
+    }
+  ],
+  "5": [
+    {
+      "pos": 1,
+      "ar": "ٱلَّذِى",
+      "tl": "alladhī",
+      "tr": "yang"
+    },
+    {
+      "pos": 2,
+      "ar": "يُوَسْوِسُ",
+      "tl": "yuwaswisu",
+      "tr": "membisik-bisikan"
+    },
+    {
+      "pos": 3,
+      "ar": "فِى",
+      "tl": "fī",
+      "tr": "dalam"
+    },
+    {
+      "pos": 4,
+      "ar": "صُدُورِ",
+      "tl": "ṣudūri",
+      "tr": "dada"
+    },
+    {
+      "pos": 5,
+      "ar": "ٱلنَّاسِ",
+      "tl": "l-nāsi",
+      "tr": "manusia"
+    }
+  ],
+  "6": [
+    {
+      "pos": 1,
+      "ar": "مِنَ",
+      "tl": "mina",
+      "tr": "dari"
+    },
+    {
+      "pos": 2,
+      "ar": "ٱلْجِنَّةِ",
+      "tl": "l-jinati",
+      "tr": "jin"
+    },
+    {
+      "pos": 3,
+      "ar": "وَٱلنَّاسِ",
+      "tl": "wal-nāsi",
+      "tr": "dan manusia"
+    }
+  ]
+}

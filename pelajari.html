@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Pelajari Al-Quran secara mendalam: kosa kata, tafsir Ibnu Katsir, hadis, dan tadabur ayat per ayat bersama 5D Quran." />
+  <meta name="theme-color" content="#0d0d1a" />
+  <title>5D Quran — Pelajari</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Amiri+Quran&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/pelajari.css" />
+</head>
+<body class="pelajari-page">
+
+  <div class="bg-particles" aria-hidden="true">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header" id="top">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <img src="assets/icon.jpg" alt="5D Quran" width="36" height="36" style="border-radius:9px;object-fit:cover;box-shadow:0 0 10px rgba(212,168,83,0.35)">
+        </div>
+        <div class="logo-text">
+          <span class="logo-main">5D<em>Quran</em></span>
+          <span class="logo-sub">📚 Dipelajari — Tadabur</span>
+        </div>
+      </a>
+      <div class="pl-header-right">
+        <a href="#" class="action-btn" id="btn-back-surah">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          Kembali
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- SURAH INFO BAR -->
+  <div class="pl-info-bar" id="pl-info-bar">
+    <div class="pl-info-inner">
+      <div class="pli-surah" id="pli-surah">
+        <span class="pli-loading">Memuat...</span>
+      </div>
+      <div class="pli-nav" id="pli-nav" style="display:none">
+        <button class="pli-nav-btn" id="pli-prev" title="Ayat sebelumnya">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="pli-ayat-info">
+          Ayat <span id="pli-ayat-cur">1</span> / <span id="pli-ayat-total">—</span>
+        </div>
+        <button class="pli-nav-btn" id="pli-next" title="Ayat selanjutnya">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <select id="pli-picker" class="pli-picker"></select>
+      </div>
+    </div>
+  </div>
+
+  <!-- AYAT DISPLAY CARD -->
+  <div class="ayat-hero" id="ayat-hero">
+    <div class="ayat-hero-inner">
+      <div class="ayat-loading" id="ayat-hero-loading">
+        <div class="loader-ring"><div></div><div></div><div></div><div></div></div>
+        <p>Memuat ayat...</p>
+      </div>
+      <div class="ayat-hero-content" id="ayat-hero-content" style="display:none">
+        <div class="ahc-arabic-wrap">
+          <div class="ahc-arabic" id="ahc-arabic" dir="rtl"></div>
+          <div class="ahc-badge" id="ahc-badge"></div>
+        </div>
+        <div class="ahc-translation" id="ahc-translation"></div>
+        <div class="ahc-meta">
+          <span class="ahc-ref" id="ahc-ref"></span>
+          <div class="ahc-actions">
+            <button class="ahc-action-btn" id="ahc-copy" title="Salin ayat">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Salin
+            </button>
+            <a class="ahc-action-btn" id="ahc-tulis" href="#">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Tulis
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDY TABS -->
+  <div class="study-tabs-bar" id="study-tabs-bar">
+    <div class="study-tabs-inner">
+      <button class="stab active" data-tab="kosakata" id="stab-kosakata">
+        <span class="stab-icon">📝</span>
+        <span class="stab-text">Kosa Kata</span>
+      </button>
+      <button class="stab" data-tab="tafsir" id="stab-tafsir">
+        <span class="stab-icon">📖</span>
+        <span class="stab-text">Tafsir</span>
+      </button>
+      <button class="stab" data-tab="hadis" id="stab-hadis">
+        <span class="stab-icon">📜</span>
+        <span class="stab-text">Hadis</span>
+      </button>
+      <button class="stab" data-tab="tadabur" id="stab-tadabur">
+        <span class="stab-icon">🤲</span>
+        <span class="stab-text">Tadabur</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- STUDY CONTENT PANELS -->
+  <main class="study-main" id="study-main">
+
+    <!-- ──────────────────────────────
+         TAB 1: KOSA KATA
+         ────────────────────────────── -->
+    <div class="study-panel active" id="panel-kosakata">
+      <div class="panel-loading" id="kosa-loading">
+        <div class="loader-ring"><div></div><div></div><div></div><div></div></div>
+        <p>Memuat analisis kata...</p>
+      </div>
+      <div class="panel-error" id="kosa-error" style="display:none">
+        <div class="error-icon">⚠️</div>
+        <p>Gagal memuat data kata. Periksa koneksi internet.</p>
+        <button class="retry-btn" id="kosa-retry">Coba Lagi</button>
+      </div>
+      <div id="kosa-content" style="display:none">
+        <!-- Word table rendered by JS -->
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────
+         TAB 2: TAFSIR
+         ────────────────────────────── -->
+    <div class="study-panel" id="panel-tafsir" style="display:none">
+      <!-- Tafsir Selector -->
+      <div class="tafsir-selector" id="tafsir-selector">
+        <button class="tsb-btn active" data-tsid="ibnukatsir">
+          <span class="tsb-icon">📚</span> Ibnu Katsir
+        </button>
+        <button class="tsb-btn" id="btn-download-tafsir" style="margin-left:auto;background:rgba(212,168,83,0.15);border:1px solid var(--gold-400);color:var(--gold-400);font-weight:600" title="Unduh data tafsir lengkap surat ini (JSON/Offline)">
+          <span>⬇️ Unduh Tafsir</span>
+        </button>
+      </div>
+
+      <div class="panel-loading" id="tafsir-loading" style="display:none">
+        <div class="loader-ring"><div></div><div></div><div></div><div></div></div>
+        <p>Memuat tafsir...</p>
+      </div>
+      <div id="tafsir-content">
+        <!-- Tafsir text rendered by JS -->
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────
+         TAB 3: HADIS
+         ────────────────────────────── -->
+    <div class="study-panel" id="panel-hadis" style="display:none">
+      <div id="hadis-content">
+        <!-- Hadis content rendered by JS -->
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────
+         TAB 4: TADABUR
+         ────────────────────────────── -->
+    <div class="study-panel" id="panel-tadabur" style="display:none">
+      <div id="tadabur-content">
+        <!-- Tadabur content rendered by JS -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="footer-logo-text">5D<em>Quran</em></span>
+        <span class="footer-tagline">Dibaca · Didengarkan · Dihafal · Ditulis · Dipelajari</span>
+      </div>
+      <p class="footer-copy">Data dari <a href="https://alquran.cloud" target="_blank" rel="noopener">AlQuran.cloud</a>, <a href="https://quran.com" target="_blank" rel="noopener">Quran.com</a>, <a href="https://equran.id" target="_blank" rel="noopener">eQuran.id</a></p>
+      <p class="footer-amal">🤲 Semoga sebagai amal jariyah — <strong>Ari Adrianto</strong> @2026</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/pelajari.js"></script>
+</body>
+</html>

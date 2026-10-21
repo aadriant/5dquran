@@ -1,0 +1,639 @@
+{
+  "hadis_by_ayat": {
+    "1:1": [
+      {
+        "arabic": "كُلُّ أَمْرٍ ذِي بَالٍ لَا يُبْدَأُ فِيهِ بِبِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ فَهُوَ أَقْطَعُ",
+        "indo": "Setiap perkara penting yang tidak dimulai dengan Bismillahirrahmanirrahim, maka ia terputus (kurang berkahnya).",
+        "source": "HR. Ibnu Majah & Abu Dawud",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Hadis Hasan"
+      },
+      {
+        "arabic": "كَانَ النَّبِيُّ ﷺ لَا يَعْلَمُ فَصْلَ السُّورَةِ حَتَّى تَنْزِلَ عَلَيْهِ بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ",
+        "indo": "Dahulu Nabi ﷺ tidak mengetahui batas pemisah satu surah dengan surah lainnya hingga turun kepadanya: Bismillahirrahmanirrahim.",
+        "source": "HR. Abu Dawud & Al-Hakim",
+        "narrator": "Abdullah bin Abbas r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "1:2": [
+      {
+        "arabic": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ أُمُّ الْقُرْآنِ وَأُمُّ الْكِتَابِ وَالسَّبْعُ الْمَثَانِي",
+        "indo": "Alhamdulillahi Rabbil Alamin adalah Ummul Qur'an (Induk Al-Qur'an), Ummul Kitab, dan As-Sab'ul Matsani (tujuh ayat yang diulang-ulang).",
+        "source": "HR. Tirmidzi & Ahmad",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Hadis Sahih"
+      },
+      {
+        "arabic": "أَفْضَلُ الذِّكْرِ لَا إِلَهَ إِلَّا اللَّهُ وَأَفْضَلُ الدُّعَاءِ الْحَمْدُ لِلَّهِ",
+        "indo": "Dzikir yang paling utama adalah Laa ilaaha illallah, dan doa yang paling utama adalah Alhamdulillah.",
+        "source": "HR. Tirmidzi & Ibnu Majah",
+        "narrator": "Jabir bin Abdullah r.a.",
+        "grade": "Hadis Hasan"
+      }
+    ],
+    "1:3": [
+      {
+        "arabic": "لَمَّا قَضَى اللَّهُ الْخَلْقَ كَتَبَ عِنْدَهُ فَوْقَ عَرْشِهِ: إِنَّ رَحْمَتِي سَبَقَتْ غَضَبِي",
+        "indo": "Tatkala Allah menetapkan penciptaan makhluk, Dia menulis di sisi-Nya di atas 'Arsy-Nya: 'Sesungguhnya rahmat-Ku mendahului (mengalahkan) murka-Ku.'",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      },
+      {
+        "arabic": "جَعَلَ اللَّهُ الرَّحْمَةَ مِائَةَ جُزْءٍ، فَأَمْسَكَ عِنْدَهُ تِسْعَةً وَتِسْعِينَ جُزْءًا، وَأَنْزَلَ فِي الْأَرْضِ جُزْءًا وَاحِدًا",
+        "indo": "Allah menjadikan rahmat menjadi seratus bagian. Dia menahan di sisi-Nya sembilan puluh sembilan bagian, dan menurunkan ke bumi satu bagian (yang dengannya seluruh makhluk saling berkasih sayang).",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "1:4": [
+      {
+        "arabic": "يَقْبِضُ اللَّهُ الْأَرْضَ يَوْمَ الْقِيَامَةِ، وَيَطْوِي السَّمَاءَ بِيَمِينِهِ، ثُمَّ يَقُولُ: أَنَا الْمَلِكُ، أَيْنَ مُلُوكُ الْأَرْضِ؟",
+        "indo": "Allah menggenggam bumi pada hari kiamat dan melipat langit dengan tangan kanan-Nya, kemudian berfirman: 'Akulah Raja! Di manakah para raja di bumi?'",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      },
+      {
+        "arabic": "الْكَيِّسُ مَنْ دَانَ نَفْسَهُ وَعَمِلَ لِمَا بَعْدَ الْمَوْتِ، وَالْعَاجِزُ مَنْ أَتْبَعَ نَفْسَهُ هَوَاهَا وَتَمَنَّى عَلَى اللَّهِ",
+        "indo": "Orang yang cerdas adalah orang yang menghisab (mengoreksi) dirinya dan beramal untuk kehidupan setelah kematian, sedangkan orang yang lemah adalah orang yang memperturutkan hawa nafsunya lalu berangan-angan kepada Allah.",
+        "source": "HR. Tirmidzi & Ibnu Majah",
+        "narrator": "Syaddad bin Aus r.a.",
+        "grade": "Hadis Hasan"
+      }
+    ],
+    "1:5": [
+      {
+        "arabic": "قَسَمْتُ الصَّلَاةَ بَيْنِي وَبَيْنَ عَبْدِي نِصْفَيْنِ... فَإِذَا قَالَ: {إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ} قَالَ: هَذَا بَيْنِي وَبَيْنَ عَبْدِي، وَلِعَبْدِي مَا سَأَلَ",
+        "indo": "Allah Ta'ala berfirman (Hadis Qudsi): 'Aku membagi shalat (Al-Fatihah) antara Aku dan hamba-Ku menjadi dua bagian... Apabila hamba-Ku mengucapkan: Hanya kepada-Mu kami menyembah dan hanya kepada-Mu kami memohon pertolongan, Allah berfirman: Ini adalah antara Aku dan hamba-Ku, dan bagi hamba-Ku apa yang dia minta.'",
+        "source": "HR. Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Hadis Sahih"
+      },
+      {
+        "arabic": "إِذَا سَأَلْتَ فَاسْأَلِ اللَّهَ، وَإِذَا اسْتَعَنْتَ فَاسْتَعِنْ بِاللَّهِ",
+        "indo": "Jika engkau memohon sesuatu, mohonlah kepada Allah; dan jika engkau meminta pertolongan, mintalah pertolongan kepada Allah.",
+        "source": "HR. Tirmidzi",
+        "narrator": "Abdullah bin Abbas r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "1:6": [
+      {
+        "arabic": "ضَرَبَ اللَّهُ مَثَلًا صِرَاطًا مُسْتَقِيمًا، وَعَلَى جَنْبَتَيِ الصِّرَاطِ سُورَانِ فِيهِمَا أَبْوَابٌ مُفَتَّحَةٌ... وَالصِّرَاطُ: الْإِسْلَامُ",
+        "indo": "Rasulullah ﷺ membuat perumpamaan jalan yang lurus: sebuah jalan lurus diapit dua dinding berpintu tirai terbuka... Jalan lurus itu adalah agama Islam, dinding-dinding itu adalah batasan-batasan hukum Allah, dan pintu-pintu terbuka itu adalah apa yang diharamkan Allah.",
+        "source": "HR. Ahmad & Tirmidzi",
+        "narrator": "An-Nawwas bin Sam'an r.a.",
+        "grade": "Hadis Sahih"
+      },
+      {
+        "arabic": "أَحَبُّ الْأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ",
+        "indo": "Amalan yang paling dicintai oleh Allah adalah amalan yang paling istiqamah (terus-menerus) meskipun jumlahnya sedikit.",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Aisyah r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "1:7": [
+      {
+        "arabic": "إِنَّ الْمَغْضُوبَ عَلَيْهِمُ الْيَهُودُ، وَإِنَّ الضَّالِّينَ النَّصَارَى",
+        "indo": "Sesungguhnya orang-orang yang dimurkai (al-Maghdhub 'alaihim) adalah kaum Yahudi (karena mengetahui kebenaran namun tidak mengamalkannya), dan orang-orang yang sesat (adh-Dhallin) adalah kaum Nasrani (karena beribadah tanpa ilmu).",
+        "source": "HR. Ahmad & Tirmidzi",
+        "narrator": "Adi bin Hatim r.a.",
+        "grade": "Hadis Sahih"
+      },
+      {
+        "arabic": "إِذَا قَالَ الْإِمَامُ: {غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ} فَقُولُوا: آمِينَ، فَإِنَّهُ مَنْ وَافَقَ قَوْلُهُ قَوْلَ الْمَلَائِكَةِ غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ",
+        "indo": "Apabila imam mengucapkan 'Ghairil maghdhubi 'alaihim waladh-dhallin', maka ucapkanlah 'Aamiin'. Karena barangsiapa yang ucapan aamiin-nya bersamaan dengan aamiin-nya para malaikat, diampuni dosa-dosanya yang telah lalu.",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "2:1": [
+      {
+        "arabic": "لَا تَجْعَلُوا بُيُوتَكُمْ مَقَابِرَ، إِنَّ الشَّيْطَانَ يَنْفِرُ مِنَ الْبَيْتِ الَّذِي تُقْرَأُ فِيهِ سُورَةُ الْبَقَرَةِ",
+        "indo": "Jangan jadikan rumah-rumah kalian seperti kuburan. Sesungguhnya setan lari dari rumah yang di dalamnya dibacakan Surah Al-Baqarah.",
+        "source": "HR. Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "2:2": [
+      {
+        "arabic": "اقْرَءُوا الْقُرْآنَ فَإِنَّهُ يَأْتِي يَوْمَ الْقِيَامَةِ شَفِيعًا لِأَصْحَابِهِ",
+        "indo": "Bacalah Al-Qur'an, karena sesungguhnya ia akan datang pada hari kiamat sebagai pemberi syafaat bagi para pembacanya.",
+        "source": "HR. Muslim",
+        "narrator": "Abu Umamah Al-Bahili r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "2:152": [
+      {
+        "arabic": "يَقُولُ اللَّهُ تَعَالَى: أَنَا عِنْدَ ظَنِّ عَبْدِي بِي، وَأَنَا مَعَهُ إِذَا ذَكَرَنِي، فَإِنْ ذَكَرَنِي فِي نَفْسِهِ ذَكَرْتُهُ فِي نَفْسِي",
+        "indo": "Allah Ta'ala berfirman (Hadis Qudsi): 'Aku sesuai persangkaan hamba-Ku kepada-Ku, dan Aku bersamanya ketika ia mengingat-Ku. Jika ia mengingat-Ku dalam dirinya, Aku mengingatnya dalam Diri-Ku...'",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "2:153": [
+      {
+        "arabic": "عَجَبًا لِأَمْرِ الْمُؤْمِنِ، إِنَّ أَمْرَهُ كُلَّهُ خَيْرٌ... إِنْ أَصَابَتْهُ سَرَّاءُ شَكَرَ فَكَانَ خَيْرًا لَهُ، وَإِنْ أَصَابَتْهُ ضَرَّاءُ صَبَرَ فَكَانَ خَيْرًا لَهُ",
+        "indo": "Sungguh menakjubkan urusan seorang mukmin, seluruh urusannya adalah kebaikan: jika mendapat kesenangan ia bersyukur maka itu baik baginya, dan jika ditimpa kesusahan ia bersabar maka itu baik baginya.",
+        "source": "HR. Muslim",
+        "narrator": "Shuhaib bin Sinan r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "2:183": [
+      {
+        "arabic": "مَنْ صَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ",
+        "indo": "Barangsiapa berpuasa di bulan Ramadhan atas dasar iman dan mengharap pahala dari Allah, niscaya diampuni dosa-dosanya yang telah lalu.",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "2:186": [
+      {
+        "arabic": "إِنَّ رَبَّكُمْ تَبَارَكَ وَتَعَالَى حَيِيٌّ كَرِيمٌ، يَسْتَحْيِي مِنْ عَبْدِهِ إِذَا رَفَعَ يَدَيْهِ إِلَيْهِ أَنْ يَرُدَّهُمَا صِفْرًا",
+        "indo": "Sesungguhnya Rabb kalian Tabaraka wa Ta'ala Maha Pemalu lagi Maha Mulia. Dia malu kepada hamba-Nya apabila hamba-Nya mengangkat kedua tangannya kepada-Nya lalu Dia mengembalikannya dalam keadaan hampa.",
+        "source": "HR. Abu Dawud & Tirmidzi",
+        "narrator": "Salman Al-Farisi r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "2:255": [
+      {
+        "arabic": "مَنْ قَرَأَ آيَةَ الْكُرْسِيِّ دُبُرَ كُلِّ صَلَاةٍ مَكْتُوبَةٍ لَمْ يَمْنَعْهُ مِنْ دُخُولِ الْجَنَّةِ إِلَّا أَنْ يَمُوتَ",
+        "indo": "Barangsiapa membaca Ayat Kursi setiap selesai shalat wajib, tidak ada yang menghalanginya masuk surga kecuali kematian.",
+        "source": "HR. An-Nasai & Ibnu Hibban",
+        "narrator": "Abu Umamah Al-Bahili r.a.",
+        "grade": "Hadis Sahih"
+      },
+      {
+        "arabic": "أَعْظَمُ آيَةٍ فِي كِتَابِ اللَّهِ آيَةُ الْكُرْسِيِّ",
+        "indo": "Ayat yang paling agung dalam Kitabullah (Al-Qur'an) adalah Ayat Kursi.",
+        "source": "HR. Muslim",
+        "narrator": "Ubay bin Ka'ab r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "2:285": [
+      {
+        "arabic": "الْآيَتَانِ مِنْ آخِرِ سُورَةِ الْبَقَرَةِ مَنْ قَرَأَهُمَا فِي لَيْلَةٍ كَفَتَاهُ",
+        "indo": "Dua ayat terakhir dari Surah Al-Baqarah (ayat 285-286), barangsiapa membacanya pada suatu malam, maka kedua ayat itu telah mencukupinya (melindunginya dari segala marabahaya).",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Abu Mas'ud Al-Badri r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "2:286": [
+      {
+        "arabic": "إِنَّ اللَّهَ كَتَبَ كِتَابًا قَبْلَ أَنْ يَخْلُقَ السَّمَوَاتِ وَالأَرْضَ بِأَلْفَيْ عَامٍ، أَنْزَلَ مِنْهُ آيَتَيْنِ خَتَمَ بِهِمَا سُورَةَ البَقَرَةِ",
+        "indo": "Sesungguhnya Allah menulis suatu kitab dua ribu tahun sebelum menciptakan langit dan bumi, lalu menurunkan daripadanya dua ayat untuk menutup Surah Al-Baqarah. Tidaklah kedua ayat itu dibaca di suatu rumah selama tiga malam melainkan setan tidak akan mendekatinya.",
+        "source": "HR. Tirmidzi & Al-Hakim",
+        "narrator": "An-Nu'man bin Basyir r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "3:185": [
+      {
+        "arabic": "أَكْثِرُوا مِنْ ذِكْرِ هَاذِمِ اللَّذَّاتِ: الْمَوْتِ",
+        "indo": "Perbanyaklah mengingat pemutus segala kenikmatan dunia, yaitu kematian.",
+        "source": "HR. Tirmidzi, An-Nasai & Ibnu Majah",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "3:190": [
+      {
+        "arabic": "وَيْلٌ لِمَنْ قَرَأَهَا وَلَمْ يَتَفَكَّرْ فِيهَا",
+        "indo": "Rasulullah ﷺ menangis ketika membaca ayat ini di malam hari dan bersabda: 'Celakalah bagi orang yang membacanya tetapi tidak merenungkan kandungannya.'",
+        "source": "HR. Ibnu Hibban",
+        "narrator": "Aisyah r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "18:1": [
+      {
+        "arabic": "مَنْ حَفِظَ عَشْرَ آيَاتٍ مِنْ أَوَّلِ سُورَةِ الْكَهْف عُصِمَ مِنْ فِتْنَةِ الدَّجَّالِ",
+        "indo": "Barangsiapa menghafal sepuluh ayat pertama dari Surah Al-Kahf, niscaya ia terlindungi dari fitnah Dajjal.",
+        "source": "HR. Muslim",
+        "narrator": "Abu Ad-Darda r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "18:110": [
+      {
+        "arabic": "مَنْ قَرَأَ سُورَةَ الْكَهْفِ فِي يَوْمِ الْجُمُعَةِ أَضَاءَ لَهُ مِنَ النُّورِ مَا بَيْنَ الْجُمُعَتَيْنِ",
+        "indo": "Barangsiapa membaca Surah Al-Kahf pada hari Jum'at, niscaya ia dipancarkan cahaya baginya di antara dua Jum'at.",
+        "source": "HR. Al-Hakim & Al-Baihaqi",
+        "narrator": "Abu Sa'id Al-Khudri r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "67:1": [
+      {
+        "arabic": "إِنَّ سُورَةً مِنَ الْقُرْآنِ ثَلَاثُونَ آيَةً شَفَعَتْ لِرَجُلٍ حَتَّى غُفِرَ لَهُ: {تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ}",
+        "indo": "Sesungguhnya ada satu surah dalam Al-Qur'an berisi 30 ayat yang memberi syafaat kepada pembacanya hingga dosa-dosanya diampuni, yaitu: Tabarakalladzi biyadihil mulk (Surah Al-Mulk).",
+        "source": "HR. Abu Dawud & Tirmidzi",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "112:1": [
+      {
+        "arabic": "وَالَّذِي نَفْسِي بِيَدِهِ إِنَّهَا لَتَعْدِلُ ثُلُثَ الْقُرْآنِ",
+        "indo": "Demi Dzat yang jiwaku berada di tangan-Nya, sesungguhnya Surah Al-Ikhlas ini sebanding dengan sepertiga Al-Qur'an.",
+        "source": "HR. Bukhari",
+        "narrator": "Abu Sa'id Al-Khudri r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "113:1": [
+      {
+        "arabic": "قُلْ هُوَ اللَّهُ أَحَدٌ وَالْمُعَوِّذَتَيْنِ حِينَ تُمْسِي وَحِينَ تُصْبِحُ ثَلَاثَ مَرَّاتٍ تَكْفِيكَ مِنْ كُلِّ شَيْءٍ",
+        "indo": "Bacalah Qul Huwallahu Ahad dan Al-Mu'awwidzatain (Al-Falaq dan An-Nas) pada waktu petang dan pagi hari sebanyak tiga kali, niscaya keduanya mencukupimu dari segala keburukan.",
+        "source": "HR. Abu Dawud & Tirmidzi",
+        "narrator": "Abdullah bin Khubaib r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "114:1": [
+      {
+        "arabic": "أَلَمْ تَرَ آيَاتٍ أُنْزِلَتِ اللَّيْلَةَ لَمْ يُرَ مِثْلُهُنَّ قَطُّ: {قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ} وَ {قُلْ أَعُوذُ بِرَبِّ النَّاسِ}",
+        "indo": "Tidakkah engkau melihat ayat-ayat yang diturunkan malam ini yang tidak pernah ada yang serupa dengannya sama sekali: Qul a'udzu birabbil falaq dan Qul a'udzu birabbin nas.",
+        "source": "HR. Muslim",
+        "narrator": "Uqbah bin Amir r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "2:43": [
+      {
+        "arabic": "بُنِيَ الْإِسْلَامُ عَلَى خَمْسٍ: شَهَادَةِ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَإِقَامِ الصَّلَاةِ، وَإِيتَاءِ الزَّكَاةِ، وَحَجِّ الْبَيْتِ، وَصَوْمِ رَمَضَانَ",
+        "indo": "Islam dibangun di atas lima perkara: bersaksi bahwa tiada tuhan selain Allah dan Muhammad utusan Allah, mendirikan shalat, menunaikan zakat, haji ke Baitullah, dan puasa di bulan Ramadhan.",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Abdullah bin Umar r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "2:201": [
+      {
+        "arabic": "كَانَ أَكْثَرُ دُعَاءِ النَّبِيِّ ﷺ: {رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ}",
+        "indo": "Doa yang paling sering dibaca oleh Nabi ﷺ adalah: 'Rabbana aatina fid-dunya hasanah wa fil akhirati hasanah wa qina 'adzaban-nar' (Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan lindungilah kami dari azab neraka).",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Anas bin Malik r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "2:216": [
+      {
+        "arabic": "احْرِصْ عَلَى مَا يَنْفَعُكَ، وَاسْتَعِنْ بِاللَّهِ وَلَا تَعْجَزْ، وَإِنْ أَصَابَكَ شَيْءٌ فَلَا تَقُلْ: لَوْ أَنِّي فَعَلْتُ كَانَ كَذَا وَكَذَا، وَلَكِنْ قُلْ: قَدَرُ اللَّهِ وَمَا شَاءَ فَعَلَ",
+        "indo": "Semangatlah meraih apa yang bermanfaat bagimu, mohonlah pertolongan kepada Allah dan jangan merasa lemah. Jika sesuatu menimpamu, jangan katakan: 'Seandainya aku melakukan ini pasti akan begini', tetapi katakanlah: 'Ini takdir Allah, dan apa yang Dia kehendaki pasti Dia perbuat.'",
+        "source": "HR. Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "2:222": [
+      {
+        "arabic": "إِنَّ اللَّهَ يَبْسُطُ يَدَهُ بِاللَّيْلِ لِيَتُوبَ مُسِيءُ النَّهَارِ، وَيَبْسُطُ يَدَهُ بِالنَّهَارِ لِيَتُوبَ مُسِيءُ اللَّيْلِ، حَتَّى تَطْلُعَ الشَّمْسُ مِنْ مَغْرِبِهَا",
+        "indo": "Sesungguhnya Allah membentangkan tangan-Nya pada malam hari agar orang yang berbuat dosa di siang hari bertaubat, dan membentangkan tangan-Nya di siang hari agar orang yang berbuat dosa di malam hari bertaubat, sampai matahari terbit dari barat.",
+        "source": "HR. Muslim",
+        "narrator": "Abu Musa Al-Asy'ari r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "2:261": [
+      {
+        "arabic": "مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ، وَمَا زَادَ اللَّهُ عَبْدًا بِعَفْوٍ إِلَّا عِزًّا، وَمَا تَوَاضَعَ أَحَدٌ لِلَّهِ إِلَّا رَفَعَهُ اللَّهُ",
+        "indo": "Harta tidak akan berkurang karena sedekah, dan Allah tidak menambah bagi seorang hamba yang pemaaf melainkan kemuliaan, serta tidaklah seseorang merendahkan hati karena Allah melainkan Allah akan meninggikan derajatnya.",
+        "source": "HR. Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "2:275": [
+      {
+        "arabic": "لَعَنَ رَسُولُ اللَّهِ ﷺ آكِلَ الرِّبَا، وَمُؤْكِلَهُ، وَكَاتِبَهُ، وَشَاهِدَيْهِ، وَقَالَ: هُمْ سَوَاءٌ",
+        "indo": "Rasulullah ﷺ melaknat pemakan riba, yang memberi makan dengannya (pemberi pinjaman berbunga), pencatatnya, dan kedua saksinya. Beliau bersabda: 'Mereka semua sama dalam dosanya.'",
+        "source": "HR. Muslim",
+        "narrator": "Jabir bin Abdullah r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "3:31": [
+      {
+        "arabic": "لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى أَكُونَ أَحَبَّ إِلَيْهِ مِنْ وَالِدِهِ وَوَلَدِهِ وَالنَّاسِ أَجْمَعِينَ",
+        "indo": "Tidak sempurna iman salah seorang di antara kalian hingga aku lebih dicintainya daripada orang tuanya, anaknya, dan seluruh manusia.",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Anas bin Malik r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "3:103": [
+      {
+        "arabic": "تَرَكْتُ فِيكُمْ أَمْرَيْنِ لَنْ تَضِلُّوا مَا تَمَسَّكْتُمْ بِهِمَا: كِتَابَ اللَّهِ وَسُنَّةَ نَبِيِّهِ",
+        "indo": "Aku tinggalkan kepada kalian dua perkara, kalian tidak akan tersesat selama berpegang teguh pada keduanya: Kitabullah (Al-Qur'an) dan Sunnah Nabi-Nya.",
+        "source": "HR. Malik (Al-Muwaththa')",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "3:134": [
+      {
+        "arabic": "لَيْسَ الشَّدِيدُ بِالصُّرَعَةِ، إِنَّمَا الشَّدِيدُ الَّذِي يَمْلِكُ نَفْسَهُ عِنْدَ الْغَضَبِ",
+        "indo": "Bukanlah orang kuat itu yang menang dalam gulat, melainkan orang yang kuat adalah orang yang mampu mengendalikan dirinya saat marah.",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "4:1": [
+      {
+        "arabic": "الرَّحِمُ مُعَلَّقَةٌ بِالْعَرْشِ تَقُولُ: مَنْ وَصَلَنِي وَصَلَهُ اللَّهُ، وَمَنْ قَطَعَنِي قَطَعَهُ اللَّهُ",
+        "indo": "Rahim (tali persaudaraan) bergantung di 'Arsy seraya berkata: 'Barangsiapa menyambungku, niscaya Allah menyambungnya; dan barangsiapa memutusku, niscaya Allah memutusnya.'",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Aisyah r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "4:36": [
+      {
+        "arabic": "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيُكْرِمْ جَارَهُ، وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيُكْرِمْ ضَيْفَهُ",
+        "indo": "Barangsiapa beriman kepada Allah dan hari akhir, hendaklah ia memuliakan tetangganya; dan barangsiapa beriman kepada Allah dan hari akhir, hendaklah ia memuliakan tamunya.",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "17:23": [
+      {
+        "arabic": "رِغَمَ أَنْفُهُ، ثُمَّ رِغَمَ أَنْفُهُ، ثُمَّ رِغَمَ أَنْفُهُ: مَنْ أَدْرَكَ وَالِدَيْهِ عِنْدَ الْكِبَرِ، أَحَدَهُمَا أَوْ كِلَيْهِمَا، ثُمَّ لَمْ يَدْخُلِ الْجَنَّةَ",
+        "indo": "Celaka, celaka, dan sungguh celaka orang yang mendapati kedua orang tuanya atau salah satunya di usia senja, namun hal itu tidak memasukkannya ke dalam surga (karena tidak berbakti).",
+        "source": "HR. Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "17:79": [
+      {
+        "arabic": "أَفْضَلُ الصَّلَاةِ بَعْدَ الصَّلَاةِ الْمَكْتُوبَةِ: صَلَاةُ اللَّيْلِ",
+        "indo": "Shalat yang paling utama setelah shalat fardhu adalah shalat malam (Tahajjud).",
+        "source": "HR. Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "17:82": [
+      {
+        "arabic": "عَلَيْكُمْ بِالشِّفَاءَيْنِ: الْعَسَلِ وَالْقُرْآنِ",
+        "indo": "Hendaklah kalian menggunakan dua penyembuh: madu dan Al-Qur'an.",
+        "source": "HR. Ibnu Majah & Al-Hakim",
+        "narrator": "Abdullah bin Mas'ud r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "24:30": [
+      {
+        "arabic": "النَّظْرَةُ سَهْمٌ مِنْ سِهَامِ إِبْلِيسَ مَسْمُومٌ، فَمَنْ غَضَّ بَصَرَهُ مَخَافَةَ اللَّهِ أَبْدَلَهُ اللَّهُ إِيمَانًا يَجِدُ حَلَاوَتَهُ فِي قَلْبِهِ",
+        "indo": "Pandangan mata adalah salah satu anak panah beracun milik Iblis. Barangsiapa menundukkan pandangannya karena takut kepada Allah, niscaya Allah menggantikannya dengan manisnya iman di dalam hatinya.",
+        "source": "HR. Thabrani & Al-Hakim",
+        "narrator": "Abdullah bin Mas'ud r.a.",
+        "grade": "Hadis Hasan"
+      }
+    ],
+    "31:13": [
+      {
+        "arabic": "لَمَّا نَزَلَتْ: {الَّذِينَ آمَنُوا وَلَمْ يَلْبِسُوا إِيمَانَهُمْ بِظُلْمٍ} شَقَّ ذَلِكَ عَلَى أَصْحَابِ رَسُولِ اللَّهِ ﷺ، فَقَالَ: لَيْسَ الَّذِي تَعْنُونَ، أَلَمْ تَسْمَعُوا مَا قَالَ لُقْمَانُ لِابْنِهِ: {يَا بُنَيَّ لَا تُشْرِكْ بِاللَّهِ إِنَّ الشِّرْكَ لَظُلْمٌ عَظِيمٌ}",
+        "indo": "Tatkala turun ayat 'Orang-orang beriman dan tidak mencampurkan iman mereka dengan kezaliman', para sahabat merasa berat dan bertanya. Rasulullah ﷺ bersabda: 'Bukan seperti yang kalian duga. Tidakkah kalian mendengar perkataan Luqman kepada putranya: Wahai anakku, janganlah mempersekutukan Allah, sesungguhnya syirik adalah kezaliman yang sangat besar.'",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Abdullah bin Mas'ud r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "49:10": [
+      {
+        "arabic": "الْمُسْلِمُ أَخُو الْمُسْلِمِ: لَا يَظْلِمُهُ، وَلَا يَخْذُلُهُ، وَلَا يَحْقِرُهُ... بِحَسْبِ امْرِئٍ مِنَ الشَّرِّ أَنْ يَحْقِرَ أَخَاهُ الْمُسْلِمَ",
+        "indo": "Seorang muslim adalah saudara bagi muslim lainnya: ia tidak boleh menzaliminya, tidak menelantarkannya, dan tidak merendahkannya. Cukuplah seseorang dianggap berbuat keburukan jika ia merendahkan saudaranya sesama muslim.",
+        "source": "HR. Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "49:12": [
+      {
+        "arabic": "إِيَّاكُمْ وَالظَّنَّ، فَإِنَّ الظَّنَّ أَكْذَبُ الْحَدِيثِ، وَلَا تَحَسَّسُوا، وَلَا تَجَسَّسُوا، وَلَا تَنَافَسُوا، وَلَا تَحَاسَدُوا، وَلَا تَبَاغَضُوا، وَكُونُوا عِبَادَ اللَّهِ إِخْوَانًا",
+        "indo": "Jauhilah oleh kalian prasangka buruk (su'udzan), karena prasangka buruk adalah sedusta-dusta perkataan. Janganlah mencari-cari kesalahan orang lain, jangan memata-matai, jangan saling mendengki, dan jadilah kalian hamba-hamba Allah yang bersaudara.",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "55:1": [
+      {
+        "arabic": "قَرَأَ رَسُولُ اللَّهِ ﷺ سُورَةَ الرَّحْمَنِ عَلَى أَصْحَابِهِ فَسَكَتُوا، فَقَالَ: لَقَدْ قَرَأْتُهَا عَلَى الْجِنِّ لَيْلَةَ الْجِنِّ فَكَانُوا أَحْسَنَ مَرْدُودًا مِنْكُمْ، كُنْتُ كُلَّمَا أَتَيْتُ عَلَى قَوْلِهِ: {فَبِأَيِّ آلَاءِ رَبِّكُمَا تُكَذِّبَانِ} قَالُوا: لَا بِشَيْءٍ مِنْ نِعَمِكَ رَبَّنَا نُكَذِّبُ فَلَكَ الْحَمْدُ",
+        "indo": "Rasulullah ﷺ membacakan Surah Ar-Rahman kepada para sahabat namun mereka terdiam. Beliau bersabda: 'Sungguh aku telah membacakannya kepada kaum jin pada malam jin, dan mereka lebih baik jawabannya daripada kalian. Setiap kali aku membaca ayat: Fabi-ayyi ala-i Rabbikuma tukadzdziban, mereka menjawab: Tidak ada satu pun dari nikmat-Mu wahai Rabb kami yang kami dustakan, bagi-Mu segala puji.'",
+        "source": "HR. Tirmidzi & Al-Hakim",
+        "narrator": "Jabir bin Abdullah r.a.",
+        "grade": "Hadis Hasan"
+      }
+    ],
+    "94:5": [
+      {
+        "arabic": "لَنْ يَغْلِبَ عُسْرٌ يُسْرَيْنِ",
+        "indo": "Satu kesulitan tidak akan pernah mampu mengalahkan dua kemudahan (karena kata al-'usr menggunakan makrifah/tunggal, sedangkan yusra menggunakan nakirah/berulang).",
+        "source": "HR. Al-Hakim & Al-Baihaqi",
+        "narrator": "Abdullah bin Abbas r.a.",
+        "grade": "Hadis Hasan"
+      }
+    ],
+    "97:1": [
+      {
+        "arabic": "تَحَرَّوْا لَيْلَةَ الْقَدْرِ فِي الْوِتْرِ مِنَ الْعَشْرِ الْأَوَاخِرِ مِنْ رَمَضَانَ",
+        "indo": "Carilah Lailatul Qadar pada malam-malam ganjil di sepuluh malam terakhir bulan Ramadhan.",
+        "source": "HR. Bukhari",
+        "narrator": "Aisyah r.a.",
+        "grade": "Hadis Sahih"
+      },
+      {
+        "arabic": "مَنْ قَامَ لَيْلَةَ الْقَدْرِ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ",
+        "indo": "Barangsiapa mendirikan shalat pada malam Lailatul Qadar karena iman dan mengharap pahala dari Allah, niscaya diampuni dosa-dosanya yang telah lalu.",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Abu Hurairah r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ],
+    "103:1": [
+      {
+        "arabic": "كَانَ الرَّجُلَانِ مِنْ أَصْحَابِ النَّبِيِّ ﷺ إِذَا الْتَقَيَا لَمْ يَفْتَرِقَا حَتَّى يَقْرَأَ أَحَدُهُمَا عَلَى الْآخَرِ: {وَالْعَصْرِ إِنَّ الْإِنْسَانَ لَفِي خُسْرٍ} ثُمَّ يُسَلِّمَ أَحَدُهُمَا عَلَى الْآخَرِ",
+        "indo": "Dahulu dua orang sahabat Nabi ﷺ apabila bertemu tidak akan berpisah hingga salah satu dari mereka membacakan Surah Al-'Ashr kepada yang lain, kemudian salah satunya mengucapkan salam kepada yang lain.",
+        "source": "HR. Ath-Thabrani (Al-Mu'jam Al-Ausath)",
+        "narrator": "Abu Madinah Ad-Darimi r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "108:1": [
+      {
+        "arabic": "الْكَوْثَرُ نَهْرٌ أَعْطَانِيهِ رَبِّي فِي الْجَنَّةِ، عَلَيْهِ خَيْرٌ كَثِيرٌ، حَوْضٌ تَرِدُ عَلَيْهِ أُمَّتِي يَوْمَ الْقِيَامَةِ، آنِيَتُهُ عَدَدَ النُّجُومِ",
+        "indo": "Al-Kautsar adalah sungai yang diberikan Rabbku kepadaku di surga, di dalamnya terdapat kebaikan yang amat banyak. Dan itu adalah telaga yang akan didatangi oleh umatku pada hari kiamat, bejananya sebanyak bintang di langit.",
+        "source": "HR. Muslim",
+        "narrator": "Anas bin Malik r.a.",
+        "grade": "Hadis Sahih"
+      }
+    ],
+    "110:1": [
+      {
+        "arabic": "كَانَ رَسُولُ اللَّهِ ﷺ يُكْثِرُ أَنْ يَقُولَ فِي رُكُوعِهِ وَسُجُودِهِ: {سُبْحَانَكَ اللَّهُمَّ رَبَّنَا وَبِحَمْدِكَ اللَّهُمَّ اغْفِرْ لِي} يَتَأَوَّلُ الْقُرْآنَ",
+        "indo": "Rasulullah ﷺ memperbanyak membaca dalam ruku' dan sujudnya: 'Subhanakallahumma rabbana wa bihamdika Allahummaghfirli' (Maha Suci Engkau ya Allah, Rabb kami, dan dengan memuji-Mu ya Allah ampunilah dosaku) sebagai pengamalan dari Surah An-Nasr.",
+        "source": "HR. Bukhari & Muslim",
+        "narrator": "Aisyah r.a.",
+        "grade": "Muttafaqun 'Alaih (Sahih)"
+      }
+    ]
+  },
+  "hadis_by_surah": {
+    "1": {
+      "title": "Keutamaan Surah Al-Fatihah (Ummul Qur'an & Ruqyah)",
+      "arabic": "أَعْظَمُ سُورَةٍ فِي الْقُرْآنِ: {الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ}",
+      "indo": "Rasulullah ﷺ bersabda kepada Abu Sa'id bin Al-Mu'alla: 'Aku akan mengajarkan kepadamu surah yang paling agung dalam Al-Qur'an sebelum engkau keluar dari masjid: Alhamdulillahi Rabbil 'Alamin.'",
+      "source": "HR. Bukhari No. 4474",
+      "narrator": "Abu Sa'id bin Al-Mu'alla r.a.",
+      "grade": "Hadis Sahih"
+    },
+    "2": {
+      "title": "Keutamaan Surah Al-Baqarah",
+      "arabic": "اقْرَءُوا سُورَةَ الْبَقَرَةِ، فَإِنَّ أَخْذَهَا بَرَكَةٌ، وَتَرْكَهَا حَسْرَةٌ، وَلَا تَسْتَطِيعُهَا الْبَطَلَةُ",
+      "indo": "Bacalah Surah Al-Baqarah, karena sesungguhnya mengambilnya adalah keberkahan, meninggalkannya adalah kerugian, dan tukang sihir tidak mampu menghadapinya.",
+      "source": "HR. Muslim No. 804",
+      "narrator": "Abu Umamah Al-Bahili r.a.",
+      "grade": "Hadis Sahih"
+    },
+    "3": {
+      "title": "Keutamaan Dua Surah Penuh Cahaya (Az-Zahrawan)",
+      "arabic": "اقْرَءُوا الزَّهْرَاوَيْنِ: الْبَقَرَةَ وَسُورَةَ آلِ عِمْرَانَ، فَإِنَّهُمَا تَأْتِيَانِ يَوْمَ الْقِيَامَةِ كَأَنَّهُمَا غَمَامَتَانِ تُحَاجَّانِ عَنْ أَصْحَابِهِمَا",
+      "indo": "Bacalah dua surah yang bercahaya: Al-Baqarah dan Ali 'Imran, karena keduanya akan datang pada hari kiamat laksana dua kelompok awan yang membela para pembacanya.",
+      "source": "HR. Muslim No. 804",
+      "narrator": "An-Nawwas bin Sam'an r.a.",
+      "grade": "Hadis Sahih"
+    },
+    "4": {
+      "title": "Tadabur Surah An-Nisa'",
+      "arabic": "اقْرَأْ عَلَيَّ الْقُرْآنَ... فَقَرَأْتُ عَلَيْهِ سُورَةَ النِّسَاءِ حَتَّى جِئْتُ إِلَى هَذِهِ الآيَةِ... فَرَأَيْتُ عَيْنَيْهِ تَذْرِفَانِ",
+      "indo": "Ibnu Mas'ud membacakan Surah An-Nisa kepada Nabi ﷺ. Ketika sampai pada ayat 41, Rasulullah ﷺ bersabda 'Cukuplah', dan air mata beliau berlinang deras terharu mentadaburinya.",
+      "source": "HR. Bukhari No. 5050",
+      "narrator": "Abdullah bin Mas'ud r.a.",
+      "grade": "Hadis Sahih"
+    },
+    "5": {
+      "title": "Turunnya Ayat Kesempurnaan Islam (Al-Ma'idah: 3)",
+      "arabic": "قَدْ عَرَفْنَا ذَلِكَ الْيَوْمَ وَالْمَكَانَ الَّذِي نَزَلَتْ فِيهِ عَلَى النَّبِيِّ ﷺ: يَوْمَ عَرَفَةَ فِي يَوْمِ جُمُعَةٍ",
+      "indo": "Ayat kesempurnaan agama Islam (QS. Al-Ma'idah: 3) turun pada hari Jumat di padang Arafah saat Haji Wada', hari yang paling agung.",
+      "source": "HR. Bukhari No. 45",
+      "narrator": "Umar bin Al-Khattab r.a.",
+      "grade": "Hadis Sahih"
+    },
+    "6": {
+      "title": "Keagungan Surah Al-An'am",
+      "arabic": "نَزَلَتْ سُورَةُ الْأَنْعَامِ جُمْلَةً وَاحِدَةً يُشَيِّعُهَا سَبْعُونَ أَلْفَ مَلَكٍ",
+      "indo": "Surah Al-An'am diturunkan sekaligus diiringi oleh tujuh puluh ribu malaikat yang bertasbih memuji Allah.",
+      "source": "HR. Al-Hakim & Al-Baihaqi",
+      "narrator": "Abdullah bin Abbas r.a.",
+      "grade": "Hadis Hasan"
+    },
+    "18": {
+      "title": "Cahaya dan Pelindung Fitnah Dajjal",
+      "arabic": "مَنْ قَرَأَ سُورَةَ الْكَهْفِ كَمَا أُنْزِلَتْ كَانَتْ لَهُ نُورًا يَوْمَ الْقِيَامَةِ",
+      "indo": "Barangsiapa membaca Surah Al-Kahf sebagaimana diturunkan, ia akan memperoleh cahaya penerang baginya pada hari kiamat.",
+      "source": "HR. An-Nasai & Al-Hakim",
+      "narrator": "Abu Sa'id Al-Khudri r.a.",
+      "grade": "Hadis Sahih"
+    },
+    "36": {
+      "title": "Hati dan Inti Al-Qur'an (Surah Ya-Sin)",
+      "arabic": "إِنَّ لِكُلِّ شَيْءٍ قَلْبًا، وَقَلْبُ الْقُرْآنِ يس",
+      "indo": "Sesungguhnya setiap sesuatu memiliki hati, dan hatinya Al-Qur'an adalah Surah Ya-Sin.",
+      "source": "HR. Tirmidzi & Ad-Darimi",
+      "narrator": "Anas bin Malik r.a.",
+      "grade": "Hadis Masyhur"
+    },
+    "55": {
+      "title": "Pengantin Al-Qur'an (Surah Ar-Rahman)",
+      "arabic": "لِكُلِّ شَيْءٍ عَرُوسٌ، وَعَرُوسُ الْقُرْآنِ الرَّحْمَنُ",
+      "indo": "Segala sesuatu memiliki pengantin yang elok, dan pengantin Al-Qur'an adalah Surah Ar-Rahman.",
+      "source": "HR. Al-Baihaqi",
+      "narrator": "Ali bin Abi Thalib r.a.",
+      "grade": "Hadis Hasan"
+    },
+    "56": {
+      "title": "Keutamaan Surah Al-Waqi'ah",
+      "arabic": "مَنْ قَرَأَ سُورَةَ الْوَاقِعَةِ كُلَّ لَيْلَةٍ لَمْ تُصِبْهُ فَاقَةٌ أَبَدًا",
+      "indo": "Barangsiapa membaca Surah Al-Waqi'ah pada setiap malam, niscaya ia tidak akan ditimpa kefakiran (kemiskinan) selama-lamanya.",
+      "source": "HR. Al-Baihaqi",
+      "narrator": "Abdullah bin Mas'ud r.a.",
+      "grade": "Hadis Hasan"
+    },
+    "67": {
+      "title": "Penyelamat Siksa Kubur (Surah Al-Mulk)",
+      "arabic": "هِيَ الْمَانِعَةُ، هِيَ الْمُنْجِيَةُ، تُنْجِيهِ مِنْ عَذَابِ الْقَبْرِ",
+      "indo": "Surah Al-Mulk adalah pencegah, ia adalah penyelamat yang menyelamatkan pembacanya dari siksa kubur.",
+      "source": "HR. Tirmidzi No. 2890",
+      "narrator": "Abdullah bin Abbas r.a.",
+      "grade": "Hadis Sahih"
+    },
+    "112": {
+      "title": "Surah Al-Ikhlas: Sepertiga Al-Qur'an",
+      "arabic": "أَيَعْجِزُ أَحَدُكُمْ أَنْ يَقْرَأَ فِي لَيْلَةٍ ثُلُثَ الْقُرْآنِ؟ قَالُوا: وَكَيْفَ؟ قَالَ: {قُلْ هُوَ اللَّهُ أَحَدٌ} تَعْدِلُ ثُلُثَ الْقُرْآنِ",
+      "indo": "Apakah salah seorang dari kalian merasa lemah untuk membaca sepertiga Al-Qur'an dalam satu malam? Sahabat bertanya: 'Bagaimana caranya?' Rasulullah bersabda: 'Qul Huwallahu Ahad sebanding dengan sepertiga Al-Qur'an.'",
+      "source": "HR. Bukhari & Muslim",
+      "narrator": "Abu Darda r.a.",
+      "grade": "Muttafaqun 'Alaih (Sahih)"
+    },
+    "113": {
+      "title": "Al-Mu'awwidzatain: Perlindungan Terbaik",
+      "arabic": "مَا تَعَوَّذَ الْمُتَعَوِّذُونَ بِمِثْلِهِمَا",
+      "indo": "Tidak ada perlindungan yang digunakan oleh orang-orang yang memohon perlindungan yang melebihi kedua surah ini (Al-Falaq dan An-Nas).",
+      "source": "HR. Abu Dawud & An-Nasai",
+      "narrator": "Uqbah bin Amir r.a.",
+      "grade": "Hadis Sahih"
+    },
+    "114": {
+      "title": "Pelindung Dari Bisikan Setan dan Jin",
+      "arabic": "كَانَ رَسُولُ اللَّهِ ﷺ يَتَعَوَّذُ مِنَ الْجَانِّ وَعَيْنِ الْإِنْسَانِ حَتَّى نَزَلَتِ الْمُعَوِّذَتَانِ",
+      "indo": "Dahulu Rasulullah ﷺ senantiasa memohon perlindungan dari gangguan jin dan pandangan jahat manusia ('ain), hingga turun kedua surah perlindungan ini (Al-Falaq dan An-Nas).",
+      "source": "HR. Tirmidzi & Ibnu Majah",
+      "narrator": "Abu Sa'id Al-Khudri r.a.",
+      "grade": "Hadis Sahih"
+    }
+  },
+  "general_hadis": [
+    {
+      "title": "Keutamaan Mempelajari dan Mengajarkan Al-Qur'an",
+      "arabic": "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ",
+      "indo": "Sebaik-baik kalian adalah orang yang mempelajari Al-Qur'an dan mengajarkannya.",
+      "source": "HR. Bukhari No. 5027",
+      "narrator": "Utsman bin Affan r.a.",
+      "grade": "Hadis Sahih"
+    },
+    {
+      "title": "Pahala Membaca Setiap Huruf Al-Qur'an",
+      "arabic": "مَنْ قَرَأَ حَرْفًا مِنْ كِتَابِ اللَّهِ فَلَهُ بِهِ حَسَنَةٌ، وَالْحَسَنَةُ بِعَشْرِ أَمْثَالِهَا",
+      "indo": "Barangsiapa membaca satu huruf dari Kitabullah (Al-Qur'an), maka baginya satu kebaikan, dan satu kebaikan dilipatgandakan sepuluh kali lipat semisalnya.",
+      "source": "HR. Tirmidzi No. 2910",
+      "narrator": "Abdullah bin Mas'ud r.a.",
+      "grade": "Hadis Sahih"
+    },
+    {
+      "title": "Al-Qur'an Sebagai Penenang dan Rahmat",
+      "arabic": "مَا اجْتَمَعَ قَوْمٌ فِي بَيْتٍ مِنْ بُيُوتِ اللَّهِ يَتْلُونَ كِتَابَ اللَّهِ... إِلَّا نَزَلَتْ عَلَيْهِمُ السَّكِينَةُ وَغَشِيَتْهُمُ الرَّحْمَةُ",
+      "indo": "Tidaklah suatu kaum berkumpul di salah satu rumah Allah membaca Kitabullah dan saling mempelajarinya di antara mereka, melainkan ketenteraman akan turun kepada mereka, rahmat menyelimuti mereka, dan malaikat menaungi mereka.",
+      "source": "HR. Muslim No. 2699",
+      "narrator": "Abu Hurairah r.a.",
+      "grade": "Hadis Sahih"
+    }
+  ]
+}

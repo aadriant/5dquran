@@ -1,0 +1,38 @@
+# Android build & local configs
+.gradle/
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+android/.idea/
+android/*.iml
+android/app/*.iml
+android/.cxx/
+android/.externalNativeBuild/
+
+# APK and AAB binaries
+*.apk
+*.aab
+*.ap_
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Platform tools download
+platform-tools/
+platform-tools.zip
+
+# Backup and temporary scratch files
+*.bak*
+*.tmp
+scratch/
+scratch_*
+*.log
+
+# OS & Editor generated files
+.DS_Store
+Thumbs.db
+.vscode/

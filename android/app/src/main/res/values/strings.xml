@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">5D Quran</string>
+    <string name="title_activity_main">5D Quran</string>
+    <string name="app_version">Versi 1.0.1</string>
+    <string name="app_tagline">5 Dimensi Interaksi dengan Al-Qur\'an</string>
+    <string name="search_hint">Cari nama surah atau nomor...</string>
+    <string name="filter_all">Semua (114)</string>
+    <string name="filter_makkiyah">Makkiyah</string>
+    <string name="filter_madaniyah">Madaniyah</string>
+    
+    <!-- 5D Labels -->
+    <string name="dim_dibaca">Dibaca</string>
+    <string name="dim_didengar">Didengar</string>
+    <string name="dim_dihafal">Dihafal</string>
+    <string name="dim_ditulis">Ditulis</string>
+    <string name="dim_dipelajari">Dipelajari</string>
+</resources>

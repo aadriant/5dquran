@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="14dp"
+    android:paddingVertical="5dp">
+
+    <!-- USER BUBBLE (RIGHT ALIGNED) -->
+    <LinearLayout
+        android:id="@+id/layout_user_bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginStart="40dp"
+        android:background="@drawable/bg_card_surah"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Category Chip for user report -->
+        <TextView
+            android:id="@+id/tv_user_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip_action"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:text="💡 Ide Usulan"
+            android:textColor="@color/cyan_accent"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <!-- User Message Text -->
+        <TextView
+            android:id="@+id/tv_user_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingMultiplier="1.2"
+            android:text="Pesan dari pengguna..."
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
+
+        <!-- User Timestamp & Sync Status -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_user_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="14:20"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tv_user_sync_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="✓✓"
+                android:textColor="@color/emerald"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ADMIN / DEVELOPER REPLY BUBBLE (LEFT ALIGNED) -->
+    <LinearLayout
+        android:id="@+id/layout_admin_bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginEnd="40dp"
+        android:background="@drawable/bg_card_surah"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Admin Sender Label -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="6dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👤 "
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/tv_admin_sender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tim Pengembang 5D Quran"
+                android:textColor="@color/gold_primary"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Admin Message Text -->
+        <TextView
+            android:id="@+id/tv_admin_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingMultiplier="1.2"
+            android:text="Wa'alaikumussalam. Terima kasih banyak atas masukannya..."
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
+
+        <!-- Admin Timestamp -->
+        <TextView
+            android:id="@+id/tv_admin_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="6dp"
+            android:text="14:25"
+            android:textColor="@color/text_muted"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+</LinearLayout>

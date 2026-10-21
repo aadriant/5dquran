@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="5D Quran — Aplikasi Al-Quran Digital: Dibaca, Didengarkan, Dihafal, Ditulis, Dipelajari. Tadabur Al-Quran secara lengkap dan mendalam." />
+  <meta name="theme-color" content="#0d0d1a" />
+  <title>5D Quran — Dibaca, Didengarkan, Dihafal, Ditulis, Dipelajari</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Amiri+Quran&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.webp" />
+  <link rel="icon" type="image/webp" href="assets/icons/icon-96.webp" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="5D Quran" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="application-name" content="5D Quran" />
+</head>
+<body>
+
+  <!-- BACKGROUND PARTICLES -->
+  <div class="bg-particles" aria-hidden="true">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header" id="top">
+    <div class="header-inner">
+      <a href="index.html" class="logo" id="logo-link">
+        <div class="logo-icon">
+          <img src="assets/icon.jpg" alt="5D Quran" width="40" height="40" style="border-radius:10px;object-fit:cover;box-shadow:0 0 10px rgba(212,168,83,0.35)">
+        </div>
+        <div class="logo-text">
+          <span class="logo-main">5D<em>Quran</em></span>
+          <span class="logo-sub">Dibaca · Didengarkan · Dihafal · Ditulis · Dipelajari</span>
+        </div>
+      </a>
+      <nav class="header-nav" id="header-nav">
+        <a href="#" class="nav-link active" id="nav-home">Beranda</a>
+        <a href="hafalan.html" class="nav-link" id="nav-hafalan">&#x1F3A4; Setoran Hafalan</a>
+      </nav>
+      <div class="header-actions-inline">
+        <a href="profil.html" class="action-btn" id="btn-profil" title="Profil">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
+          <span id="btn-profil-teks">Masuk</span>
+        </a>
+        <button class="action-btn" id="btn-about" title="Tentang aplikasi" onclick="showAbout()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>Tentang</span>
+        </button>
+        <button class="action-btn" id="btn-setting" title="Pengaturan" onclick="showSettings()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Setting</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- SEARCH BAR -->
+  <div class="search-container" id="search-section">
+    <div class="search-inner">
+      <div class="search-box" id="search-box">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="search-input" placeholder="Cari nama surat..." autocomplete="off" aria-label="Cari surat" />
+        <button class="clear-btn" id="clear-search" aria-label="Hapus pencarian" style="display:none">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="main-content">
+
+    <!-- LANJUTKAN: BACA / TULIS / HAFALAN -->
+    <section class="lanjut-section" id="lanjut-section" style="display:none">
+      <h2 class="lanjut-title">▶️ Lanjutkan</h2>
+      <div class="lanjut-grid" id="lanjut-grid"></div>
+    </section>
+
+    <!-- SURAT FAVORIT -->
+    <section class="fav-section" id="fav-section" style="display:none">
+      <h2 class="fav-title">⭐ Surat Pilihan</h2>
+      <div class="fav-grid" id="fav-grid"></div>
+    </section>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar" id="stats-bar">
+      <div class="stat-item">
+        <span class="stat-num" id="stat-total">114</span>
+        <span class="stat-label">Surat</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">6,236</span>
+        <span class="stat-label">Ayat</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num" id="stat-shown">—</span>
+        <span class="stat-label">Ditampilkan</span>
+      </div>
+    </div>
+
+    <!-- LOADING STATE -->
+    <div class="loading-state" id="loading-state">
+      <div class="loader-ring">
+        <div></div><div></div><div></div><div></div>
+      </div>
+      <p>Memuat daftar surat...</p>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div class="error-state" id="error-state" style="display:none">
+      <div class="error-icon">⚠️</div>
+      <h3>Gagal Memuat Data</h3>
+      <p>Periksa koneksi internet Anda dan coba lagi.</p>
+      <button class="btn-retry" id="btn-retry" onclick="loadSurahs()">Coba Lagi</button>
+    </div>
+
+    <!-- SURAH GRID -->
+    <div class="surah-grid" id="surah-grid" role="list" aria-label="Daftar surat Al-Quran" style="display:none"></div>
+
+    <!-- NO RESULT -->
+    <div class="no-result" id="no-result" style="display:none">
+      <div class="no-result-icon">🔍</div>
+      <h3>Surat tidak ditemukan</h3>
+      <p>Coba kata kunci lain atau ubah filter.</p>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="footer-logo-text">5D<em>Quran</em></span>
+        <span class="footer-tagline">Dibaca · Didengarkan · Dihafal · Ditulis · Dipelajari</span>
+      </div>
+      <p class="footer-copy">Data Al-Quran dari <a href="https://alquran.cloud" target="_blank" rel="noopener">AlQuran.cloud API</a></p>
+      <p class="footer-copy">© 2026 5D Quran. Semoga bermanfaat.</p>
+      <p class="footer-amal">🤲 Semoga sebagai amal jariyah — <strong>Ari Adrianto</strong> @2026</p>
+    </div>
+  </footer>
+
+  <!-- SCROLL TO TOP -->
+  <button class="scroll-top" id="scroll-top" aria-label="Kembali ke atas" style="display:none">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

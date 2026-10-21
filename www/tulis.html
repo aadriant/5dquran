@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tulis dan latih tulisan Al-Quranmu ayat per ayat di 5D Quran." />
+  <meta name="theme-color" content="#0d0d1a" />
+  <title>5D Quran — Latihan Menulis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Amiri+Quran&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/tulis.css" />
+</head>
+<body class="tulis-page">
+
+  <div class="bg-particles" aria-hidden="true">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header" id="top">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <img src="assets/icon.jpg" alt="5D Quran" width="36" height="36" style="border-radius:9px;object-fit:cover;box-shadow:0 0 10px rgba(212,168,83,0.35)">
+        </div>
+        <div class="logo-text">
+          <span class="logo-main">5D<em>Quran</em></span>
+          <span class="logo-sub">✍️ Latihan Menulis</span>
+        </div>
+      </a>
+      <div class="tulis-header-right">
+        <a href="index.html" class="action-btn" id="btn-back-home" title="Kembali ke Daftar Surat">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Beranda
+        </a>
+        <a href="#" class="action-btn" id="btn-back-surah" style="background:rgba(212,168,83,0.12);border-color:rgba(212,168,83,0.35);color:var(--gold-400);font-weight:600">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+          Kembali ke Baca Surat
+        </a>
+        <button class="action-btn" id="btn-download-all" title="Unduh semua tulisan">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Unduh Semua
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb-bar" id="breadcrumb-bar">
+    <div class="breadcrumb-inner" style="max-width:900px;margin:0 auto;display:flex;align-items:center;gap:0.5rem;font-size:0.84rem;color:var(--text-muted)">
+      <a href="index.html" class="bc-link" style="color:var(--text-muted);text-decoration:none">Beranda</a>
+      <span class="bc-sep">›</span>
+      <a href="#" class="bc-link" id="bc-surah" style="color:var(--gold-400);text-decoration:none;font-weight:600">Surat</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current" id="bc-current" style="color:var(--text-secondary)">✍️ Latihan Menulis Ayat 1</span>
+    </div>
+  </div>
+
+  <!-- SURAH INFO BAR -->
+  <div class="tulis-info-bar" id="tulis-info-bar">
+    <div class="tulis-info-inner">
+      <div class="ti-surah-info" id="ti-surah-info">
+        <span class="ti-loading">Memuat...</span>
+      </div>
+      <div class="ti-progress" id="ti-progress" style="display:none">
+        <span class="ti-ayat-label">Ayat</span>
+        <span class="ti-ayat-num" id="ti-ayat-num">1</span>
+        <span class="ti-ayat-of">dari</span>
+        <span class="ti-ayat-total" id="ti-ayat-total">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN WRITING AREA -->
+  <main class="tulis-main" id="tulis-main">
+
+    <!-- LOADING -->
+    <div class="tulis-loading" id="tulis-loading">
+      <div class="loader-ring"><div></div><div></div><div></div><div></div></div>
+      <p>Memuat ayat...</p>
+    </div>
+
+    <!-- WRITING PANEL -->
+    <div class="tulis-panel" id="tulis-panel" style="display:none">
+
+      <!-- REFERENCE AYAT -->
+      <div class="ref-section" id="ref-section">
+        <div class="ref-header">
+          <div class="ref-badge" id="ref-badge">Ayat 1</div>
+          <label class="toggle-ref" id="toggle-ref-label">
+            <input type="checkbox" id="toggle-ref" checked />
+            <span class="toggle-track">
+              <span class="toggle-thumb"></span>
+            </span>
+            <span class="toggle-text">Tampilkan contoh</span>
+          </label>
+        </div>
+        <div class="ref-arabic-wrap" id="ref-arabic-wrap">
+          <div class="ref-arabic" id="ref-arabic" dir="rtl">—</div>
+          <div class="ref-transliteration" id="ref-trans" style="display:none">—</div>
+        </div>
+        <!-- Muncul bila contoh disembunyikan (mode tanpa contoh) -->
+        <div class="tanpa-contoh-note" id="tanpa-contoh-note" style="display:none">
+          🙈 Mode <strong>Tanpa Contoh</strong> — ketik ayat dari hafalan Anda.
+          <button type="button" class="tc-show" id="btn-uncover">Tampilkan contoh sekali</button>
+        </div>
+      </div>
+
+      <!-- AREA MENGETIK (keyboard Arab) -->
+      <div class="notebook-section">
+        <div class="notebook-header">
+          <span class="notebook-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 16h10"/></svg>
+            Ketik Ayat (Keyboard Arab)
+          </span>
+          <div class="notebook-actions">
+            <button class="nb-btn nb-check" id="btn-check" title="Periksa ketikan dengan ayat">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg>
+              Periksa
+            </button>
+            <button class="nb-btn nb-clear" id="btn-clear" title="Hapus tulisan">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              Hapus
+            </button>
+            <button class="nb-btn nb-save" id="btn-save" title="Simpan tulisan">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Simpan
+            </button>
+          </div>
+        </div>
+        <div class="notebook-paper" id="notebook-paper">
+          <textarea
+            id="writing-area"
+            class="writing-textarea"
+            placeholder="Ketik ayat di sini dengan keyboard Arab..."
+            spellcheck="false"
+            dir="rtl"
+            rows="8"
+          ></textarea>
+        </div>
+        <div class="keyboard-warn" id="keyboard-warn" style="display:none">
+          <span>⚠️ Keyboard Arab belum aktif di perangkat ini.</span>
+          <button type="button" id="btn-pasang-kb">Cara pasang keyboard Arab</button>
+        </div>
+        <div class="save-status" id="save-status"></div>
+      </div>
+
+      <!-- HASIL PERIKSA TULISAN -->
+      <div class="tulis-check" id="check-panel" style="display:none">
+        <div class="tc-head">
+          <span class="tc-title" id="tc-title">Hasil Periksa</span>
+          <span class="tc-score" id="tc-score">—</span>
+        </div>
+        <div class="tc-stats" id="tc-stats"></div>
+        <div class="tc-diff" id="tc-diff" dir="rtl"></div>
+      </div>
+
+      <!-- NAVIGATION BUTTONS -->
+      <div class="tulis-nav">
+        <button class="tulis-nav-btn" id="btn-tulis-prev" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+          Ayat Sebelumnya
+        </button>
+
+        <div class="ayat-picker-wrap">
+          <span class="ayat-picker-label">Lompat ke Ayat:</span>
+          <select id="ayat-picker" class="ayat-picker"></select>
+        </div>
+
+        <button class="tulis-nav-btn tulis-nav-next" id="btn-tulis-next">
+          Ayat Selanjutnya
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- SAVED HISTORY FOR THIS AYAT -->
+      <div class="saved-history" id="saved-history" style="display:none">
+        <div class="sh-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Riwayat Tersimpan
+        </div>
+        <div class="sh-content" id="sh-history-content"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="footer-logo-text">5D<em>Quran</em></span>
+        <span class="footer-tagline">Dibaca · Didengarkan · Dihafal · Ditulis · Dipelajari</span>
+      </div>
+      <p class="footer-copy">Data Al-Quran dari <a href="https://alquran.cloud" target="_blank" rel="noopener">AlQuran.cloud API</a></p>
+      <p class="footer-amal">🤲 Semoga sebagai amal jariyah — <strong>Ari Adrianto</strong> @2026</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="js/auth.js"></script>
+  <script src="js/tulis.js"></script>
+</body>
+</html>

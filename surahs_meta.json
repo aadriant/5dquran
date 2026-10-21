@@ -1,0 +1,914 @@
+[
+  {
+    "number": 1,
+    "name": "الفاتحة",
+    "englishName": "Al-Fatihah",
+    "englishNameTranslation": "Pembukaan",
+    "numberOfAyahs": 7,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 2,
+    "name": "البقرة",
+    "englishName": "Al-Baqarah",
+    "englishNameTranslation": "Sapi Betina",
+    "numberOfAyahs": 286,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 3,
+    "name": "آل عمران",
+    "englishName": "Ali 'Imran",
+    "englishNameTranslation": "Keluarga Imran",
+    "numberOfAyahs": 200,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 4,
+    "name": "النساء",
+    "englishName": "An-Nisa",
+    "englishNameTranslation": "Wanita",
+    "numberOfAyahs": 176,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 5,
+    "name": "المائدة",
+    "englishName": "Al-Ma'idah",
+    "englishNameTranslation": "Jamuan (Hidangan Makanan)",
+    "numberOfAyahs": 120,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 6,
+    "name": "الأنعام",
+    "englishName": "Al-An'am",
+    "englishNameTranslation": "Binatang Ternak",
+    "numberOfAyahs": 165,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 7,
+    "name": "الأعراف",
+    "englishName": "Al-A'raf",
+    "englishNameTranslation": "Tempat-tempat Tinggi",
+    "numberOfAyahs": 206,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 8,
+    "name": "الأنفال",
+    "englishName": "Al-Anfal",
+    "englishNameTranslation": "Rampasan Perang",
+    "numberOfAyahs": 75,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 9,
+    "name": "التوبة",
+    "englishName": "At-Tawbah",
+    "englishNameTranslation": "Pengampunan",
+    "numberOfAyahs": 129,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 10,
+    "name": "يونس",
+    "englishName": "Yunus",
+    "englishNameTranslation": "Yunus",
+    "numberOfAyahs": 109,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 11,
+    "name": "هود",
+    "englishName": "Hud",
+    "englishNameTranslation": "Hud",
+    "numberOfAyahs": 123,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 12,
+    "name": "يوسف",
+    "englishName": "Yusuf",
+    "englishNameTranslation": "Yusuf",
+    "numberOfAyahs": 111,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 13,
+    "name": "الرعد",
+    "englishName": "Ar-Ra'd",
+    "englishNameTranslation": "Guruh (Petir)",
+    "numberOfAyahs": 43,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 14,
+    "name": "ابراهيم",
+    "englishName": "Ibrahim",
+    "englishNameTranslation": "Ibrahim",
+    "numberOfAyahs": 52,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 15,
+    "name": "الحجر",
+    "englishName": "Al-Hijr",
+    "englishNameTranslation": "Bukit",
+    "numberOfAyahs": 99,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 16,
+    "name": "النحل",
+    "englishName": "An-Nahl",
+    "englishNameTranslation": "Lebah Madu",
+    "numberOfAyahs": 128,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 17,
+    "name": "الإسراء",
+    "englishName": "Al-Isra",
+    "englishNameTranslation": "Perjalanan Malam",
+    "numberOfAyahs": 111,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 18,
+    "name": "الكهف",
+    "englishName": "Al-Kahf",
+    "englishNameTranslation": "Para Penghuni Gua",
+    "numberOfAyahs": 110,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 19,
+    "name": "مريم",
+    "englishName": "Maryam",
+    "englishNameTranslation": "Maryam",
+    "numberOfAyahs": 98,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 20,
+    "name": "طه",
+    "englishName": "Taha",
+    "englishNameTranslation": "Tha-Ha",
+    "numberOfAyahs": 135,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 21,
+    "name": "الأنبياء",
+    "englishName": "Al-Anbya",
+    "englishNameTranslation": "Para Nabi",
+    "numberOfAyahs": 112,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 22,
+    "name": "الحج",
+    "englishName": "Al-Hajj",
+    "englishNameTranslation": "Haji",
+    "numberOfAyahs": 78,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 23,
+    "name": "المؤمنون",
+    "englishName": "Al-Mu'minun",
+    "englishNameTranslation": "Orang-orang Mukmin",
+    "numberOfAyahs": 118,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 24,
+    "name": "النور",
+    "englishName": "An-Nur",
+    "englishNameTranslation": "Cahaya",
+    "numberOfAyahs": 64,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 25,
+    "name": "الفرقان",
+    "englishName": "Al-Furqan",
+    "englishNameTranslation": "Pembeda",
+    "numberOfAyahs": 77,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 26,
+    "name": "الشعراء",
+    "englishName": "Ash-Shu'ara",
+    "englishNameTranslation": "Penyair",
+    "numberOfAyahs": 227,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 27,
+    "name": "النمل",
+    "englishName": "An-Naml",
+    "englishNameTranslation": "Semut",
+    "numberOfAyahs": 93,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 28,
+    "name": "القصص",
+    "englishName": "Al-Qasas",
+    "englishNameTranslation": "Kisah-kisah",
+    "numberOfAyahs": 88,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 29,
+    "name": "العنكبوت",
+    "englishName": "Al-'Ankabut",
+    "englishNameTranslation": "Laba-laba",
+    "numberOfAyahs": 69,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 30,
+    "name": "الروم",
+    "englishName": "Ar-Rum",
+    "englishNameTranslation": "Bangsa Romawi",
+    "numberOfAyahs": 60,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 31,
+    "name": "لقمان",
+    "englishName": "Luqman",
+    "englishNameTranslation": "Luqman",
+    "numberOfAyahs": 34,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 32,
+    "name": "السجدة",
+    "englishName": "As-Sajdah",
+    "englishNameTranslation": "Sujud",
+    "numberOfAyahs": 30,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 33,
+    "name": "الأحزاب",
+    "englishName": "Al-Ahzab",
+    "englishNameTranslation": "Golongan yang Bersekutu",
+    "numberOfAyahs": 73,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 34,
+    "name": "سبإ",
+    "englishName": "Saba",
+    "englishNameTranslation": "Saba\\'",
+    "numberOfAyahs": 54,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 35,
+    "name": "فاطر",
+    "englishName": "Fatir",
+    "englishNameTranslation": "Pencipta",
+    "numberOfAyahs": 45,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 36,
+    "name": "يس",
+    "englishName": "Ya-Sin",
+    "englishNameTranslation": "Yas Sin",
+    "numberOfAyahs": 83,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 37,
+    "name": "الصافات",
+    "englishName": "As-Saffat",
+    "englishNameTranslation": "Barisan-barisan",
+    "numberOfAyahs": 182,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 38,
+    "name": "ص",
+    "englishName": "Sad",
+    "englishNameTranslation": "Shad",
+    "numberOfAyahs": 88,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 39,
+    "name": "الزمر",
+    "englishName": "Az-Zumar",
+    "englishNameTranslation": "Para Rombongan",
+    "numberOfAyahs": 75,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 40,
+    "name": "غافر",
+    "englishName": "Ghafir",
+    "englishNameTranslation": "Sang Maha Pengampun",
+    "numberOfAyahs": 85,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 41,
+    "name": "فصلت",
+    "englishName": "Fussilat",
+    "englishNameTranslation": "Yang Dijelaskan",
+    "numberOfAyahs": 54,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 42,
+    "name": "الشورى",
+    "englishName": "Ash-Shuraa",
+    "englishNameTranslation": "Musyawarah",
+    "numberOfAyahs": 53,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 43,
+    "name": "الزخرف",
+    "englishName": "Az-Zukhruf",
+    "englishNameTranslation": "Perhiasan",
+    "numberOfAyahs": 89,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 44,
+    "name": "الدخان",
+    "englishName": "Ad-Dukhan",
+    "englishNameTranslation": "Kabut",
+    "numberOfAyahs": 59,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 45,
+    "name": "الجاثية",
+    "englishName": "Al-Jathiyah",
+    "englishNameTranslation": "Yang Bertekuk Lutut",
+    "numberOfAyahs": 37,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 46,
+    "name": "الأحقاف",
+    "englishName": "Al-Ahqaf",
+    "englishNameTranslation": "Bukit-bukir Pasir",
+    "numberOfAyahs": 35,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 47,
+    "name": "محمد",
+    "englishName": "Muhammad",
+    "englishNameTranslation": "Muhammad",
+    "numberOfAyahs": 38,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 48,
+    "name": "الفتح",
+    "englishName": "Al-Fath",
+    "englishNameTranslation": "Kemenangan",
+    "numberOfAyahs": 29,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 49,
+    "name": "الحجرات",
+    "englishName": "Al-Hujurat",
+    "englishNameTranslation": "Kamar-kamar",
+    "numberOfAyahs": 18,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 50,
+    "name": "ق",
+    "englishName": "Qaf",
+    "englishNameTranslation": "Qaf",
+    "numberOfAyahs": 45,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 51,
+    "name": "الذاريات",
+    "englishName": "Adh-Dhariyat",
+    "englishNameTranslation": "Angin yang Menerbangkan",
+    "numberOfAyahs": 60,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 52,
+    "name": "الطور",
+    "englishName": "At-Tur",
+    "englishNameTranslation": "Bukit",
+    "numberOfAyahs": 49,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 53,
+    "name": "النجم",
+    "englishName": "An-Najm",
+    "englishNameTranslation": "Bintang",
+    "numberOfAyahs": 62,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 54,
+    "name": "القمر",
+    "englishName": "Al-Qamar",
+    "englishNameTranslation": "Bulan",
+    "numberOfAyahs": 55,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 55,
+    "name": "الرحمن",
+    "englishName": "Ar-Rahman",
+    "englishNameTranslation": "Yang Maha Pemurah",
+    "numberOfAyahs": 78,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 56,
+    "name": "الواقعة",
+    "englishName": "Al-Waqi'ah",
+    "englishNameTranslation": "Hari Kiamat",
+    "numberOfAyahs": 96,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 57,
+    "name": "الحديد",
+    "englishName": "Al-Hadid",
+    "englishNameTranslation": "Besi",
+    "numberOfAyahs": 29,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 58,
+    "name": "المجادلة",
+    "englishName": "Al-Mujadila",
+    "englishNameTranslation": "Wanita yang Menggugat",
+    "numberOfAyahs": 22,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 59,
+    "name": "الحشر",
+    "englishName": "Al-Hashr",
+    "englishNameTranslation": "Pengusiran",
+    "numberOfAyahs": 24,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 60,
+    "name": "الممتحنة",
+    "englishName": "Al-Mumtahanah",
+    "englishNameTranslation": "Wanita yang Diuji",
+    "numberOfAyahs": 13,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 61,
+    "name": "الصف",
+    "englishName": "As-Saf",
+    "englishNameTranslation": "Barisan",
+    "numberOfAyahs": 14,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 62,
+    "name": "الجمعة",
+    "englishName": "Al-Jumu'ah",
+    "englishNameTranslation": "Hari Jum\\'at",
+    "numberOfAyahs": 11,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 63,
+    "name": "المنافقون",
+    "englishName": "Al-Munafiqun",
+    "englishNameTranslation": "Kaum Munafik",
+    "numberOfAyahs": 11,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 64,
+    "name": "التغابن",
+    "englishName": "At-Taghabun",
+    "englishNameTranslation": "Hari Dinampakkan Kesalahan",
+    "numberOfAyahs": 18,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 65,
+    "name": "الطلاق",
+    "englishName": "At-Talaq",
+    "englishNameTranslation": "Perceraian",
+    "numberOfAyahs": 12,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 66,
+    "name": "التحريم",
+    "englishName": "At-Tahrim",
+    "englishNameTranslation": "Mengharamkan",
+    "numberOfAyahs": 12,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 67,
+    "name": "الملك",
+    "englishName": "Al-Mulk",
+    "englishNameTranslation": "Kerajaan",
+    "numberOfAyahs": 30,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 68,
+    "name": "القلم",
+    "englishName": "Al-Qalam",
+    "englishNameTranslation": "Pena",
+    "numberOfAyahs": 52,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 69,
+    "name": "الحاقة",
+    "englishName": "Al-Haqqah",
+    "englishNameTranslation": "Kenyataan (Hari Kiamat)",
+    "numberOfAyahs": 52,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 70,
+    "name": "المعارج",
+    "englishName": "Al-Ma'arij",
+    "englishNameTranslation": "Tempat yang Naik",
+    "numberOfAyahs": 44,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 71,
+    "name": "نوح",
+    "englishName": "Nuh",
+    "englishNameTranslation": "Nuh",
+    "numberOfAyahs": 28,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 72,
+    "name": "الجن",
+    "englishName": "Al-Jinn",
+    "englishNameTranslation": "Jin",
+    "numberOfAyahs": 28,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 73,
+    "name": "المزمل",
+    "englishName": "Al-Muzzammil",
+    "englishNameTranslation": "Orang yang Berselimut",
+    "numberOfAyahs": 20,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 74,
+    "name": "المدثر",
+    "englishName": "Al-Muddaththir",
+    "englishNameTranslation": "Orang yang Berkemul",
+    "numberOfAyahs": 56,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 75,
+    "name": "القيامة",
+    "englishName": "Al-Qiyamah",
+    "englishNameTranslation": "Hari Berbangkit",
+    "numberOfAyahs": 40,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 76,
+    "name": "الانسان",
+    "englishName": "Al-Insan",
+    "englishNameTranslation": "Manusia",
+    "numberOfAyahs": 31,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 77,
+    "name": "المرسلات",
+    "englishName": "Al-Mursalat",
+    "englishNameTranslation": "Malaikat-malaikan yang Diutus",
+    "numberOfAyahs": 50,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 78,
+    "name": "النبإ",
+    "englishName": "An-Naba",
+    "englishNameTranslation": "Berita Besar",
+    "numberOfAyahs": 40,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 79,
+    "name": "النازعات",
+    "englishName": "An-Nazi'at",
+    "englishNameTranslation": "Malaikat yang Mencabut",
+    "numberOfAyahs": 46,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 80,
+    "name": "عبس",
+    "englishName": "'Abasa",
+    "englishNameTranslation": "Ia Bermuka Masam",
+    "numberOfAyahs": 42,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 81,
+    "name": "التكوير",
+    "englishName": "At-Takwir",
+    "englishNameTranslation": "Menggulung",
+    "numberOfAyahs": 29,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 82,
+    "name": "الإنفطار",
+    "englishName": "Al-Infitar",
+    "englishNameTranslation": "Terbelah",
+    "numberOfAyahs": 19,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 83,
+    "name": "المطففين",
+    "englishName": "Al-Mutaffifin",
+    "englishNameTranslation": "Orang-orang Curang",
+    "numberOfAyahs": 36,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 84,
+    "name": "الإنشقاق",
+    "englishName": "Al-Inshiqaq",
+    "englishNameTranslation": "Terbelah",
+    "numberOfAyahs": 25,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 85,
+    "name": "البروج",
+    "englishName": "Al-Buruj",
+    "englishNameTranslation": "Gugusan Bintang",
+    "numberOfAyahs": 22,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 86,
+    "name": "الطارق",
+    "englishName": "At-Tariq",
+    "englishNameTranslation": "Yang Datang di Malam Hari",
+    "numberOfAyahs": 17,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 87,
+    "name": "الأعلى",
+    "englishName": "Al-A'la",
+    "englishNameTranslation": "Yang Paling Tinggi",
+    "numberOfAyahs": 19,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 88,
+    "name": "الغاشية",
+    "englishName": "Al-Ghashiyah",
+    "englishNameTranslation": "Hari Pembalasan",
+    "numberOfAyahs": 26,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 89,
+    "name": "الفجر",
+    "englishName": "Al-Fajr",
+    "englishNameTranslation": "Fajar",
+    "numberOfAyahs": 30,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 90,
+    "name": "البلد",
+    "englishName": "Al-Balad",
+    "englishNameTranslation": "Negeri",
+    "numberOfAyahs": 20,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 91,
+    "name": "الشمس",
+    "englishName": "Ash-Shams",
+    "englishNameTranslation": "Matahari",
+    "numberOfAyahs": 15,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 92,
+    "name": "الليل",
+    "englishName": "Al-Layl",
+    "englishNameTranslation": "Malam",
+    "numberOfAyahs": 21,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 93,
+    "name": "الضحى",
+    "englishName": "Ad-Duhaa",
+    "englishNameTranslation": "Waktu Dhuha",
+    "numberOfAyahs": 11,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 94,
+    "name": "الشرح",
+    "englishName": "Ash-Sharh",
+    "englishNameTranslation": "Melapangkan",
+    "numberOfAyahs": 8,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 95,
+    "name": "التين",
+    "englishName": "At-Tin",
+    "englishNameTranslation": "Buah Tin",
+    "numberOfAyahs": 8,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 96,
+    "name": "العلق",
+    "englishName": "Al-'Alaq",
+    "englishNameTranslation": "Segumpal Darah",
+    "numberOfAyahs": 19,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 97,
+    "name": "القدر",
+    "englishName": "Al-Qadr",
+    "englishNameTranslation": "Kemuliaan",
+    "numberOfAyahs": 5,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 98,
+    "name": "البينة",
+    "englishName": "Al-Bayyinah",
+    "englishNameTranslation": "Pembuktian",
+    "numberOfAyahs": 8,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 99,
+    "name": "الزلزلة",
+    "englishName": "Az-Zalzalah",
+    "englishNameTranslation": "Kegoncangan",
+    "numberOfAyahs": 8,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 100,
+    "name": "العاديات",
+    "englishName": "Al-'Adiyat",
+    "englishNameTranslation": "Berlari Kencang",
+    "numberOfAyahs": 11,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 101,
+    "name": "القارعة",
+    "englishName": "Al-Qari'ah",
+    "englishNameTranslation": "Hari Kiamat",
+    "numberOfAyahs": 11,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 102,
+    "name": "التكاثر",
+    "englishName": "At-Takathur",
+    "englishNameTranslation": "Bermegah-megahan",
+    "numberOfAyahs": 8,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 103,
+    "name": "العصر",
+    "englishName": "Al-'Asr",
+    "englishNameTranslation": "Waktu Sore",
+    "numberOfAyahs": 3,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 104,
+    "name": "الهمزة",
+    "englishName": "Al-Humazah",
+    "englishNameTranslation": "Pengumpat",
+    "numberOfAyahs": 9,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 105,
+    "name": "الفيل",
+    "englishName": "Al-Fil",
+    "englishNameTranslation": "Gajah",
+    "numberOfAyahs": 5,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 106,
+    "name": "قريش",
+    "englishName": "Quraysh",
+    "englishNameTranslation": "Suku Quraisy",
+    "numberOfAyahs": 4,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 107,
+    "name": "الماعون",
+    "englishName": "Al-Ma'un",
+    "englishNameTranslation": "Barang yang Berguna",
+    "numberOfAyahs": 7,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 108,
+    "name": "الكوثر",
+    "englishName": "Al-Kawthar",
+    "englishNameTranslation": "Nikmat Berlimpah",
+    "numberOfAyahs": 3,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 109,
+    "name": "الكافرون",
+    "englishName": "Al-Kafirun",
+    "englishNameTranslation": "Orang-orang Kafir",
+    "numberOfAyahs": 6,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 110,
+    "name": "النصر",
+    "englishName": "An-Nasr",
+    "englishNameTranslation": "Pertolongan",
+    "numberOfAyahs": 3,
+    "revelationType": "Madaniyah"
+  },
+  {
+    "number": 111,
+    "name": "المسد",
+    "englishName": "Al-Masad",
+    "englishNameTranslation": "Gejolak Api (Sabut)",
+    "numberOfAyahs": 5,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 112,
+    "name": "الإخلاص",
+    "englishName": "Al-Ikhlas",
+    "englishNameTranslation": "Ikhlash",
+    "numberOfAyahs": 4,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 113,
+    "name": "الفلق",
+    "englishName": "Al-Falaq",
+    "englishNameTranslation": "Waktu Shubuh",
+    "numberOfAyahs": 5,
+    "revelationType": "Makkiyah"
+  },
+  {
+    "number": 114,
+    "name": "الناس",
+    "englishName": "An-Nas",
+    "englishNameTranslation": "Umat Manusia",
+    "numberOfAyahs": 6,
+    "revelationType": "Makkiyah"
+  }
+]

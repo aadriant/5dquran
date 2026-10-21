@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="6dp"
+    android:background="@drawable/bg_card_surah"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <!-- Top Action Strip -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingBottom="10dp">
+
+        <!-- Ayah Number Badge -->
+        <TextView
+            android:id="@+id/tv_ayah_number"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/bg_badge_number"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/gold_primary"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <!-- 🎧 Play Verse -->
+        <TextView
+            android:id="@+id/btn_ayah_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip_action"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:text="🎧 Dengar"
+            android:textColor="@color/cyan_accent"
+            android:textSize="10sp"
+            android:layout_marginEnd="4dp" />
+
+        <!-- 📖 Kosakata Verse -->
+        <TextView
+            android:id="@+id/btn_ayah_kosakata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip_action"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:text="📖 Kosakata"
+            android:textColor="@color/gold_light"
+            android:textSize="10sp"
+            android:layout_marginEnd="4dp" />
+
+        <!-- 🧠 Memorize Verse -->
+        <TextView
+            android:id="@+id/btn_ayah_hafal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip_action"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:text="🧠 Hafal"
+            android:textColor="@color/purple_accent"
+            android:textSize="10sp"
+            android:layout_marginEnd="4dp" />
+
+        <!-- ✍️ Write Verse -->
+        <TextView
+            android:id="@+id/btn_ayah_tulis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip_action"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:text="✍️ Tulis"
+            android:textColor="@color/emerald"
+            android:textSize="10sp"
+            android:layout_marginEnd="4dp" />
+
+        <!-- 📚 Study Verse -->
+        <TextView
+            android:id="@+id/btn_ayah_pelajari"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip_action"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:text="📚 Tafsir"
+            android:textColor="@color/gold_primary"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- Arabic Text -->
+    <TextView
+        android:id="@+id/tv_ayah_arabic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right|end"
+        android:layoutDirection="rtl"
+        android:textDirection="rtl"
+        android:textAlignment="gravity"
+        android:lineSpacingMultiplier="1.4"
+        android:text="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
+        android:textColor="@color/gold_light"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Indonesian Translation -->
+    <TextView
+        android:id="@+id/tv_ayah_indo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingMultiplier="1.2"
+        android:text="Dengan nama Allah Yang Maha Pengasih, Maha Penyayang."
+        android:textColor="@color/text_primary"
+        android:textSize="13sp" />
+
+</LinearLayout>

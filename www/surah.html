@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Baca, dengarkan, hafal, tulis, dan pelajari surat Al-Quran di 5D Quran." />
+  <meta name="theme-color" content="#0d0d1a" />
+  <title>5D Quran — Surat Al-Quran</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/surah.css" />
+</head>
+<body class="surah-page">
+
+  <div class="bg-particles" aria-hidden="true">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header" id="top">
+    <div class="header-inner">
+      <a href="index.html" class="logo" id="logo-back">
+        <div class="logo-icon">
+          <img src="assets/icon.jpg" alt="5D Quran" width="40" height="40" style="border-radius:10px;object-fit:cover;box-shadow:0 0 10px rgba(212,168,83,0.35)">
+        </div>
+        <div class="logo-text">
+          <span class="logo-main">5D<em>Quran</em></span>
+          <span class="logo-sub">Dibaca · Didengarkan · Dihafal · Ditulis · Dipelajari</span>
+        </div>
+      </a>
+      <div class="header-actions" id="header-actions"></div>
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb-bar" id="breadcrumb-bar">
+    <div class="breadcrumb-inner">
+      <a href="index.html" class="bc-link">Beranda</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current" id="bc-current">Memuat...</span>
+    </div>
+  </div>
+
+  <!-- SURAH HERO -->
+  <div class="surah-hero" id="surah-hero">
+    <div class="sh-loading" id="sh-loading">
+      <div class="loader-ring"><div></div><div></div><div></div><div></div></div>
+    </div>
+    <div class="sh-content" id="sh-content" style="display:none">
+      <div class="sh-number" id="sh-number"></div>
+      <div class="sh-info">
+        <div class="sh-arabic" id="sh-arabic"></div>
+        <div class="sh-latin" id="sh-latin"></div>
+        <div class="sh-meaning" id="sh-meaning"></div>
+        <div class="sh-meta">
+          <span class="sh-badge" id="sh-type-badge"></span>
+          <span class="sh-ayat" id="sh-ayat"></span>
+        </div>
+      </div>
+    </div>
+    <div class="sh-nav" id="sh-nav" style="display:none">
+      <a href="#" class="sh-nav-btn" id="btn-prev-surah">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+        <span id="prev-surah-name">Sebelumnya</span>
+      </a>
+      <a href="#" class="sh-nav-btn sh-nav-next" id="btn-next-surah">
+        <span id="next-surah-name">Selanjutnya</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- BISMILLAH -->
+  <div class="bismillah-bar" id="bismillah-bar" style="display:none">
+    <span class="bismillah-text">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
+  </div>
+
+  <!-- ══ MODE TABS ══ -->
+  <div class="mode-bar" id="mode-bar" style="display:none">
+    <div class="mode-bar-inner">
+      <button class="mode-btn active" data-mode="baca" id="mbtn-baca">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span>Baca</span>
+      </button>
+      <button class="mode-btn" data-mode="mushaf" id="mbtn-mushaf">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+        <span>Mushaf</span>
+      </button>
+      <button class="mode-btn" data-mode="dengar" id="mbtn-dengar">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+        <span>Dengarkan</span>
+      </button>
+      <button class="mode-btn" data-mode="hafal" id="mbtn-hafal" title="Setor Hafalan Ayat">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        <span>Hafalan</span>
+      </button>
+      <button class="mode-btn" data-mode="tulis" id="mbtn-tulis">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <span>Tulis</span>
+      </button>
+      <button class="mode-btn" data-mode="pelajar" id="mbtn-pelajar">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span>Pelajari</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ MUSHAF STYLE BAR ══ -->
+  <div class="mushaf-style-bar" id="mushaf-style-bar" style="display:none">
+    <div class="msb-inner">
+      <span class="msb-label">Gaya Font:</span>
+      <button class="msb-btn active" data-mstyle="madani"><span class="msb-ar">مدني</span> Madani</button>
+      <button class="msb-btn" data-mstyle="naskh"><span class="msb-ar">نسخ</span> Naskh</button>
+      <button class="msb-btn" data-mstyle="indopak"><span class="msb-ar">إندو</span> IndoPak</button>
+    </div>
+    <div class="tajweed-legend" id="tajweed-legend" style="display:none">
+      <span class="tl-item" style="color:#60A5FA">● Madd Normal</span>
+      <span class="tl-item" style="color:#34D399">● Idgham</span>
+      <span class="tl-item" style="color:#F472B6">● Iqlab</span>
+      <span class="tl-item" style="color:#FBBF24">● Ikhfa</span>
+      <span class="tl-item" style="color:#C084FC">● Qalqalah</span>
+      <span class="tl-item" style="color:#FB923C">● Madd Wajib</span>
+      <span class="tl-item" style="color:#F87171">● Madd Lazim</span>
+      <span class="tl-item" style="color:#9999FF">● Hamzat Wasl</span>
+    </div>
+  </div>
+
+  <!-- ══ AUDIO SECTION (Dengarkan Mode) ══ -->
+  <div class="audio-section" id="audio-section" style="display:none">
+    <div class="audio-section-inner">
+      <div class="audio-player-bar" id="audio-player-bar">
+        <audio id="quran-audio" preload="none"></audio>
+
+        <div class="ap-info">
+          <div class="ap-surah-name" id="ap-surah-name">—</div>
+          <div class="ap-reciter-name" id="ap-reciter-name">Pilih qari untuk memulai</div>
+        </div>
+
+        <div class="ap-controls">
+          <button class="ap-btn" id="ap-prev-btn" title="Surat sebelumnya">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+          </button>
+          <button class="ap-btn ap-play-btn" id="ap-play-btn" title="Play / Pause">
+            <svg class="icon-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <svg class="icon-pause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </button>
+          <button class="ap-btn" id="ap-next-btn" title="Surat selanjutnya">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+          </button>
+        </div>
+
+        <div class="ap-progress-wrap">
+          <span class="ap-time" id="ap-cur-time">0:00</span>
+          <div class="ap-track-wrap">
+            <div class="ap-track-bg">
+              <div class="ap-track-fill" id="ap-track-fill"></div>
+            </div>
+            <input type="range" class="ap-range" id="ap-range" min="0" max="100" step="0.01" value="0" aria-label="Progress audio">
+          </div>
+          <span class="ap-time" id="ap-total-time">0:00</span>
+        </div>
+
+        <div class="ap-vol-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          <input type="range" class="ap-vol-range" id="ap-vol-range" min="0" max="100" step="1" value="80" aria-label="Volume">
+        </div>
+
+        <div class="ap-status" id="ap-status">Pilih qari dan tekan Play</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AYAT LIST ══ -->
+  <main class="ayat-container" id="ayat-container">
+    <div class="ayat-loading" id="ayat-loading">
+      <div class="loader-ring"><div></div><div></div><div></div><div></div></div>
+      <p>Memuat ayat-ayat...</p>
+    </div>
+    <div class="error-state" id="error-state" style="display:none">
+      <div class="error-icon">⚠️</div>
+      <h3>Gagal Memuat Ayat</h3>
+      <p>Periksa koneksi internet Anda dan coba lagi.</p>
+      <button class="btn-retry" onclick="loadSurah()">Coba Lagi</button>
+    </div>
+    <div id="ayat-list"></div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="footer-logo-text">5D<em>Quran</em></span>
+        <span class="footer-tagline">Dibaca · Didengarkan · Dihafal · Ditulis · Dipelajari</span>
+      </div>
+      <p class="footer-copy">Data Al-Quran dari <a href="https://alquran.cloud" target="_blank" rel="noopener">AlQuran.cloud API</a></p>
+      <p class="footer-amal">🤲 Semoga sebagai amal jariyah — <strong>Ari Adrianto</strong> @2026</p>
+    </div>
+  </footer>
+
+  <button class="scroll-top" id="scroll-top" aria-label="Kembali ke atas" style="display:none">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="js/auth.js"></script>
+  <script src="js/surah.js"></script>
+</body>
+</html>

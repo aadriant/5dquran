@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_main">
+
+    <!-- Top Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="8dp"
+        android:background="#0F1022">
+
+        <ImageButton
+            android:id="@+id/btn_back_tulis"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Kembali" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:id="@+id/tv_tulis_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mengetik Al-Qur'an"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_tulis_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ketik dengan keyboard bahasa Arab"
+                android:textColor="@color/emerald"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/btn_toggle_contoh_tulis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip_action"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:text="👁️ Contoh: Ya"
+            android:textColor="@color/emerald"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp" />
+    </LinearLayout>
+
+    <!-- Surah & Ayah Selector Strip -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:background="#121326">
+
+        <TextView
+            android:id="@+id/btn_tulis_prev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip_action"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:text="◀ Sebelumnya"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tv_tulis_ayah_badge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Surat 1 : Ayat 1"
+            android:textColor="@color/gold_primary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btn_tulis_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip_action"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:text="Selanjutnya ▶"
+            android:textColor="@color/gold_primary"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- ⚠️ Arabic Keyboard Warning Banner (Shown if Arabic keyboard is missing) -->
+            <LinearLayout
+                android:id="@+id/card_keyboard_warning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card_surah"
+                android:orientation="vertical"
+                android:padding="14dp"
+                android:layout_marginBottom="14dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚠️"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Keyboard Bahasa Arab Belum Terdeteksi"
+                        android:textColor="@color/gold_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/btn_dismiss_kb_warning"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_close"
+                        android:contentDescription="Tutup" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Untuk mengetik ayat Al-Qur'an, keyboard Anda perlu mendukung bahasa Arab. Silakan aktifkan bahasa Arab di Pengaturan Keyboard atau pasang Google Keyboard (Gboard)."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp"
+                    android:lineSpacingMultiplier="1.2"
+                    android:layout_marginBottom="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/btn_open_kb_settings"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_badge_number"
+                        android:gravity="center"
+                        android:paddingVertical="8dp"
+                        android:text="⚙️ Buka Pengaturan Keyboard"
+                        android:textColor="@color/gold_primary"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="6dp" />
+
+                    <TextView
+                        android:id="@+id/btn_install_gboard"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_chip_action"
+                        android:gravity="center"
+                        android:paddingVertical="8dp"
+                        android:text="📥 Pasang Gboard (Play Store)"
+                        android:textColor="@color/cyan_accent"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Card 1: Ayat Acuan / Contoh -->
+            <LinearLayout
+                android:id="@+id/card_contoh_ayat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card_surah"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="📖 TEKS ACUAN AYAT"
+                        android:textColor="@color/gold_primary"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05" />
+
+                    <TextView
+                        android:id="@+id/tv_contoh_mode_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_action"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="3dp"
+                        android:text="Dengan Contoh"
+                        android:textColor="@color/emerald"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <!-- Arabic Text (shown if dengan contoh) -->
+                <TextView
+                    android:id="@+id/tv_target_arabic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right|end"
+                    android:layoutDirection="rtl"
+                    android:textDirection="rtl"
+                    android:textAlignment="gravity"
+                    android:text="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
+                    android:textColor="@color/gold_primary"
+                    android:textSize="26sp"
+                    android:lineSpacingMultiplier="1.4"
+                    android:layout_marginBottom="10dp" />
+
+                <!-- Notice when 'Tanpa Contoh' is active -->
+                <LinearLayout
+                    android:id="@+id/layout_tanpa_contoh_notice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#161830"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🔒 Mode Tanpa Contoh Aktif"
+                        android:textColor="@color/gold_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Teks Arab disembunyikan. Ketik ayat langsung dari hafalan / ingatan Anda."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <!-- Indonesian Translation -->
+                <TextView
+                    android:id="@+id/tv_target_indo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Dengan nama Allah Yang Maha Pengasih, Maha Penyayang."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:lineSpacingMultiplier="1.3" />
+            </LinearLayout>
+
+            <!-- Card 2: Area Mengetik Bahasa Arab -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card_surah"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="⌨️ KETIK AYAT DENGAN KEYBOARD ARAB"
+                        android:textColor="@color/cyan_accent"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05" />
+
+                    <TextView
+                        android:id="@+id/tv_typing_char_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0 huruf"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <!-- Large Arabic EditText -->
+                <EditText
+                    android:id="@+id/et_arabic_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minLines="3"
+                    android:maxLines="6"
+                    android:background="@drawable/bg_search_input"
+                    android:padding="14dp"
+                    android:hint="Ketik teks ayat di sini menggunakan keyboard Arab..."
+                    android:textColorHint="@color/text_muted"
+                    android:textColor="@color/text_primary"
+                    android:textSize="24sp"
+                    android:gravity="top|right|end"
+                    android:layoutDirection="rtl"
+                    android:textDirection="rtl"
+                    android:textAlignment="gravity"
+                    android:inputType="textMultiLine"
+                    android:lineSpacingMultiplier="1.4"
+                    android:scrollbars="vertical"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Action Buttons: Bersihkan, Simpan & Periksa -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/btn_clear_input"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_action"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="10dp"
+                        android:text="🗑️ Hapus"
+                        android:textColor="@color/red_error"
+                        android:textSize="12sp"
+                        android:layout_marginEnd="6dp" />
+
+                    <TextView
+                        android:id="@+id/btn_simpan_input"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_action"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="10dp"
+                        android:text="💾 Simpan"
+                        android:textColor="@color/cyan_accent"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="6dp" />
+
+                    <TextView
+                        android:id="@+id/btn_periksa_ketikan"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_badge_number"
+                        android:gravity="center"
+                        android:paddingVertical="10dp"
+                        android:text="✓ Periksa Ketikan"
+                        android:textColor="@color/emerald"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Card 3: Panel Hasil Pemeriksaan (Card Check Panel) -->
+            <LinearLayout
+                android:id="@+id/card_check_panel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card_surah"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="24dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/tv_check_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="📊 Hasil Koreksi Ketikan"
+                        android:textColor="@color/emerald"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_check_score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_badge_number"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="4dp"
+                        android:text="100%"
+                        android:textColor="@color/gold_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_check_stats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="✅ Benar: 4  🔵 Mirip: 0  ❌ Salah: 0  ⚫ Terlewat: 0"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Word Diff View -->
+                <TextView
+                    android:id="@+id/tv_check_word_diff"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#121326"
+                    android:padding="14dp"
+                    android:textSize="22sp"
+                    android:lineSpacingMultiplier="1.5"
+                    android:gravity="right|end"
+                    android:layoutDirection="rtl"
+                    android:textDirection="rtl"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:id="@+id/tv_check_feedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Masya Allah! Ketikan Anda sempurna."
+                    android:textColor="@color/gold_primary"
+                    android:textSize="12sp"
+                    android:textStyle="italic" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

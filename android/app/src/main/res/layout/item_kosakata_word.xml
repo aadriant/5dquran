@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_chip_action"
+    android:gravity="center_vertical"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="10dp"
+    android:layout_marginBottom="8dp">
+
+    <!-- Left: Badge number + Pronunciation + Meaning -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingEnd="12dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="3dp">
+
+            <TextView
+                android:id="@+id/tv_word_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_badge_number"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="1dp"
+                android:text="1"
+                android:textColor="@color/gold_primary"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/tv_word_translit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="bis'mi"
+                android:textColor="@color/cyan_accent"
+                android:textSize="13sp"
+                android:textStyle="italic|bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_word_meaning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dengan nama"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- Right: Arabic Word in Mushaf Font -->
+    <TextView
+        android:id="@+id/tv_word_arabic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end|right"
+        android:layoutDirection="rtl"
+        android:textAlignment="viewEnd"
+        android:text="بِسْمِ"
+        android:textColor="@color/gold_light"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

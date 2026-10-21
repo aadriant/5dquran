@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="24dp">
+
+        <!-- Top Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="8dp">
+
+            <ImageButton
+                android:id="@+id/btn_back_hafal"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="Kembali" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp">
+
+                <TextView
+                    android:id="@+id/tv_hafal_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Setoran Hafalan"
+                    android:textColor="@color/text_primary"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_hafal_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pengenalan Suara Native Android"
+                    android:textColor="@color/purple_accent"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_toggle_hide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_action"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="👁️ Sembunyikan"
+                android:textColor="@color/text_primary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- Navigation Ayah Prev/Next Strip -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="6dp">
+
+            <TextView
+                android:id="@+id/btn_prev_ayah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_action"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="◀ Ayat Sebelumnya"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/tv_current_ayah_badge"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Surat 1 : Ayat 1"
+                android:textColor="@color/gold_primary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btn_next_ayah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_action"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="Ayat Selanjutnya ▶"
+                android:textColor="@color/gold_primary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- Target Verse Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_card_surah"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TARGET AYAT HAFALAN:"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp"
+                android:letterSpacing="0.05"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tv_target_arabic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end|right"
+                android:layoutDirection="rtl"
+                android:textAlignment="gravity"
+                android:lineSpacingMultiplier="1.4"
+                android:text="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
+                android:textColor="@color/gold_primary"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tv_target_indo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dengan nama Allah Yang Maha Pengasih, Maha Penyayang."
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- Voice Recording Interactive Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingVertical="20dp">
+
+            <!-- Glowing Mic Button -->
+            <FrameLayout
+                android:id="@+id/btn_mic"
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                android:background="@drawable/bg_mic_circle">
+
+                <ImageView
+                    android:id="@+id/iv_mic_icon"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_mic"
+                    android:contentDescription="Mulai Rekam" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_mic_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="Ketuk mikrofon &amp; baca ayat ini dengan tartil"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Real-time Live Speech Box (Following Microphone with Arabic text) -->
+        <LinearLayout
+            android:id="@+id/card_live_speech"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/bg_card_surah"
+            android:orientation="vertical"
+            android:padding="14dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="🎙️ BACAAN SUARA TERDETEKSI (LANGSUNG):"
+                    android:textColor="@color/cyan_accent"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05" />
+
+                <TextView
+                    android:id="@+id/tv_live_recording_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="● Merekam..."
+                    android:textColor="@color/emerald"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_live_speech"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end|right"
+                android:layoutDirection="rtl"
+                android:textAlignment="gravity"
+                android:text=""
+                android:textColor="@color/gold_light"
+                android:textSize="22sp"
+                android:lineSpacingMultiplier="1.4"
+                android:minLines="2" />
+        </LinearLayout>
+
+        <!-- Action Button: Periksa Hafalan (Setelah Rekam) -->
+        <LinearLayout
+            android:id="@+id/layout_action_periksa_hafalan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="14dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/btn_periksa_hafalan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_badge_number"
+                android:gravity="center"
+                android:paddingVertical="12dp"
+                android:text="✓ Periksa Hafalan"
+                android:textColor="@color/emerald"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Recognition & Evaluation Result Card -->
+        <LinearLayout
+            android:id="@+id/card_hafal_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/bg_card_surah"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="HASIL PEMERIKSAAN HAFALAN:"
+                    android:textColor="@color/gold_primary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05" />
+
+                <TextView
+                    android:id="@+id/tv_score_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_chip_action"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:text="100% Sempurna!"
+                    android:textColor="@color/emerald"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_correction_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Semua kata sesuai target ayat."
+                android:textColor="@color/emerald"
+                android:textSize="13sp"
+                android:layout_marginBottom="10dp" />
+
+            <!-- User's recited Arabic text with colored words (Red for wrong) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bacaan Anda (Merah = Tidak Cocok):"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tv_user_recitation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#121326"
+                android:padding="12dp"
+                android:lineSpacingMultiplier="1.4"
+                android:gravity="end|right"
+                android:layoutDirection="rtl"
+                android:textAlignment="gravity"
+                android:text="Hasil suara..."
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Target verse Word-by-word diff display (colored) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Target Ayat Acuan:"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tv_word_diff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#121326"
+                android:padding="12dp"
+                android:text=""
+                android:textSize="22sp"
+                android:gravity="end|right"
+                android:layoutDirection="rtl"
+                android:textAlignment="gravity"
+                android:lineSpacingMultiplier="1.5"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <!-- Audio Playback Section: Rekaman Pengguna vs Bacaan Qari -->
+        <LinearLayout
+            android:id="@+id/layout_audio_comparison"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_card_surah"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔊 DENGARKAN &amp; EVALUASI REKAMAN:"
+                android:textColor="@color/gold_primary"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- 1. Putar Rekaman Suara Saya Sendiri -->
+                <LinearLayout
+                    android:id="@+id/btn_play_user_recording"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_chip_action"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingVertical="11dp"
+                    android:paddingHorizontal="8dp"
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView
+                        android:id="@+id/iv_user_play_icon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_play_arrow"
+                        android:contentDescription="Putar Suara Saya" />
+
+                    <TextView
+                        android:id="@+id/tv_user_play_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="Rekaman Saya"
+                        android:textColor="@color/gold_primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- 2. Putar Suara Qari Alafasy (Pembanding) -->
+                <LinearLayout
+                    android:id="@+id/btn_listen_correct"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_chip_action"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingVertical="11dp"
+                    android:paddingHorizontal="8dp">
+
+                    <ImageView
+                        android:id="@+id/iv_qari_play_icon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_play_arrow"
+                        android:contentDescription="Putar Suara Qari" />
+
+                    <TextView
+                        android:id="@+id/tv_qari_play_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="Suara Qari"
+                        android:textColor="@color/cyan_accent"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Playback status / now playing indicator -->
+            <TextView
+                android:id="@+id/tv_audio_play_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="Ketuk 'Rekaman Saya' untuk mendengar bacaan Anda sendiri"
+                android:textColor="@color/text_muted"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

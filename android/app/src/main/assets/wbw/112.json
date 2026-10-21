@@ -1,0 +1,100 @@
+{
+  "1": [
+    {
+      "pos": 1,
+      "ar": "قُلْ",
+      "tl": "qul",
+      "tr": "katakanlah"
+    },
+    {
+      "pos": 2,
+      "ar": "هُوَ",
+      "tl": "huwa",
+      "tr": "Dia"
+    },
+    {
+      "pos": 3,
+      "ar": "ٱللَّهُ",
+      "tl": "l-lahu",
+      "tr": "Allah"
+    },
+    {
+      "pos": 4,
+      "ar": "أَحَدٌ",
+      "tl": "aḥadun",
+      "tr": "Esa"
+    }
+  ],
+  "2": [
+    {
+      "pos": 1,
+      "ar": "ٱللَّهُ",
+      "tl": "al-lahu",
+      "tr": "Allah"
+    },
+    {
+      "pos": 2,
+      "ar": "ٱلصَّمَدُ",
+      "tl": "l-ṣamadu",
+      "tr": "tempat bergantung"
+    }
+  ],
+  "3": [
+    {
+      "pos": 1,
+      "ar": "لَمْ",
+      "tl": "lam",
+      "tr": "tidak"
+    },
+    {
+      "pos": 2,
+      "ar": "يَلِدْ",
+      "tl": "yalid",
+      "tr": "beranak"
+    },
+    {
+      "pos": 3,
+      "ar": "وَلَمْ",
+      "tl": "walam",
+      "tr": "dan tidak"
+    },
+    {
+      "pos": 4,
+      "ar": "يُولَدْ",
+      "tl": "yūlad",
+      "tr": "diperanakkan"
+    }
+  ],
+  "4": [
+    {
+      "pos": 1,
+      "ar": "وَلَمْ",
+      "tl": "walam",
+      "tr": "dan tidak"
+    },
+    {
+      "pos": 2,
+      "ar": "يَكُن",
+      "tl": "yakun",
+      "tr": "ada"
+    },
+    {
+      "pos": 3,
+      "ar": "لَّهُۥ",
+      "tl": "lahu",
+      "tr": "baginya"
+    },
+    {
+      "pos": 4,
+      "ar": "كُفُوًا",
+      "tl": "kufuwan",
+      "tr": "menyamai/setara"
+    },
+    {
+      "pos": 5,
+      "ar": "أَحَدٌۢ",
+      "tl": "aḥadun",
+      "tr": "seorang"
+    }
+  ]
+}

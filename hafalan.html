@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Setoran Hafalan Al-Quran - Latih dan validasi hafalan dengan koreksi otomatis berbasis suara di 5D Quran." />
+  <meta name="theme-color" content="#0d0d1a" />
+  <title>Setoran Hafalan - 5D Quran</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+/* =========================================================
+   SETORAN HAFALAN — Specific Styles
+   ========================================================= */
+.hafalan-page { min-height:100vh; background:var(--bg-deep); }
+.haf-wrap { max-width:860px; margin:0 auto; padding:5.5rem 1rem 4rem; }
+
+.haf-hero {
+  background: linear-gradient(135deg,rgba(212,168,83,.07) 0%,rgba(74,222,128,.04) 100%);
+  border:1px solid rgba(212,168,83,.15); border-radius:var(--radius-xl);
+  padding:1.75rem 2rem; margin-bottom:1.5rem;
+}
+.haf-hero h1 { font-size:1.5rem; font-weight:800; color:var(--text-primary); margin-bottom:.35rem; }
+.haf-hero p  { font-size:.88rem; color:var(--text-muted); line-height:1.75; }
+
+.haf-selector {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:1.25rem 1.5rem; display:flex; gap:1rem; flex-wrap:wrap; align-items:flex-end; margin-bottom:1.5rem;
+}
+.haf-sel-group { flex:1; min-width:130px; }
+.haf-sel-label { font-size:.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:.4rem; }
+.haf-sel {
+  width:100%; background:#141426; border:1px solid var(--border-gold);
+  border-radius:var(--radius-sm); color:var(--gold-400);
+  font-family:var(--font-main); font-size:.88rem; font-weight:600; padding:.55rem .85rem; cursor:pointer;
+  color-scheme: dark;
+}
+.haf-sel:focus { outline:none; border-color:var(--gold-400); box-shadow:0 0 0 2px rgba(212,168,83,.25); }
+.haf-sel option { background-color:#16162a !important; color:#f1f5f9 !important; padding:8px 12px; font-weight:500; }
+.haf-sel option:checked { background-color:var(--gold-600) !important; color:#ffffff !important; font-weight:700; }
+.haf-start-btn {
+  padding:.6rem 1.5rem; border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,var(--gold-500),var(--gold-600));
+  border:none; color:#0d0d1a; font-weight:700; font-size:.88rem;
+  cursor:pointer; transition:all var(--transition); white-space:nowrap;
+}
+.haf-start-btn:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 4px 16px rgba(212,168,83,.4); }
+.haf-start-btn:disabled { opacity:.4; cursor:default; }
+
+.haf-loading { display:none; text-align:center; padding:2.5rem; }
+.haf-spin { width:36px; height:36px; border-radius:50%; border:3px solid rgba(212,168,83,.15); border-top-color:var(--gold-400); animation:spin .8s linear infinite; margin:0 auto 1rem; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+.haf-nosupport {
+  display:none; text-align:center; padding:2.5rem;
+  background:rgba(248,113,113,.06); border:1px solid rgba(248,113,113,.2); border-radius:var(--radius-xl);
+  margin-bottom:1.5rem;
+}
+
+.haf-progress { display:none; height:4px; background:rgba(255,255,255,.06); border-radius:2px; margin-bottom:1.5rem; overflow:hidden; }
+.haf-progress-fill { height:100%; background:linear-gradient(90deg,var(--gold-500),var(--green)); border-radius:2px; transition:width .4s ease; }
+
+.haf-session { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:1.25rem 1.5rem; margin-bottom:1.5rem; display:none; }
+.haf-session-title { font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:1rem; }
+.haf-sess-grid { display:flex; gap:.75rem; flex-wrap:wrap; }
+.haf-sess-stat { flex:1; min-width:80px; text-align:center; padding:.75rem; background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:var(--radius-sm); }
+.haf-sess-val { font-size:1.4rem; font-weight:800; }
+.haf-sess-lbl { font-size:.65rem; color:var(--text-muted); margin-top:.2rem; }
+
+.haf-ayat-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); overflow:hidden; margin-bottom:1.5rem; display:none; }
+.haf-ayat-hdr { padding:1rem 1.5rem; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); background:rgba(212,168,83,.03); }
+.haf-ayat-badge { background:linear-gradient(135deg,var(--gold-500),var(--gold-600)); color:#0d0d1a; font-weight:800; font-size:.72rem; padding:.22rem .7rem; border-radius:100px; }
+.haf-ayat-sname { font-size:.8rem; color:var(--text-muted); margin-left:.5rem; }
+.haf-nav-btns { display:flex; gap:.5rem; }
+.haf-nbtn { background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text-secondary); padding:.32rem .7rem; font-size:.78rem; cursor:pointer; transition:all var(--transition); font-family:var(--font-main); }
+.haf-nbtn:hover:not(:disabled) { border-color:var(--border-gold); color:var(--gold-400); }
+.haf-nbtn:disabled { opacity:.35; cursor:default; }
+
+.haf-arabic { padding:1.75rem 2rem 1.25rem; font-family:var(--font-quran); font-size:clamp(1.5rem,4.5vw,2.2rem); line-height:2.4; direction:rtl; text-align:justify; color:var(--text-primary); transition:filter .3s; }
+.haf-arabic.blurred { filter:blur(10px); pointer-events:none; user-select:none; }
+.w-correct  { color:var(--green); }
+.w-near     { color:#38bdf8; }
+.w-wrong    { color:#f87171; text-decoration:underline wavy #f87171; }
+.w-missing  { color:#fbbf24; opacity:.7; }
+.w-pending  { color:var(--text-muted); }
+/* Live highlight saat rekam */
+.w-live-done { color:rgba(74,222,128,.85); transition:color .25s; }
+.w-live-cur  { color:#60a5fa; font-weight:700; text-shadow:0 0 12px rgba(96,165,250,.6); animation:livePulse 0.8s ease-in-out infinite; }
+@keyframes livePulse { 0%,100%{opacity:1;text-shadow:0 0 8px rgba(96,165,250,.5)} 50%{opacity:.75;text-shadow:0 0 20px rgba(96,165,250,.9)} }
+/* Waveform bars animasi rekam */
+.wv-bar { display:inline-block; width:4px; background:linear-gradient(180deg,#60a5fa,var(--gold-400,#d4a853)); border-radius:3px; animation:wvAnim 0.6s ease-in-out infinite alternate; }
+.wv-bar:nth-child(1){height:8px;animation-delay:0s}
+.wv-bar:nth-child(2){height:16px;animation-delay:.07s}
+.wv-bar:nth-child(3){height:24px;animation-delay:.14s}
+.wv-bar:nth-child(4){height:20px;animation-delay:.21s}
+.wv-bar:nth-child(5){height:28px;animation-delay:.28s}
+.wv-bar:nth-child(6){height:20px;animation-delay:.21s}
+.wv-bar:nth-child(7){height:24px;animation-delay:.14s}
+.wv-bar:nth-child(8){height:16px;animation-delay:.07s}
+.wv-bar:nth-child(9){height:8px;animation-delay:0s}
+@keyframes wvAnim { from{transform:scaleY(.3)} to{transform:scaleY(1)} }
+
+/* Pemutar ulang rekaman */
+.haf-play-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:1.25rem 1.5rem; margin-bottom:1.5rem; }
+.haf-play-row { display:flex; align-items:center; gap:.75rem; margin:.25rem 0 0; flex-wrap:wrap; }
+.haf-play-bar { flex:1; min-width:110px; height:22px; display:flex; align-items:center; cursor:pointer; }
+.haf-play-bar::before { content:''; position:absolute; }
+.haf-play-fill{ height:8px; width:0; background:linear-gradient(90deg,#7c3aed,var(--gold-400,#d4a853)); border-radius:99px; transition:width .15s linear; box-shadow:0 0 6px rgba(212,168,83,.4); }
+.haf-play-time{ font-size:.78rem; color:var(--text-muted); font-variant-numeric:tabular-nums; min-width:38px; text-align:right; }
+
+.haf-ctrl-bar { padding:.75rem 2rem; border-top:1px solid rgba(255,255,255,.05); display:flex; align-items:center; gap:1rem; background:rgba(255,255,255,.02); flex-wrap:wrap; }
+.haf-toggle-label { display:flex; align-items:center; gap:.5rem; font-size:.8rem; color:var(--text-muted); cursor:pointer; user-select:none; }
+.haf-switch { position:relative; width:36px; height:20px; flex-shrink:0; }
+.haf-switch input { opacity:0; width:0; height:0; }
+.haf-slider { position:absolute; inset:0; background:rgba(255,255,255,.1); border-radius:20px; cursor:pointer; transition:background .3s; }
+.haf-slider::before { content:''; position:absolute; width:14px; height:14px; border-radius:50%; background:#fff; left:3px; top:3px; transition:transform .3s; }
+input:checked + .haf-slider { background:var(--gold-500); }
+input:checked + .haf-slider::before { transform:translateX(16px); }
+.haf-play-ref { margin-left:auto; }
+.haf-translation { padding:.75rem 2rem 1.25rem; border-top:1px solid rgba(255,255,255,.04); font-size:.875rem; color:var(--text-muted); font-style:italic; line-height:1.7; }
+.haf-legend { display:flex; gap:1.25rem; flex-wrap:wrap; font-size:.72rem; padding:.75rem 2rem; border-top:1px solid rgba(255,255,255,.05); color:var(--text-muted); }
+.haf-leg-item { display:flex; align-items:center; gap:.35rem; }
+.haf-leg-dot { width:9px; height:9px; border-radius:50%; }
+
+.haf-mic-sec { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:1.75rem; margin-bottom:1.5rem; display:none; }
+.haf-mic-title { font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:1.25rem; }
+.haf-mic-container { display:flex; flex-direction:column; align-items:center; gap:1.25rem; }
+.haf-transcript {
+  width:100%; min-height:64px; background:rgba(255,255,255,.03); border:1px dashed var(--border);
+  border-radius:var(--radius-md); padding:1rem 1.25rem; font-family:var(--font-quran);
+  font-size:1.35rem; direction:rtl; text-align:right; line-height:2; color:var(--text-secondary); word-break:break-word;
+}
+.haf-transcript-ph { color:var(--text-muted); font-family:var(--font-main); font-size:.82rem; direction:ltr; text-align:center; display:block; padding:.5rem 0; }
+.haf-mic-btn {
+  width:88px; height:88px; border-radius:50%;
+  background:linear-gradient(135deg,rgba(212,168,83,.12),rgba(212,168,83,.06));
+  border:2px solid rgba(212,168,83,.3); cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .3s; outline:none;
+}
+.haf-mic-btn:hover { border-color:var(--gold-400); transform:scale(1.05); }
+.haf-mic-btn.rec { background:linear-gradient(135deg,rgba(248,113,113,.2),rgba(239,68,68,.1)); border-color:#f87171; animation:pulse-m 1.5s infinite; }
+@keyframes pulse-m { 0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,.4)} 50%{box-shadow:0 0 0 16px rgba(248,113,113,0)} }
+.haf-mic-icon { font-size:1.9rem; }
+.haf-mic-lbl { font-size:.8rem; color:var(--text-muted); text-align:center; }
+.haf-mic-lbl.rec { color:#f87171; font-weight:600; }
+.haf-action-row { display:flex; gap:.75rem; flex-wrap:wrap; justify-content:center; width:100%; }
+
+.hbtn { flex:1; min-width:120px; padding:.65rem 1.25rem; border-radius:var(--radius-sm); font-family:var(--font-main); font-size:.86rem; font-weight:700; cursor:pointer; border:none; transition:all var(--transition); display:flex; align-items:center; justify-content:center; gap:.5rem; }
+.hbtn-primary { background:linear-gradient(135deg,var(--gold-500),var(--gold-600)); color:#0d0d1a; }
+.hbtn-primary:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(212,168,83,.35); }
+.hbtn-ghost { background:rgba(255,255,255,.05); border:1px solid var(--border); color:var(--text-secondary); }
+.hbtn-ghost:hover { border-color:var(--border-gold); color:var(--gold-400); }
+.hbtn-green { background:rgba(74,222,128,.1); border:1px solid rgba(74,222,128,.25); color:var(--green); }
+.hbtn-green:hover { background:rgba(74,222,128,.2); }
+
+.haf-result { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:1.5rem; margin-bottom:1.5rem; display:none; }
+.haf-res-hdr { display:flex; align-items:center; gap:.75rem; margin-bottom:1.25rem; }
+.haf-res-icon { font-size:2rem; }
+.haf-res-title { font-size:1.1rem; font-weight:700; }
+.haf-res-sub { font-size:.8rem; color:var(--text-muted); margin-top:.15rem; }
+.haf-score-area { display:flex; align-items:center; gap:2rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.haf-score-circle { width:88px; height:88px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(255,255,255,.04); border:3px solid var(--border); transition:border-color .4s; }
+.haf-score-circle.perfect { border-color:var(--green); }
+.haf-score-circle.good    { border-color:var(--gold-400); }
+.haf-score-circle.fair    { border-color:#fb923c; }
+.haf-score-circle.poor    { border-color:#f87171; }
+.haf-score-pct { font-size:1.35rem; font-weight:800; }
+.haf-score-lbl { font-size:.58rem; color:var(--text-muted); font-weight:700; letter-spacing:.07em; }
+.haf-stat-row { display:flex; gap:1rem; flex-wrap:wrap; }
+.haf-stat { flex:1; min-width:72px; text-align:center; }
+.haf-stat-val { font-size:1.25rem; font-weight:800; }
+.haf-stat-lbl { font-size:.67rem; color:var(--text-muted); margin-top:.12rem; }
+.haf-cmp-title { font-size:.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin:1.25rem 0 .5rem; }
+.haf-cmp-arabic { font-family:var(--font-quran); font-size:1.55rem; line-height:2.4; direction:rtl; text-align:justify; word-spacing:.1rem; }
+.haf-cmp-said { font-family:var(--font-quran); font-size:.95rem; direction:rtl; text-align:right; color:var(--text-muted); line-height:2; margin-top:.5rem; }
+.haf-correction-box { background:rgba(248,113,113,.08); border:1px solid rgba(248,113,113,.25); border-radius:var(--radius-md); padding:1rem 1.25rem; margin-top:1rem; }
+.haf-corr-title { font-size:.72rem; font-weight:700; color:#f87171; margin-bottom:.5rem; }
+.haf-corr-item { display:flex; align-items:baseline; gap:.45rem; font-size:.83rem; color:var(--text-secondary); margin-bottom:.35rem; flex-wrap:wrap; }
+.haf-corr-wrong { color:#f87171; font-weight:600; }
+.haf-corr-right { color:var(--green); font-weight:600; }
+.haf-corr-arrow { color:var(--text-muted); }
+
+@media(max-width:600px) {
+  .haf-arabic { font-size:1.45rem; padding:1.5rem 1.25rem 1rem; }
+  .haf-selector { flex-direction:column; }
+  .haf-score-area { flex-direction:column; align-items:flex-start; gap:1rem; }
+  /* Tombol rekam harus penuh lebar di HP agar tidak terpotong */
+  .haf-action-row { flex-direction:column; }
+  .haf-action-row .hbtn { width:100%; max-width:none !important; }
+  .haf-stat-row { gap:.5rem; }
+  .haf-stat { flex:1 1 28%; min-width:0; }
+  .haf-play-row { gap:.5rem; }
+  .haf-play-time { min-width:34px; }
+}
+  </style>
+</head>
+<body class="hafalan-page">
+
+  <div class="bg-particles" aria-hidden="true">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <img src="assets/icon.jpg" alt="5D Quran" width="40" height="40" style="border-radius:10px;object-fit:cover;box-shadow:0 0 10px rgba(212,168,83,0.35)">
+        </div>
+        <div class="logo-text">
+          <span class="logo-main">5D<em>Quran</em></span>
+          <span class="logo-sub">Dibaca &middot; Didengarkan &middot; Dihafal &middot; Ditulis &middot; Dipelajari</span>
+        </div>
+      </a>
+      <nav class="header-nav">
+        <a href="index.html" class="nav-link">Daftar Surah</a>
+        <a href="#" class="nav-link" id="nav-back-surah" style="display:none;color:var(--gold-400)">← Kembali ke Surat</a>
+        <a href="hafalan.html" class="nav-link active">Setoran Hafalan</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="haf-wrap">
+
+    <!-- HERO -->
+    <section class="haf-hero">
+      <h1>&#x1F3A4; Setoran Hafalan Al-Qur&apos;an</h1>
+      <p>
+        Setor hafalan per ayat secara interaktif. Ucapkan bacaan Anda &mdash; aplikasi akan mendengarkan menggunakan Web Speech API bahasa Arab (ar-SA), menilai akurasi kata per kata, dan menampilkan koreksi secara langsung.
+      </p>
+    </section>
+
+    <!-- NO SPEECH API SUPPORT -->
+    <div class="haf-nosupport" id="nosupport">
+      <div style="font-size:3rem;margin-bottom:1rem">&#x1F507;</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#f87171;margin-bottom:.5rem">Browser Tidak Mendukung Speech Recognition</div>
+      <div style="font-size:.875rem;color:var(--text-muted);line-height:1.8">
+        Fitur ini membutuhkan <strong>Google Chrome</strong> atau <strong>Microsoft Edge</strong> versi terbaru.
+        Browser Anda saat ini tidak mendukung Web Speech API.
+      </div>
+    </div>
+
+    <!-- SELECTOR -->
+    <div class="haf-selector" id="selector-card">
+      <div class="haf-sel-group">
+        <div class="haf-sel-label">Pilih Surah</div>
+        <select class="haf-sel" id="sel-surah"><option value="">Memuat daftar surah...</option></select>
+      </div>
+      <div class="haf-sel-group" style="max-width:145px">
+        <div class="haf-sel-label">Mulai Ayat</div>
+        <select class="haf-sel" id="sel-from" disabled><option value="">&#x2014;</option></select>
+      </div>
+      <div class="haf-sel-group" style="max-width:145px">
+        <div class="haf-sel-label">Sampai Ayat</div>
+        <select class="haf-sel" id="sel-to" disabled><option value="">&#x2014;</option></select>
+      </div>
+      <button class="haf-start-btn" id="btn-start" disabled>&#x25B6; Mulai Sesi</button>
+    </div>
+
+    <!-- LOADING -->
+    <div class="haf-loading" id="haf-loading">
+      <div class="haf-spin"></div>
+      <p style="color:var(--text-muted);font-size:.88rem">Memuat data surah...</p>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="haf-progress" id="progress-bar">
+      <div class="haf-progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+
+    <!-- SESSION OVERVIEW -->
+    <div class="haf-session" id="session-panel">
+      <div class="haf-session-title">&#x1F4CA; Progres Sesi Hafalan</div>
+      <div class="haf-sess-grid">
+        <div class="haf-sess-stat"><div class="haf-sess-val" id="s-done" style="color:var(--gold-400)">0</div><div class="haf-sess-lbl">Selesai</div></div>
+        <div class="haf-sess-stat"><div class="haf-sess-val" id="s-total" style="color:var(--text-muted)">0</div><div class="haf-sess-lbl">Total Ayat</div></div>
+        <div class="haf-sess-stat"><div class="haf-sess-val" id="s-lulus" style="color:var(--green)">0</div><div class="haf-sess-lbl">Lulus (&ge;85%)</div></div>
+        <div class="haf-sess-stat"><div class="haf-sess-val" id="s-avg" style="color:var(--purple)">&#x2014;</div><div class="haf-sess-lbl">Rata-rata</div></div>
+      </div>
+    </div>
+
+    <!-- AYAT DISPLAY CARD -->
+    <div class="haf-ayat-card" id="ayat-card">
+      <div class="haf-ayat-hdr">
+        <div>
+          <span class="haf-ayat-badge" id="a-badge">&#x2014;</span>
+          <span class="haf-ayat-sname" id="a-sname">&#x2014;</span>
+        </div>
+        <div class="haf-nav-btns">
+          <button class="haf-nbtn" id="btn-prev" disabled>&larr; Sebelumnya</button>
+          <button class="haf-nbtn" id="btn-next" disabled>Berikutnya &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Arabic text (word spans) -->
+      <div class="haf-arabic" id="arabic-display"></div>
+
+      <div class="tanpa-contoh-note" id="tanpa-contoh-note-haf" style="display:none">
+        🙈 Mode <strong>Tanpa Contoh</strong> — bacalah dari hafalan Anda.
+        <button type="button" id="btn-uncover-haf">Tampilkan contoh sekali</button>
+      </div>
+
+      <!-- Toggle + play reference -->
+      <div class="haf-ctrl-bar">
+        <label class="haf-toggle-label" for="toggle-show">
+          <span class="haf-switch">
+            <input type="checkbox" id="toggle-show" checked />
+            <span class="haf-slider"></span>
+          </span>
+          Tampilkan teks Arab
+        </label>
+        <button class="haf-nbtn haf-play-ref" id="btn-play-ref">&#x1F50A; Dengar Contoh</button>
+      </div>
+
+      <!-- Translation -->
+      <div class="haf-translation" id="a-translation">&#x2014;</div>
+
+      <!-- Legend -->
+      <div class="haf-legend">
+        <div class="haf-leg-item"><div class="haf-leg-dot" style="background:var(--green)"></div>Benar</div>
+        <div class="haf-leg-item"><div class="haf-leg-dot" style="background:#f87171"></div>Salah</div>
+        <div class="haf-leg-item"><div class="haf-leg-dot" style="background:#fbbf24"></div>Terlewat</div>
+        <div class="haf-leg-item"><div class="haf-leg-dot" style="background:var(--text-muted)"></div>Belum dibaca</div>
+      </div>
+    </div>
+
+    <!-- MIC SECTION -->
+    <div class="haf-mic-sec" id="mic-section">
+      <div class="haf-mic-title">&#x1F3A4; Rekam Bacaan Anda</div>
+      <div class="haf-mic-container">
+
+        <!-- Live Arab transcript saat merekam -->
+        <div id="live-arab-wrap" style="display:none;text-align:center;padding:.75rem 1rem;background:rgba(212,168,83,.06);border:1px solid rgba(212,168,83,.2);border-radius:12px;margin-bottom:.75rem">
+          <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(212,168,83,.6);margin-bottom:.35rem">Yang dikenali sistem</div>
+          <div id="live-arab-text" style="font-family:var(--font-quran,'Amiri Quran'),serif;font-size:1.4rem;line-height:1.8;direction:rtl;color:#f1f5f9"></div>
+        </div>
+
+        <!-- Waveform animasi saat merekam -->
+        <div id="waveform-wrap" style="display:none;justify-content:center;align-items:flex-end;gap:3px;height:32px;margin-bottom:.5rem">
+          <span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span>
+          <span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span>
+          <span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span>
+        </div>
+
+        <div class="haf-transcript" id="transcript">
+          <span class="haf-transcript-ph" id="t-ph">Tekan tombol mikrofon lalu mulai membaca&hellip;</span>
+        </div>
+
+        <button class="haf-mic-btn" id="mic-btn" aria-label="Mulai merekam">
+          <span class="haf-mic-icon" id="mic-icon">&#x1F399;</span>
+        </button>
+        <div class="haf-mic-lbl" id="mic-lbl">Tekan untuk mulai merekam</div>
+
+        <div class="haf-action-row">
+          <button class="hbtn hbtn-primary" id="btn-check" style="display:none">&#x2713; Nilai Bacaan</button>
+          <button class="hbtn hbtn-ghost"   id="btn-clear" style="display:none;max-width:130px">&#x21BA; Ulangi</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PEMUTAR ULANG REKAMAN: tampil begitu ada rekaman, tanpa menunggu nilai -->
+    <div class="haf-play-card" id="playback-box" style="display:none">
+      <div class="haf-cmp-title">&#x1F3A7; Rekaman Suara Anda</div>
+      <div class="haf-play-row">
+        <button class="hbtn hbtn-ghost" id="btn-play-rek" style="max-width:150px">&#x25B6;&#xFE0F; Putar</button>
+        <div class="haf-play-bar" id="play-bar"><div class="haf-play-fill" id="play-fill"></div></div>
+        <span class="haf-play-time" id="play-time">0:00</span>
+      </div>
+      <audio id="rek-audio" preload="metadata" style="display:none"></audio>
+    </div>
+
+    <!-- RESULT CARD -->
+    <div class="haf-result" id="result-card">
+      <div class="haf-res-hdr">
+        <div class="haf-res-icon" id="r-icon">&#x2014;</div>
+        <div>
+          <div class="haf-res-title" id="r-title">&#x2014;</div>
+          <div class="haf-res-sub"   id="r-sub">&#x2014;</div>
+        </div>
+      </div>
+      <div class="haf-score-area">
+        <div class="haf-score-circle" id="score-circle">
+          <div class="haf-score-pct" id="score-pct">&#x2014;</div>
+          <div class="haf-score-lbl">AKURASI</div>
+        </div>
+        <div class="haf-stat-row">
+          <div class="haf-stat"><div class="haf-stat-val" id="st-correct" style="color:var(--green)">0</div><div class="haf-stat-lbl">Benar</div></div>
+          <div class="haf-stat"><div class="haf-stat-val" id="st-near"    style="color:#38bdf8">0</div><div class="haf-stat-lbl">Mirip</div></div>
+          <div class="haf-stat"><div class="haf-stat-val" id="st-wrong"   style="color:#f87171">0</div><div class="haf-stat-lbl">Salah</div></div>
+          <div class="haf-stat"><div class="haf-stat-val" id="st-missing" style="color:#fbbf24">0</div><div class="haf-stat-lbl">Terlewat</div></div>
+          <div class="haf-stat"><div class="haf-stat-val" id="st-total"   style="color:var(--text-muted)">0</div><div class="haf-stat-lbl">Total Kata</div></div>
+        </div>
+      </div>
+
+      <div class="haf-cmp-title">&#x1F4D6; Ayat yang Benar</div>
+      <div class="haf-cmp-arabic" id="cmp-correct"></div>
+      <div class="haf-cmp-title">&#x1F5E3;&#xFE0F; Yang Anda Ucapkan</div>
+      <div class="haf-cmp-said"   id="cmp-said"></div>
+
+      <div class="haf-correction-box" id="corr-box" style="display:none">
+        <div class="haf-corr-title">&#x26A0;&#xFE0F; Koreksi Bacaan</div>
+        <div id="corr-list"></div>
+      </div>
+
+      <div class="haf-correction-box" id="near-box" style="display:none;border-color:rgba(56,189,248,.3)">
+        <div class="haf-corr-title" style="color:#38bdf8">&#x1F535; Kata yang Perlu Diperhalus</div>
+        <div id="near-list"></div>
+      </div>
+
+      <div class="haf-action-row" style="margin-top:1.25rem">
+        <button class="hbtn hbtn-ghost"   id="btn-retry">&#x21BA; Coba Lagi</button>
+        <button class="hbtn hbtn-primary" id="btn-next-r">Lanjut &rarr;</button>
+        <button class="hbtn hbtn-green"   id="btn-listen-c">&#x1F50A; Dengar Benar</button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="footer-logo-text">5D<em>Quran</em></span>
+        <span class="footer-tagline">Dibaca &middot; Didengarkan &middot; Dihafal &middot; Ditulis &middot; Dipelajari</span>
+      </div>
+      <div class="footer-credit">semoga sbg amal jariyah ari adrianto @2026</div>
+    </div>
+  </footer>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="js/auth.js"></script>
+<script>
+/* ============================================================
+   5D Quran — Setoran Hafalan Logic
+   Web Speech API (Arabic ar-SA) + Levenshtein word alignment
+   ============================================================ */
+
+// Tandai timestamp saat user balik ke beranda (agar app.js skip auto-redirect)
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href]');
+  if (a && (a.href.endsWith('index.html') || a.getAttribute('href') === 'index.html')) {
+    try { localStorage.setItem('5dq_ts_balik', String(Date.now())); } catch(_) {}
+  }
+});
+// Juga tangkap tombol "Kembali ke Surah" via onclick
+const _origOnclick = window.onclick;
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (btn && btn.textContent.includes('Kembali ke Surah')) {
+    try { localStorage.setItem('5dq_ts_balik', String(Date.now())); } catch(_) {}
+  }
+});
+
+const AC_BASE = 'https://api.alquran.cloud/v1';
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+/* ── GERBANG: setoran hafalan wajib login ── */
+if (typeof gerbang === 'function') {
+  gerbang('hafalan.html').then(ok => { if (ok) mulaiSetoran(); });
+} else {
+  mulaiSetoran();
+}
+
+function mulaiSetoran() {
+
+/* ── SUPPORT CHECK ── */
+if (!SR) {
+  document.getElementById('nosupport').style.display = 'block';
+  document.getElementById('selector-card').style.display = 'none';
+}
+
+/* ── STATE ── */
+let surahData = null;
+let ayats = [];
+let idx = 0;
+let results = [];
+let recognition = null;
+let recording = false;
+let liveText = '';
+let finalText = '';
+let currentSurahNum = 1;
+
+/* ── SURAH START OFFSETS (for global ayah num → audio URL) ── */
+const S = [1,8,294,494,670,790,955,1121,1194,1323,1432,1556,1668,1710,1763,1856,1984,2096,2206,2304,2439,2551,2629,2748,2812,2889,3116,3210,3298,3387,3450,3484,3504,3578,3633,3677,3760,3942,4030,4150,4236,4290,4344,4433,4492,4530,4584,4622,4651,4680,4726,4787,4836,4886,4930,4974,5035,5098,5135,5160,5185,5200,5212,5222,5236,5249,5262,5292,5345,5405,5455,5484,5512,5533,5589,5629,5672,5706,5719,5748,5767,5779,5800,5810,5819,5827,5836,5844,5852,5861,5873,5881,5893,5906,5912,5917,5923,5929,5938,5944,5953,5959,5972,5979,5988,5993,5999,6003,6007,6011,6014,6019,6023,6027,6031,6034,6036,6039,6041];
+const globalAyahNum = (surah, ayat) => (S[surah - 1] || 1) + (ayat - 1);
+
+/* ── POPULATE SURAH LIST ── */
+(async () => {
+  try {
+    const res = await fetch(AC_BASE + '/meta');
+    const json = await res.json();
+    const sel = document.getElementById('sel-surah');
+    sel.innerHTML = '<option value="">Pilih Surah...</option>';
+    json.data.surahs.references.forEach(s => {
+      const o = document.createElement('option');
+      o.value = s.number;
+      o.textContent = s.number + '. ' + s.name + ' \u2014 ' + s.englishName + ' (' + s.numberOfAyahs + ' ayat)';
+      o.style.backgroundColor = '#16162a';
+      o.style.color = '#f1f5f9';
+      sel.appendChild(o);
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const surahParam = parseInt(urlParams.get('surah'));
+    if (surahParam && surahParam >= 1 && surahParam <= 114) {
+      sel.value = surahParam;
+      sel.dispatchEvent(new Event('change'));
+
+      const backNav = document.getElementById('nav-back-surah');
+      if (backNav) {
+        backNav.href = `surah.html?id=${surahParam}`;
+        backNav.style.display = 'inline-flex';
+      }
+    }
+  } catch (e) {
+    document.getElementById('sel-surah').innerHTML = '<option value="">Gagal memuat. Refresh halaman.</option>';
+  }
+})();
+
+/* ── SURAH SELECTED ── */
+document.getElementById('sel-surah').addEventListener('change', async function () {
+  const num = parseInt(this.value);
+  if (!num) return;
+  currentSurahNum = num;
+  document.getElementById('haf-loading').style.display = 'block';
+  document.getElementById('btn-start').disabled = true;
+  try {
+    const res  = await fetch(AC_BASE + '/surah/' + num + '/editions/quran-uthmani,id.indonesian');
+    const json = await res.json();
+    surahData = json.data;
+    const total = surahData[0].ayahs.length;
+    const from = document.getElementById('sel-from');
+    const to   = document.getElementById('sel-to');
+    from.innerHTML = to.innerHTML = '';
+    for (let i = 1; i <= total; i++) {
+      const makeOpt = () => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = 'Ayat ' + i;
+        opt.style.backgroundColor = '#16162a';
+        opt.style.color = '#f1f5f9';
+        return opt;
+      };
+      from.appendChild(makeOpt());
+      to.appendChild(makeOpt());
+    }
+    to.value = total;
+    from.disabled = to.disabled = false;
+    document.getElementById('btn-start').disabled = false;
+
+    // Bila datang dari kartu "Lanjut Hafalan" (?surah=&ayat=),
+    // langsung set rentang mulai dari ayat tersebut lalu jalankan sesi.
+    const ayatParam = parseInt(new URLSearchParams(window.location.search).get('ayat'));
+    if (ayatParam && ayatParam >= 1 && ayatParam <= total) {
+      from.value = ayatParam;
+      document.getElementById('btn-start').click();
+    }
+  } catch (e) {
+    alert('Gagal memuat surah. Periksa koneksi.');
+  } finally {
+    document.getElementById('haf-loading').style.display = 'none';
+  }
+});
+
+function stripBismillahPrefix(text) {
+  if (!text) return '';
+  const trimmed = text.replace(/\ufeff/g, '').trim();
+  const words = trimmed.split(/\s+/);
+  if (words.length >= 5 && words[0].includes('ب') && words[1].includes('ل') && words[2].includes('ح') && words[3].includes('ح')) {
+    return words.slice(4).join(' ').trim();
+  }
+  return trimmed;
+}
+
+/* ── START SESSION ── */
+document.getElementById('btn-start').addEventListener('click', () => {
+  if (!surahData) return;
+  const from = parseInt(document.getElementById('sel-from').value) || 1;
+  const to   = parseInt(document.getElementById('sel-to').value)   || 1;
+  if (from > to) { alert('Ayat awal tidak boleh lebih besar dari ayat akhir.'); return; }
+  ayats = [];
+  for (let i = from - 1; i < to; i++) {
+    let arText = surahData[0].ayahs[i].text;
+    if (currentSurahNum !== 1 && currentSurahNum !== 9 && i === 0) {
+      arText = stripBismillahPrefix(arText);
+    }
+    ayats.push({
+      num:    i + 1,
+      arabic: arText,
+      indo:   surahData[1].ayahs[i].text,
+    });
+  }
+  results = [];
+  idx = 0;
+  ['session-panel', 'progress-bar', 'ayat-card', 'mic-section'].forEach(id => {
+    document.getElementById(id).style.display = 'block';
+  });
+  document.getElementById('result-card').style.display = 'none';
+  updateSession();
+  loadAyat();
+});
+
+/* ── LOAD CURRENT AYAT ── */
+function loadAyat() {
+  if (idx >= ayats.length) { finishSession(); return; }
+  const ay = ayats[idx];
+  const surahEl = document.getElementById('sel-surah');
+  const label   = surahEl.options[surahEl.selectedIndex].textContent.split(' \u2014 ')[0];
+  // Nama bersih untuk disimpan (buang nomor, kata 'سورة', dan harakat)
+  const labelBersih = label.replace(/^\d+\.\s*/, '')
+                           .replace(/^\s*سُورَةُ\s+|^\s*سورة\s+/, '')
+                           .replace(/[\u064B-\u0652\u0670\u06D6-\u06ED]/g, '')
+                           .trim();
+  document.getElementById('a-badge').textContent        = currentSurahNum + ':' + ay.num;
+  document.getElementById('a-sname').textContent        = label;
+  document.getElementById('a-translation').textContent  = ay.indo;
+  renderWords(ay.arabic, 'arabic-display', 'pending');
+
+  // ── Mode "Tanpa Contoh": contoh ayat tidak ditampilkan ──
+  const tanpaContoh = (typeof Auth !== 'undefined' && Auth.setting && (Auth.setting().contoh || 'ya') === 'tidak');
+  const tgl = document.getElementById('toggle-show');
+  if (tgl) tgl.checked = !tanpaContoh;
+  document.getElementById('arabic-display').classList.toggle('blurred', tanpaContoh);
+  const note = document.getElementById('tanpa-contoh-note-haf');
+  if (note) note.style.display = tanpaContoh ? 'block' : 'none';
+
+  document.getElementById('btn-prev').disabled = (idx <= 0);
+  document.getElementById('btn-next').disabled = (idx >= ayats.length - 1);
+  document.getElementById('progress-fill').style.width = Math.round(idx / ayats.length * 100) + '%';
+  resetRec();
+  document.getElementById('result-card').style.display = 'none';
+
+  // Simpan posisi terakhir hafalan (untuk kartu "Lanjut Hafalan")
+  if (typeof Auth !== 'undefined' && Auth.simpanMark) {
+    Auth.simpanMark('terakhir_hafalan', { surah: currentSurahNum, ayat: ay.num, nama: labelBersih });
+  }
+  // localStorage fallback (pengguna belum login)
+  try {
+    const all = JSON.parse(localStorage.getItem('5dquran_terakhir') || '{}');
+    all['terakhir_hafalan'] = { surah: currentSurahNum, ayat: ay.num, nama: labelBersih, ts: Date.now() };
+    localStorage.setItem('5dquran_terakhir', JSON.stringify(all));
+    localStorage.setItem('5dq_terakhir_halaman', JSON.stringify({
+      jenis: 'hafalan', surah: currentSurahNum, ayat: ay.num, nama: labelBersih,
+      url: `hafalan.html?surah=${currentSurahNum}&ayat=${ay.num}`, ts: Date.now()
+    }));
+  } catch (e) {}
+}
+
+/* ── RENDER ARABIC WORDS ── */
+function renderWords(arabic, containerId, mode) {
+  const words = arabic.trim().split(/\s+/);
+  document.getElementById(containerId).innerHTML =
+    words.map((w, i) => '<span class="w-' + mode + '" data-i="' + i + '"> ' + w + '</span>').join('');
+}
+
+/* ── TOGGLE ARABIC VISIBILITY ── */
+document.getElementById('toggle-show').addEventListener('change', function () {
+  document.getElementById('arabic-display').classList.toggle('blurred', !this.checked);
+});
+const btnUncoverHaf = document.getElementById('btn-uncover-haf');
+if (btnUncoverHaf) btnUncoverHaf.addEventListener('click', () => {
+  document.getElementById('arabic-display').classList.remove('blurred');
+  document.getElementById('toggle-show').checked = true;
+  document.getElementById('tanpa-contoh-note-haf').style.display = 'none';
+});
+
+/* ── PLAY REFERENCE AUDIO ── */
+function playAudio(surahNum, ayatNum) {
+  const gn = globalAyahNum(surahNum, ayatNum);
+  const a1 = new Audio('https://cdn.islamic.network/quran/audio/128/ar.alafasy/' + gn + '.mp3');
+  a1.play().catch(() => {
+    const pad = n => String(n).padStart(3, '0');
+    const a2 = new Audio('https://everyayah.com/data/Alafasy_128kbps/' + pad(surahNum) + pad(ayatNum) + '.mp3');
+    a2.play().catch(() => {});
+  });
+}
+
+document.getElementById('btn-play-ref').addEventListener('click', () => {
+  if (ayats[idx]) playAudio(currentSurahNum, ayats[idx].num);
+});
+
+/* ── AYAT NAVIGATION ── */
+document.getElementById('btn-prev').addEventListener('click', () => { if (idx > 0) { idx--; loadAyat(); } });
+document.getElementById('btn-next').addEventListener('click', () => { if (idx < ayats.length - 1) { idx++; loadAyat(); } });
+
+/* ── ARABIC NORMALIZER ── */
+function norm(s) {
+  return s
+    /* PENTING — urutan: peta karakter di luar rentang \u0621-\u064A harus
+       dijalankan SEBELUM filter, karena filter akan membuangnya.
+       alef wasla \u0671 ('ٱ') -→ 'ا' : supaya 'ٱللَّهُ' == 'الله' */
+    .replace(/\u0671/g, '\u0627')
+    /* superscript alef \u0670: DIBUANG, bukan jadi 'ا'. */
+    .replace(/\u0670/g, '')
+    .replace(/[^\u0621-\u064A\s]/g, '')     /* buang harakat \u064B-\u065F serta tanda lain */
+    .replace(/\u0640/g, '')                    /* tatweel */
+    .replace(/[\u0622\u0623\u0625]/g, '\u0627')
+    .replace(/\u0629/g, '\u0647')
+    .replace(/\u0649/g, '\u064A')
+    .replace(/\u0624/g, '\u0648')
+    .replace(/\u0626/g, '\u064A')
+    .replace(/\s+/g, ' ').trim();
+}
+
+/* Kunci tahan-beda: huruf yang sering tertukar saat pengenalan suara disamakan.
+   contoh: ذ/ز/ظ -> ز , ث/س -> س , ص/س , ض/د , ط/ت , ح/ه/خ , ع/ا/ء , ق/ك , ة/ه */
+function foldWord(w) {
+  return w
+    .replace(/[\u0630\u0632\u0638]/g, '\u0632')          /* dz/z/dh */
+    .replace(/[\u062B\u0633\u0634]/g, '\u0633')          /* ts/s/sy */
+    .replace(/[\u0635]/g, '\u0633')                      /* shad -> s */
+    .replace(/[\u0636]/g, '\u062F')                      /* dhad -> d */
+    .replace(/[\u0637]/g, '\u062A')                      /* tha -> t */
+    .replace(/[\u0638]/g, '\u0632')
+    .replace(/[\u062D\u0647\u062E]/g, '\u0647')          /* ha/kha -> h */
+    .replace(/[\u0639\u0621\u0623\u0625\u0627\u0622]/g, '\u0627') /* ain/hamzah/alef */
+    .replace(/[\u0642]/g, '\u0643')                      /* qaf -> kaf */
+    .replace(/[\u0629]/g, '\u0647')
+    .replace(/[\u064A\u0649\u0626]/g, '\u064A')
+    .replace(/[\u0648\u0624]/g, '\u0648');
+}
+
+/* Jarak dua kata: 0 identik, 1 beda total (jarak Levenshtein huruf). */
+function wordDist(a, b) {
+  if (a === b) return 0;
+  const fa = foldWord(a), fb = foldWord(b);
+  if (fa === fb) return 0.25;               /* hanya beda huruf mirip */
+  const n = fa.length, m = fb.length;
+  if (!n || !m) return 1;
+  let prev = Array.from({ length: m + 1 }, (_, j) => j);
+  for (let i = 1; i <= n; i++) {
+    const cur = [i];
+    for (let j = 1; j <= m; j++)
+      cur[j] = Math.min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + (fa[i-1] === fb[j-1] ? 0 : 1));
+    prev = cur;
+  }
+  return Math.min(1, prev[m] / Math.max(n, m));
+}
+
+/* ── ALIGNMENT BERBOBOT (cocokkan ayat dengan bacaan user) ── */
+function align(ref, spk) {
+  const R = norm(ref).split(' ').filter(Boolean);
+  const K = norm(spk).split(' ').filter(Boolean);
+  const n = R.length, m = K.length;
+  const TH = 0.55;   /* ambang "masih dianggap kata yang sama" */
+
+  const dp = Array.from({ length: n + 1 }, () => Array(m + 1).fill(0));
+  for (let i = 0; i <= n; i++) dp[i][0] = i;
+  for (let j = 0; j <= m; j++) dp[0][j] = j;
+  for (let i = 1; i <= n; i++)
+    for (let j = 1; j <= m; j++) {
+      const d = wordDist(R[i-1], K[j-1]);
+      dp[i][j] = Math.min(dp[i-1][j] + 1, dp[i][j-1] + 1, dp[i-1][j-1] + d);
+    }
+
+  /* traceback */
+  const res = [];
+  let i = n, j = m;
+  while (i > 0 || j > 0) {
+    const d = (i > 0 && j > 0) ? wordDist(R[i-1], K[j-1]) : 1;
+    if (i > 0 && j > 0 && d <= TH) {
+      res.unshift({ ref: R[i-1], spk: K[j-1], st: d === 0 ? 'correct' : 'near' });
+      i--; j--;
+    } else if (j > 0 && (i === 0 || dp[i][j-1] < dp[i-1][j])) {
+      res.unshift({ ref: null, spk: K[j-1], st: 'extra' }); j--;
+    } else if (i > 0 && (j === 0 || dp[i-1][j] <= dp[i][j-1])) {
+      res.unshift({ ref: R[i-1], spk: null, st: 'missing' }); i--;
+    } else {
+      res.unshift({ ref: R[i-1], spk: K[j-1], st: 'wrong' }); i--; j--;
+    }
+  }
+  const correct = res.filter(r => r.st === 'correct').length;
+  const near    = res.filter(r => r.st === 'near').length;
+  const wrong   = res.filter(r => r.st === 'wrong').length;
+  const missing = res.filter(r => r.st === 'missing').length;
+  const extra   = res.filter(r => r.st === 'extra').length;
+  /* Kata "mirip" dihitung 0,75 poin; kata berlebih dikurangi sedikit. */
+  const skor = correct + near * 0.75 - extra * 0.25;
+  return {
+    res, correct, near, wrong, missing, extra,
+    total: n,
+    akurasi: n > 0 ? Math.max(0, Math.round(skor / n * 100)) : 0,
+    lengkap: n > 0 ? Math.round((correct + near) / n * 100) : 0,
+  };
+}
+
+/* ── SPEECH RECOGNITION ── */
+function initSR() {
+  recognition = new SR();
+  recognition.lang = 'ar-SA';
+  recognition.continuous     = true;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 3;
+
+  recognition.onresult = e => {
+    finalText = '';
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) finalText += e.results[i][0].transcript + ' ';
+      else interim += e.results[i][0].transcript;
+    }
+    liveText = finalText + interim;
+    showTranscript(liveText);
+    // Tampilkan teks Arab yang dikenali di area live-arab-text
+    const liveArabEl = document.getElementById('live-arab-text');
+    const liveArabWrap = document.getElementById('live-arab-wrap');
+    if (liveArabEl && liveText.trim()) {
+      liveArabEl.textContent = liveText.trim();
+      if (liveArabWrap) liveArabWrap.style.display = 'block';
+    }
+    /* Tampilkan tombol bila sudah ada teks APA PUN (final atau interim). */
+    tampilkanTombolNilai(liveText.trim().length > 0);
+    /* Live highlight: warnai kata Arab sesuai bacaan saat ini */
+    if (ayats[idx] && recording) liveHighlightWords(ayats[idx].arabic, liveText);
+  };
+
+  recognition.onerror = e => {
+    if (e.error === 'no-speech' || e.error === 'aborted') {
+      /* Sesi HP sering putus sendiri; jangan matikan tombol bila sudah ada teks */
+      if (liveText.trim()) tampilkanTombolNilai(true);
+      return;
+    }
+    stopRec();
+    if (e.error === 'not-allowed') alert('Izin mikrofon ditolak. Aktifkan izin mikrofon di pengaturan browser Anda.');
+    else if (e.error === 'service-not-allowed' || e.error === 'network') alert('Pengenalan suara tidak tersedia di perangkat ini. Rekaman tetap dapat diputar untuk dinilai sendiri.');
+  };
+
+  recognition.onend = () => {
+    if (recording) { try { recognition.start(); } catch (e) {} }
+    /* Sesi berakhir di HP: pastikan tombol sudah tampil kalau ada rekaman/teks */
+    if (liveText.trim() || userAudioBlobUrl) tampilkanTombolNilai(true);
+  };
+}
+
+/* ── LIVE HIGHLIGHT SAAT REKAM ──
+   Warnai kata Arab secara langsung saat user mengucapkan kata demi kata.
+   Logika: cocokkan kata-kata yang sudah diucapkan (finalText) dengan ayat referensi
+   menggunakan alignment dinamis; interim text ditampilkan sebagai "sedang diucapkan". */
+function liveHighlightWords(arabicRef, spokenText) {
+  if (!arabicRef || !recording) return;
+  const container = document.getElementById('arabic-display');
+  if (!container) return;
+
+  const refWords  = arabicRef.trim().split(/\s+/);
+  const spkWords  = norm(spokenText).split(/\s+/).filter(Boolean);
+  const finalWrds = norm(finalText).split(/\s+/).filter(Boolean);
+  const spans     = container.querySelectorAll('span[data-i]');
+
+  if (!spans.length) return;
+
+  // Hitung berapa kata referensi yang sudah ter-align dengan kata final
+  let matchedCount = 0;
+  let spkIdx = 0;
+  for (let ri = 0; ri < refWords.length && spkIdx < finalWrds.length; ri++) {
+    const d = wordDist(norm(refWords[ri]), finalWrds[spkIdx]);
+    if (d <= 0.55) { matchedCount = ri + 1; spkIdx++; }
+    else if (spkIdx < finalWrds.length - 1) {
+      // coba kata berikutnya
+      const d2 = wordDist(norm(refWords[ri]), finalWrds[spkIdx + 1]);
+      if (d2 <= 0.55) { matchedCount = ri + 1; spkIdx += 2; }
+    }
+  }
+
+  spans.forEach((sp, i) => {
+    // Hapus semua kelas warna sementara kecuali blurred
+    sp.className = sp.className.replace(/\bw-(correct|near|wrong|missing|pending|live-done|live-cur|live-next)\b/g, '').trim();
+    if (i < matchedCount) {
+      sp.className += ' w-live-done';   // sudah diucapkan (hijau muda)
+    } else if (i === matchedCount) {
+      sp.className += ' w-live-cur';    // sedang diucapkan (biru menyala)
+    } else {
+      sp.className += ' w-pending';     // belum giliran (abu-abu)
+    }
+  });
+}
+
+/* Satu pintu untuk memunculkan/menyembunyikan tombol "Nilai Bacaan" & "Ulangi".
+   Tombol juga muncul bila rekaman suara sudah tersedia, walau transkrip kosong. */
+function tampilkanTombolNilai(tampil) {
+  const d = tampil ? 'flex' : 'none';
+  const a = document.getElementById('btn-check');
+  const b = document.getElementById('btn-clear');
+  if (a) a.style.display = d;
+  if (b) b.style.display = d;
+}
+
+function showTranscript(text) {
+  const t = document.getElementById('transcript');
+  if (!text || !text.trim()) {
+    t.innerHTML = '<span class="haf-transcript-ph" id="t-ph">Tekan tombol mikrofon lalu mulai membaca\u2026</span>';
+  } else {
+    t.textContent = text.trim();
+  }
+}
+
+document.getElementById('mic-btn').addEventListener('click', () => {
+  if (!SR) return;
+  recording ? stopRec() : startRec();
+});
+
+let webMediaRecorder = null;
+let webAudioChunks = [];
+let userAudioBlobUrl = null;
+let userAudioPlayer = null;
+
+function startRec() {
+  if (!recognition) initSR();
+  liveText = ''; finalText = ''; recording = true;
+  webAudioChunks = [];
+  userAudioBlobUrl = null;
+
+  try { recognition.start(); } catch (e) {}
+
+  // Detect Android / iOS (mobile) – Web Speech API and MediaRecorder conflict.
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile|OS 2_/i.test(navigator.userAgent);
+
+  if (!isMobile && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    // Desktop: capture audio via MediaRecorder for playback.
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+      try {
+        webMediaRecorder = new MediaRecorder(stream);
+        webMediaRecorder.ondataavailable = e => { if (e.data.size > 0) webAudioChunks.push(e.data); };
+        webMediaRecorder.onstop = () => {
+          if (webAudioChunks.length > 0) {
+            const blob = new Blob(webAudioChunks, { type: webMediaRecorder.mimeType || 'audio/webm' });
+            pasangRekaman(URL.createObjectURL(blob));
+          }
+          stream.getTracks().forEach(t => t.stop());
+        };
+        webMediaRecorder.start();
+      } catch (err) { console.warn('Web MediaRecorder failed:', err); }
+    }).catch(err => console.warn('Mic permission error:', err));
+  } else {
+    // Mobile: skip MediaRecorder – rely on SpeechRecognition (if it works) or just record later.
+    if (isMobile) console.log('Mobile detected – MediaRecorder disabled to avoid microphone conflict.');
+  }
+
+  document.getElementById('mic-btn').classList.add('rec');
+  document.getElementById('mic-icon').textContent = '\uD83D\uDD34';
+  document.getElementById('mic-lbl').textContent = 'Sedang merekam\u2026 (Tekan untuk berhenti)';
+  document.getElementById('mic-lbl').classList.add('rec');
+  document.getElementById('btn-check').style.display = 'none';
+  document.getElementById('btn-clear').style.display = 'none';
+  showTranscript('');
+}
+
+function stopRec() {
+  recording = false;
+  try { recognition && recognition.stop(); } catch (e) {}
+  if (webMediaRecorder && webMediaRecorder.state !== 'inactive') {
+    try { webMediaRecorder.stop(); } catch (e) {}
+  }
+  document.getElementById('mic-btn').classList.remove('rec');
+  document.getElementById('mic-icon').textContent = '\uD83C\uDF99';
+  document.getElementById('mic-lbl').textContent = 'Tekan untuk mulai merekam';
+  document.getElementById('mic-lbl').classList.remove('rec');
+  /* Munculkan tombol bila ada transkrip ATAU rekaman suara.
+     Di HP transkrip sering kosong, tapi rekaman tetap bisa dinilai/diputar. */
+  if (liveText.trim() || userAudioBlobUrl) tampilkanTombolNilai(true);
+  /* Bersihkan animasi live-cur agar tidak berkedip terus setelah berhenti,
+     tapi pertahankan live-done (hijau) agar user tahu sudah sampai mana */
+  const container = document.getElementById('arabic-display');
+  if (container) {
+    container.querySelectorAll('.w-live-cur').forEach(sp => {
+      sp.className = sp.className.replace('w-live-cur', 'w-live-done').trim();
+    });
+  }
+}
+
+function resetRec() {
+  stopRec();
+  liveText = ''; finalText = '';
+  showTranscript('');
+  document.getElementById('btn-check').style.display = 'none';
+  document.getElementById('btn-clear').style.display = 'none';
+  const box = document.getElementById('playback-box');
+  if (box) box.style.display = 'none';
+  if (rekAudio) { try { rekAudio.pause(); } catch (e) {} rekAudio.removeAttribute('src'); }
+  if (rekBtn) rekBtn.innerHTML = '&#x25B6;&#xFE0F; Putar';
+  if (rekFill) rekFill.style.width = '0%';
+  if (rekTime) rekTime.textContent = '0:00';
+  const nb = document.getElementById('near-box');
+  if (nb) nb.style.display = 'none';
+  userAudioBlobUrl = null;
+}
+
+document.getElementById('btn-clear').addEventListener('click', resetRec);
+
+/* ── PEMUTAR ULANG HASIL REKAMAN ── */
+const rekAudio = document.getElementById('rek-audio');
+const rekBtn   = document.getElementById('btn-play-rek');
+const rekFill  = document.getElementById('play-fill');
+const rekTime  = document.getElementById('play-time');
+
+function rekFmt(sec) {
+  if (!isFinite(sec) || sec < 0) sec = 0;
+  const m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+  return m + ':' + String(s).padStart(2, '0');
+}
+
+/* Setelah rekaman berhenti: pasang hasilnya ke pemutar dan tampilkan kotak */
+function pasangRekaman(url) {
+  userAudioBlobUrl = url;
+  if (!rekAudio) return;
+  rekAudio.src = url;
+  rekAudio.load();
+  const box = document.getElementById('playback-box');
+  if (box) box.style.display = 'block';
+}
+
+if (rekBtn) {
+  rekBtn.addEventListener('click', () => {
+    if (!rekAudio || !rekAudio.src) return;
+    if (rekAudio.paused) rekAudio.play().catch(() => {});
+    else rekAudio.pause();
+  });
+
+  rekAudio.addEventListener('play',  () => { rekBtn.innerHTML = '&#x23F8;&#xFE0F; Jeda'; });
+  rekAudio.addEventListener('pause', () => { rekBtn.innerHTML = '&#x25B6;&#xFE0F; Putar'; });
+  rekAudio.addEventListener('ended', () => {
+    rekBtn.innerHTML = '&#x25B6;&#xFE0F; Putar';
+    rekFill.style.width = '0%';
+  });
+  rekAudio.addEventListener('loadedmetadata', () => {
+    rekTime.textContent = rekFmt(rekAudio.duration);
+  });
+  rekAudio.addEventListener('timeupdate', () => {
+    const d = rekAudio.duration || 0;
+    rekFill.style.width = d ? (rekAudio.currentTime / d * 100) + '%' : '0%';
+    rekTime.textContent = rekFmt(rekAudio.currentTime);
+  });
+
+  /* Klik pada batang untuk melompat ke posisi tertentu */
+  const bar = document.getElementById('play-bar');
+  bar.addEventListener('click', (ev) => {
+    const d = rekAudio.duration || 0;
+    if (!d) return;
+    const r = bar.getBoundingClientRect();
+    rekAudio.currentTime = Math.max(0, Math.min(1, (ev.clientX - r.left) / r.width)) * d;
+  });
+}
+
+/* ── SCORE BACAAN ── */
+document.getElementById('btn-check').addEventListener('click', () => {
+  const spoken = liveText.trim();
+  if (!spoken) {
+    // Tidak ada teks (Android). Tampilkan pemutar dan beri catatan.
+    const box = document.getElementById('playback-box');
+    if (box && userAudioBlobUrl) {
+      box.style.display = 'block';
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Tampilkan pesan info di hasil (bukan alert) agar tidak mengganggu UX.
+      const info = document.createElement('div');
+      info.style.cssText = 'color:#fbbf24;margin-top:.75rem;font-size:.85rem;';
+      info.textContent = 'Perangkat tidak mengenali teks bacaan. Gunakan rekaman suara di atas untuk menilai secara manual.';
+      const resultCard = document.getElementById('result-card');
+      resultCard.parentNode.insertBefore(info, resultCard);
+    } else {
+      alert('Belum ada bacaan yang direkam.');
+    }
+    return;
+  }
+  stopRec();
+  const ay = ayats[idx];
+  const { res, correct, near, wrong, missing, total, akurasi } = align(ay.arabic, spoken);
+  results[idx] = { acc: akurasi, correct, near, wrong, missing, total };
+  // Kriteria 2: hafalan dihitung 1 bila TIDAK ADA salah & TIDAK ADA terlewat.
+  if (wrong === 0 && missing === 0 && typeof Auth !== 'undefined' && Auth.simpanMark) {
+    Auth.simpanMark('hafalan', { surah: currentSurahNum, ayat: ay.num || (idx + 1), nama: (surahData && surahData[0] && surahData[0].englishName) || '' });
+  }
+  updateSession();
+  colorWords(ay.arabic, res);
+  showResult(ay, res, spoken, akurasi, correct, near, wrong, missing, total);
+});
+
+function colorWords(arabic, res) {
+  const words = arabic.trim().split(/\s+/);
+  const spans = document.getElementById('arabic-display').querySelectorAll('span');
+  let ri = 0;
+  words.forEach((w, i) => {
+    const sp = spans[i];
+    if (!sp) return;
+    const nw = norm(w);
+    let found = null;
+    for (let k = ri; k < res.length; k++) {
+      if (res[k].ref === nw) { found = res[k]; ri = k + 1; break; }
+    }
+    sp.className = found ? (found.st === 'correct' ? 'w-correct' : found.st === 'near' ? 'w-near' : found.st === 'wrong' ? 'w-wrong' : 'w-missing') : 'w-missing';
+  });
+}
+
+function showResult(ay, res, spoken, acc, correct, near, wrong, missing, total) {
+  document.getElementById('result-card').style.display = 'block';
+
+  let icon, title, sub, cls;
+  if (acc === 100)   { icon = '\uD83C\uDF1F'; title = 'Sempurna! Masya Allah!';    cls = 'perfect'; sub = 'Seluruh kata diucapkan dengan benar.'; }
+  else if (acc >= 85){ icon = '\u2705';        title = 'Sangat Baik!';              cls = 'good';    sub = 'Bacaan hampir sempurna. Perhatikan ' + (wrong + missing) + ' kata yang perlu diperbaiki.'; }
+  else if (acc >= 60){ icon = '\uD83D\uDCD6';  title = 'Cukup Baik';               cls = 'fair';    sub = 'Teruslah berlatih. Ulangi beberapa kali sampai lancar.'; }
+  else               { icon = '\uD83D\uDD04';  title = 'Perlu Lebih Banyak Latihan'; cls = 'poor';  sub = 'Dengarkan contoh bacaan, lalu coba lagi dengan perlahan.'; }
+
+  document.getElementById('r-icon').textContent  = icon;
+  document.getElementById('r-title').textContent = title;
+  document.getElementById('r-sub').textContent   = sub;
+  document.getElementById('score-pct').textContent = acc + '%';
+
+  const pctColors = { perfect: 'var(--green)', good: 'var(--gold-400)', fair: '#fb923c', poor: '#f87171' };
+  document.getElementById('score-pct').style.color = pctColors[cls];
+  document.getElementById('score-circle').className = 'haf-score-circle ' + cls;
+
+  document.getElementById('st-correct').textContent = correct;
+  document.getElementById('st-near').textContent    = near;
+  document.getElementById('st-wrong').textContent   = wrong;
+  document.getElementById('st-missing').textContent = missing;
+  document.getElementById('st-total').textContent   = total;
+
+  /* Pemutar ulang rekaman: tampilkan bila ada hasil rekaman */
+  const box = document.getElementById('playback-box');
+  if (box) box.style.display = userAudioBlobUrl ? 'block' : 'none';
+
+  /* Comparison: color-coded reference */
+  const words = ay.arabic.trim().split(/\s+/);
+  document.getElementById('cmp-correct').innerHTML = words.map(w => {
+    const nw = norm(w);
+    const e = res.find(r => r.ref === nw);
+    const c = e ? (e.st === 'correct' ? 'w-correct' : e.st === 'near' ? 'w-near' : e.st === 'wrong' ? 'w-wrong' : 'w-missing') : 'w-pending';
+    return '<span class="' + c + '"> ' + w + '</span>';
+  }).join('');
+  document.getElementById('cmp-said').textContent = spoken;
+
+  /* Corrections list */
+  const errs = res.filter(r => r.st === 'wrong' || r.st === 'missing');
+  if (errs.length > 0) {
+    document.getElementById('corr-box').style.display = 'block';
+    document.getElementById('corr-list').innerHTML = errs.map(e =>
+      e.st === 'wrong'
+        ? '<div class="haf-corr-item">Anda mengucapkan <span class="haf-corr-wrong">' + (e.spk || '') + '</span><span class="haf-corr-arrow"> \u2192 </span>seharusnya <span class="haf-corr-right">' + (e.ref || '') + '</span></div>'
+        : '<div class="haf-corr-item">Kata <span class="haf-corr-right">' + (e.ref || '') + '</span><span class="haf-corr-arrow"> \u2014 </span>terlewat / tidak terucapkan</div>'
+    ).join('');
+  } else {
+    document.getElementById('corr-box').style.display = 'none';
+  }
+
+  /* Kata yang mirip (hampir benar) -> saran perbaikan halus */
+  const nearWords = res.filter(r => r.st === 'near').map(r => r.ref);
+  const nb = document.getElementById('near-box');
+  if (nb) {
+    if (nearWords.length > 0) {
+      nb.style.display = 'block';
+      document.getElementById('near-list').innerHTML = nearWords.map(w =>
+        '<div class="haf-corr-item">Anda membaca <span class="haf-corr-right">' + w + '</span><span class="haf-corr-arrow"> \u2014 </span>dianggap <span class="w-near">mirip</span> (perhalus makhrajnya)</div>'
+      ).join('');
+    } else {
+      nb.style.display = 'none';
+    }
+  }
+
+  document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ── SESSION PANEL ── */
+function updateSession() {
+  const done  = results.filter(Boolean).length;
+  const lulus = results.filter(r => r && r.acc >= 85).length;
+  const total = ayats.length;
+  const avg   = done > 0 ? Math.round(results.filter(Boolean).reduce((a, r) => a + r.acc, 0) / done) : null;
+  document.getElementById('s-done').textContent  = done;
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-lulus').textContent = lulus;
+  document.getElementById('s-avg').textContent   = avg !== null ? avg + '%' : '\u2014';
+  document.getElementById('progress-fill').style.width = Math.round(done / Math.max(total, 1) * 100) + '%';
+}
+
+/* ── RESULT ACTIONS ── */
+document.getElementById('btn-retry').addEventListener('click', () => {
+  document.getElementById('result-card').style.display = 'none';
+  resetRec();
+  renderWords(ayats[idx].arabic, 'arabic-display', 'pending');
+  document.getElementById('mic-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+document.getElementById('btn-next-r').addEventListener('click', () => {
+  if (idx < ayats.length - 1) {
+    idx++;
+    document.getElementById('result-card').style.display = 'none';
+    loadAyat();
+    document.getElementById('ayat-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    finishSession();
+  }
+});
+
+document.getElementById('btn-listen-c').addEventListener('click', () => {
+  if (ayats[idx]) playAudio(currentSurahNum, ayats[idx].num);
+});
+
+/* ── SESSION COMPLETE ── */
+function finishSession() {
+  const total = ayats.length;
+  const done  = results.filter(Boolean).length;
+  const lulus = results.filter(r => r && r.acc >= 85).length;
+  const avg   = done > 0 ? Math.round(results.filter(Boolean).reduce((a, r) => a + r.acc, 0) / done) : 0;
+  ['ayat-card', 'mic-section', 'result-card'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.getElementById('progress-fill').style.width = '100%';
+  const trophy = avg >= 85 ? '\uD83C\uDFC6' : avg >= 60 ? '\uD83D\uDCD6' : '\uD83D\uDD04';
+  document.getElementById('session-panel').innerHTML =
+    '<div style="text-align:center;padding:1.5rem 0">' +
+    '<div style="font-size:3rem;margin-bottom:1rem">' + trophy + '</div>' +
+    '<h2 style="font-size:1.35rem;font-weight:800;color:var(--gold-400);margin-bottom:.5rem">Sesi Selesai!</h2>' +
+    '<p style="color:var(--text-muted);font-size:.88rem">Alhamdulillah, sesi hafalan telah selesai.</p>' +
+    '</div>' +
+    '<div class="haf-sess-grid" style="margin-top:1rem">' +
+    '<div class="haf-sess-stat"><div class="haf-sess-val" style="color:var(--gold-400)">' + total + '</div><div class="haf-sess-lbl">Total Ayat</div></div>' +
+    '<div class="haf-sess-stat"><div class="haf-sess-val" style="color:var(--green)">' + lulus + '</div><div class="haf-sess-lbl">Lulus (\u2265 85%)</div></div>' +
+    '<div class="haf-sess-stat"><div class="haf-sess-val" style="color:var(--purple)">' + avg + '%</div><div class="haf-sess-lbl">Rata-rata</div></div>' +
+    '</div>' +
+    '<div style="display:flex;gap:.75rem;margin-top:1.5rem;flex-wrap:wrap">' +
+    '<button class="hbtn hbtn-primary" style="flex:1" onclick="location.reload()">\uD83D\uDD01 Sesi Baru</button>' +
+    '<button class="hbtn hbtn-ghost" style="flex:1" onclick="window.location.href=\'index.html\'">&larr; Kembali ke Surah</button>' +
+    '</div>';
+}
+
+} // akhir mulaiSetoran()
+</script>
+</body>
+</html>

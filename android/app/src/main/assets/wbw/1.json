@@ -1,0 +1,190 @@
+{
+  "1": [
+    {
+      "pos": 1,
+      "ar": "بِسْمِ",
+      "tl": "bis'mi",
+      "tr": "dengan nama"
+    },
+    {
+      "pos": 2,
+      "ar": "ٱللَّهِ",
+      "tl": "l-lahi",
+      "tr": "Allah"
+    },
+    {
+      "pos": 3,
+      "ar": "ٱلرَّحْمَـٰنِ",
+      "tl": "l-raḥmāni",
+      "tr": "Maha Pengasih"
+    },
+    {
+      "pos": 4,
+      "ar": "ٱلرَّحِيمِ",
+      "tl": "l-raḥīmi",
+      "tr": "Maha Penyayang"
+    }
+  ],
+  "2": [
+    {
+      "pos": 1,
+      "ar": "ٱلْحَمْدُ",
+      "tl": "al-ḥamdu",
+      "tr": "pujian"
+    },
+    {
+      "pos": 2,
+      "ar": "لِلَّهِ",
+      "tl": "lillahi",
+      "tr": "bagi Allah"
+    },
+    {
+      "pos": 3,
+      "ar": "رَبِّ",
+      "tl": "rabbi",
+      "tr": "Tuhan"
+    },
+    {
+      "pos": 4,
+      "ar": "ٱلْعَـٰلَمِينَ",
+      "tl": "l-ʿālamīna",
+      "tr": "alam semesta"
+    }
+  ],
+  "3": [
+    {
+      "pos": 1,
+      "ar": "ٱلرَّحْمَـٰنِ",
+      "tl": "al-raḥmāni",
+      "tr": "Maha Pengasih"
+    },
+    {
+      "pos": 2,
+      "ar": "ٱلرَّحِيمِ",
+      "tl": "l-raḥīmi",
+      "tr": "Maha Penyayang"
+    }
+  ],
+  "4": [
+    {
+      "pos": 1,
+      "ar": "مَـٰلِكِ",
+      "tl": "māliki",
+      "tr": "Penguasa"
+    },
+    {
+      "pos": 2,
+      "ar": "يَوْمِ",
+      "tl": "yawmi",
+      "tr": "hari"
+    },
+    {
+      "pos": 3,
+      "ar": "ٱلدِّينِ",
+      "tl": "l-dīni",
+      "tr": "pembalasan"
+    }
+  ],
+  "5": [
+    {
+      "pos": 1,
+      "ar": "إِيَّاكَ",
+      "tl": "iyyāka",
+      "tr": "hanya kepadaMu"
+    },
+    {
+      "pos": 2,
+      "ar": "نَعْبُدُ",
+      "tl": "naʿbudu",
+      "tr": "kami menyembah"
+    },
+    {
+      "pos": 3,
+      "ar": "وَإِيَّاكَ",
+      "tl": "wa-iyyāka",
+      "tr": "dan hanya kepadaMu"
+    },
+    {
+      "pos": 4,
+      "ar": "نَسْتَعِينُ",
+      "tl": "nastaʿīnu",
+      "tr": "kami mohon pertolongan"
+    }
+  ],
+  "6": [
+    {
+      "pos": 1,
+      "ar": "ٱهْدِنَا",
+      "tl": "ih'dinā",
+      "tr": "tunjukkan kami"
+    },
+    {
+      "pos": 2,
+      "ar": "ٱلصِّرَٰطَ",
+      "tl": "l-ṣirāṭa",
+      "tr": "jalan"
+    },
+    {
+      "pos": 3,
+      "ar": "ٱلْمُسْتَقِيمَ",
+      "tl": "l-mus'taqīma",
+      "tr": "lurus"
+    }
+  ],
+  "7": [
+    {
+      "pos": 1,
+      "ar": "صِرَٰطَ",
+      "tl": "ṣirāṭa",
+      "tr": "jalan"
+    },
+    {
+      "pos": 2,
+      "ar": "ٱلَّذِينَ",
+      "tl": "alladhīna",
+      "tr": "orang-orang yang"
+    },
+    {
+      "pos": 3,
+      "ar": "أَنْعَمْتَ",
+      "tl": "anʿamta",
+      "tr": "diberi nikmat"
+    },
+    {
+      "pos": 4,
+      "ar": "عَلَيْهِمْ",
+      "tl": "ʿalayhim",
+      "tr": "kepadanya"
+    },
+    {
+      "pos": 5,
+      "ar": "غَيْرِ",
+      "tl": "ghayri",
+      "tr": "bukan"
+    },
+    {
+      "pos": 6,
+      "ar": "ٱلْمَغْضُوبِ",
+      "tl": "l-maghḍūbi",
+      "tr": "orang yang dimurkai"
+    },
+    {
+      "pos": 7,
+      "ar": "عَلَيْهِمْ",
+      "tl": "ʿalayhim",
+      "tr": "kepadanya"
+    },
+    {
+      "pos": 8,
+      "ar": "وَلَا",
+      "tl": "walā",
+      "tr": "dan tidak"
+    },
+    {
+      "pos": 9,
+      "ar": "ٱلضَّآلِّينَ",
+      "tl": "l-ḍālīna",
+      "tr": "orang-orang yang sesat"
+    }
+  ]
+}

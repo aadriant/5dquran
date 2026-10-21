@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil — 5D Quran</title>
+<link rel="icon" href="assets/icon.jpg">
+<style>
+  :root{--gold:#e8bb50;--bg:#0b0b16;--card:rgba(255,255,255,.04);--border:rgba(255,255,255,.09);--txt:#eeeef5;--muted:#9999bb}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
+  .wrap{max-width:34rem;margin:0 auto;padding:1.2rem 1.1rem 3rem}
+  header.site{display:flex;align-items:center;gap:.7rem;padding:.6rem 0 1.2rem;border-bottom:1px solid var(--border);margin-bottom:1.4rem}
+  header.site img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid rgba(212,168,83,.3)}
+  header.site a.brand{color:var(--txt);text-decoration:none;font-weight:800;font-size:1.1rem}
+  header.site a.brand em{color:var(--gold);font-style:normal}
+  header.site .balik{margin-left:auto;color:var(--muted);font-size:.82rem;text-decoration:none}
+  .kartu{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.2rem;margin-bottom:1rem}
+  .profil-atas{display:flex;align-items:center;gap:1rem}
+  .profil-atas img{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(212,168,83,.35)}
+  .profil-atas h1{font-size:1.15rem;margin-bottom:.2rem}
+  .profil-atas p{color:var(--muted);font-size:.82rem}
+  h2.judul{font-size:.95rem;color:var(--gold);margin-bottom:.8rem;display:flex;align-items:center;gap:.45rem}
+  .opt{display:flex;flex-direction:column;gap:.45rem}
+  .opt button{display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;cursor:pointer;
+    background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:11px;
+    padding:.7rem .9rem;color:var(--txt);font-size:.88rem;font-family:inherit;transition:.18s}
+  .opt button:hover{border-color:rgba(212,168,83,.35)}
+  .opt button.active{border-color:var(--gold);background:rgba(212,168,83,.08)}
+  .opt .cek{margin-left:auto;color:var(--gold);font-weight:700}
+  .opt .ket{display:block;font-size:.72rem;color:var(--muted);margin-top:.15rem}
+  .aksi{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.4rem}
+  .btn{cursor:pointer;border-radius:11px;padding:.7rem 1.1rem;font-size:.86rem;font-weight:600;font-family:inherit;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--txt)}
+  .btn.utama{background:rgba(212,168,83,.15);border-color:rgba(212,168,83,.4);color:var(--gold)}
+  .btn.bahaya{color:#e88;border-color:rgba(232,136,136,.3)}
+  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;text-align:center}
+  .stats div{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:.75rem .4rem}
+  .stats b{display:block;font-size:1.25rem;color:var(--gold)}
+  .stats span{font-size:.7rem;color:var(--muted)}
+  /* Grafik kemajuan 3 kriteria */
+  .gr-row{margin-bottom:1rem}
+  .gr-row:last-child{margin-bottom:.2rem}
+  .gr-lbl{display:flex;justify-content:space-between;align-items:baseline;font-size:.82rem;margin-bottom:.35rem}
+  .gr-val{color:var(--muted);font-size:.75rem;font-variant-numeric:tabular-nums}
+  .gr-bar{height:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+  .gr-fill{height:100%;min-width:0;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+  .gr-fill.ada{min-width:14px}   /* agar tetap terlihat walau progres masih kecil */
+  .gr-baca{background:linear-gradient(90deg,#38bdf8,#0ea5e9)}
+  .gr-tulisan{background:linear-gradient(90deg,#4ade80,#22c55e)}
+  .gr-hafalan{background:linear-gradient(90deg,#e8bb50,#d4a853)}
+  .gr-note{font-size:.7rem;color:var(--muted);margin-top:.7rem;line-height:1.5;border-top:1px solid var(--border);padding-top:.6rem}
+  #gerbang{text-align:center;padding:2rem 0}
+  #gerbang img{width:96px;height:96px;border-radius:50%;object-fit:cover;border:1px solid rgba(212,168,83,.3);margin-bottom:1rem}
+  #gerbang h2{font-size:1.25rem;margin-bottom:.4rem}
+  #gerbang p{color:var(--muted);font-size:.86rem;margin-bottom:1.3rem}
+  #tombol-google{display:flex;justify-content:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <img src="assets/icon.jpg" alt="5D Quran">
+    <a href="index.html" class="brand">5D <em>Quran</em></a>
+    <a href="index.html" class="balik">← Beranda</a>
+  </header>
+
+  <!-- BELUM LOGIN -->
+  <div id="gerbang" style="display:none">
+    <img src="assets/icon.jpg" alt="5D Quran">
+    <h2>Masuk dengan Google</h2>
+    <p>Daftar dan masuk supaya pilihan kamu tersimpan di profil.</p>
+    <div id="tombol-google"></div>
+  </div>
+
+  <!-- SUDAH LOGIN -->
+  <div id="isi" style="display:none">
+    <div class="kartu">
+      <div class="profil-atas">
+        <img id="foto" src="assets/icon.jpg" alt="Foto profil">
+        <div>
+          <h1 id="nama">—</h1>
+          <p id="email">—</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="kartu">
+      <h2 class="judul">📊 Kemajuan Kriteria</h2>
+      <div id="grafik-kriteria">
+        <div class="gr-row" data-k="baca">
+          <div class="gr-lbl"><span>&#x1F4D6; Baca</span><span class="gr-val" id="gr-val-baca">0 / 6236</span></div>
+          <div class="gr-bar"><div class="gr-fill gr-baca" id="gr-fill-baca"></div></div>
+        </div>
+        <div class="gr-row" data-k="tulisan">
+          <div class="gr-lbl"><span>&#x270D;&#xFE0F; Tulisan</span><span class="gr-val" id="gr-val-tulisan">0 / 6236</span></div>
+          <div class="gr-bar"><div class="gr-fill gr-tulisan" id="gr-fill-tulisan"></div></div>
+        </div>
+        <div class="gr-row" data-k="hafalan">
+          <div class="gr-lbl"><span>&#x1F3A4; Hafalan</span><span class="gr-val" id="gr-val-hafalan">0 / 6236</span></div>
+          <div class="gr-bar"><div class="gr-fill gr-hafalan" id="gr-fill-hafalan"></div></div>
+        </div>
+      </div>
+      <p class="gr-note">Ayat dihitung selesai bila: baca&nbsp;=&nbsp;ayat sudah dibuka &middot; hafalan &amp; tulisan&nbsp;=&nbsp;tanpa salah dan tanpa terlewat.</p>
+    </div>
+
+    <div class="kartu">
+      <h2 class="judul">📊 Aktivitas</h2>
+      <div class="stats">
+        <div><b id="jml-bookmark">0</b><span>Ditandai</span></div>
+        <div><b id="jml-terakhir">0</b><span>Riwayat baca</span></div>
+      </div>
+    </div>
+
+    <div class="kartu">
+      <h2 class="judul">📄 Tampilan Ayat</h2>
+      <div class="opt" id="opt-tampilan"></div>
+    </div>
+
+    <div class="kartu">
+      <h2 class="judul">🎧 Pilihan Qari</h2>
+      <div class="opt" id="opt-qari"></div>
+    </div>
+
+    <div class="kartu">
+      <h2 class="judul">✍️ Contoh Ayat (Tulis &amp; Hafalan)</h2>
+      <div class="opt" id="opt-contoh"></div>
+    </div>
+
+    <div class="kartu">
+      <h2 class="judul">📖 Huruf Mushaf</h2>
+      <div class="opt" id="opt-mushaf"></div>
+    </div>
+
+    <div class="aksi">
+      <button class="btn" onclick="location.href='hafalan.html'">🎤 Setoran Hafalan</button>
+      <button class="btn bahaya" id="keluar" style="margin-left:auto">Keluar</button>
+    </div>
+    <p style="color:var(--muted);font-size:.74rem;margin-top:1rem;text-align:center">
+      Pengaturan tersimpan di profil, jadi ikut ke perangkat lain saat kamu masuk.
+    </p>
+  </div>
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="js/auth.js"></script>
+<script>
+const DAFTAR = {
+  tampilan: [
+    { id:'arab_terjemah', name:'Arab + Terjemah', ket:'Tulisan Arab beserta terjemahan Indonesia' },
+    { id:'arab_saja',     name:'Arab Saja',       ket:'Hanya tulisan Arab tanpa terjemahan' },
+  ],
+  qari: [
+    { id:'alafasy',  name:'Alafasy' },
+    { id:'husary',   name:'Al-Husary' },
+    { id:'minshawi', name:'Minshawi' },
+    { id:'basit',    name:'Abdul Basit' },
+    { id:'ajamy',    name:'Al-Ajamy' },
+  ],
+  mushaf: [
+    { id:'madani',  name:'Madani' },
+    { id:'naskh',   name:'Naskh' },
+    { id:'indopak', name:'IndoPak' },
+  ],
+  contoh: [
+    { id:'ya',    name:'Dengan Contoh', ket:'Ayat contoh ditampilkan sebagai acuan' },
+    { id:'tidak', name:'Tanpa Contoh',  ket:'Ayat contoh disembunyikan — murni dari hafalan' },
+  ],
+};
+
+(async function () {
+  await Auth.init();
+
+  if (!Auth.sudahLogin()) {
+    document.getElementById('gerbang').style.display = 'block';
+    googleButton(document.getElementById('tombol-google'), () => location.reload());
+    return;
+  }
+
+  document.getElementById('isi').style.display = 'block';
+
+  const p = Auth.profil();
+  document.getElementById('nama').textContent  = p.nama  || 'Pengguna';
+  document.getElementById('email').textContent = p.email || '';
+  if (p.foto) document.getElementById('foto').src = p.foto;
+
+  const hitung = (arr) => (arr || []).length;
+  // (favorit tidak dipakai)
+  document.getElementById('jml-bookmark').textContent = hitung(Auth.me.bookmark);
+  document.getElementById('jml-terakhir').textContent = hitung(Auth.me.terakhir);
+
+  // ── Statistik 3 kriteria (baca / hafalan / tulisan) ──
+  const TOTAL_AYAT = 6236;   // jumlah seluruh ayat Al-Quran
+  try {
+    const r = await fetch('api.php?a=stats', { credentials: 'same-origin' });
+    const d = await r.json();
+    if (d.ok && d.stats) {
+      for (const k of ['baca', 'tulisan', 'hafalan']) {
+        const n = d.stats[k] || 0;
+        const pct = Math.min(100, n / TOTAL_AYAT * 100);
+        const fill = document.getElementById('gr-fill-' + k);
+        const val  = document.getElementById('gr-val-' + k);
+        if (fill) {
+          fill.style.width = pct + '%';
+          fill.classList.toggle('ada', n > 0);   // batang tetap terlihat saat progres kecil
+        }
+        if (val) {
+          const teksPct = pct > 0 && pct < 1 ? pct.toFixed(2) : pct.toFixed(1);
+          val.textContent = n.toLocaleString('id-ID') + ' / ' + TOTAL_AYAT.toLocaleString('id-ID') + ' (' + teksPct + '%)';
+        }
+      }
+    }
+  } catch (e) { /* biarkan nilai default bila gagal */ }
+
+  const st = Auth.setting();
+  for (const jenis of ['tampilan', 'qari', 'contoh', 'mushaf']) {
+    const wadah = document.getElementById('opt-' + jenis);
+    wadah.innerHTML = DAFTAR[jenis].map(o => `
+      <button data-set="${jenis}" data-id="${o.id}" class="${st[jenis] === o.id ? 'active' : ''}">
+        <span>${o.name}${o.ket ? `<span class="ket">${o.ket}</span>` : ''}</span>
+        <span class="cek">${st[jenis] === o.id ? '✓' : ''}</span>
+      </button>`).join('');
+  }
+
+  document.querySelectorAll('.opt button').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const jenis = btn.dataset.set, id = btn.dataset.id;
+      await Auth.simpanSetting(jenis, id);
+      document.querySelectorAll(`[data-set="${jenis}"]`).forEach(b => {
+        const aktif = b.dataset.id === id;
+        b.classList.toggle('active', aktif);
+        b.querySelector('.cek').textContent = aktif ? '✓' : '';
+      });
+    });
+  });
+
+  document.getElementById('keluar').addEventListener('click', () => Auth.logout());
+})();
+</script>
+</body>
+</html>

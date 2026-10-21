@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_main">#080812</color>
+    <color name="bg_card">#121324</color>
+    <color name="bg_card_secondary">#1a1c33</color>
+    <color name="bg_input">#181a30</color>
+    <color name="border_color">#262847</color>
+    
+    <color name="gold_primary">#F0C060</color>
+    <color name="gold_dark">#C8860A</color>
+    <color name="gold_light">#FDE68A</color>
+    
+    <color name="emerald">#10B981</color>
+    <color name="emerald_dark">#047857</color>
+    <color name="cyan_accent">#38BDF8</color>
+    <color name="purple_accent">#A78BFA</color>
+    <color name="red_error">#EF4444</color>
+    
+    <color name="text_primary">#F8FAFC</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="text_muted">#64748B</color>
+    
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="colorPrimary">#F0C060</color>
+    <color name="colorPrimaryDark">#080812</color>
+    <color name="colorAccent">#F0C060</color>
+</resources>

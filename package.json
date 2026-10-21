@@ -1,0 +1,37 @@
+{
+  "name": "5dquran",
+  "version": "1.0.1",
+  "description": "5D Quran - Aplikasi Al-Quran Digital (Dibaca, Didengarkan, Dihafal, Ditulis, Dipelajari)",
+  "private": true,
+  "scripts": {
+    "start": "python -m http.server 8765",
+    "cap:init": "npx cap init \"5D Quran\" com.dquran.app5d --web-dir .",
+    "cap:add:android": "npx cap add android",
+    "cap:add:ios": "npx cap add ios",
+    "cap:sync": "npx cap sync",
+    "cap:build:android": "npx cap sync android && npx cap open android",
+    "cap:build:ios": "npx cap sync ios && npx cap open ios"
+  },
+  "keywords": [
+    "quran",
+    "islam",
+    "android",
+    "ios"
+  ],
+  "author": "Ari Adrianto",
+  "license": "MIT",
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^6.2.0"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/ios": "^6.2.0",
+    "@capacitor/splash-screen": "^6.0.2",
+    "@capacitor/status-bar": "^6.0.1"
+  },
+  "allowScripts": {
+    "sharp@0.32.6": true
+  }
+}
