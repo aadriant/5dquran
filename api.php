@@ -3,6 +3,83 @@
 require_once '/etc/5dquran/api_bootstrap.php';
 q5_boot();
 
+// ── Helper Multi-Path Penyimpanan Feedback ──
+function q5_feedback_file() {
+    static $resolved = null;
+    if ($resolved !== null) return $resolved;
+
+    $candidates = [
+        __DIR__ . '/data/feedback_messages.json',
+        __DIR__ . '/feedback_messages.json',
+        '/var/tmp/5dquran_feedback_messages.json',
+        sys_get_temp_dir() . '/5dquran_feedback_messages.json',
+        '/tmp/5dquran_feedback_messages.json'
+    ];
+
+    foreach ($candidates as $c) {
+        if (file_exists($c) && filesize($c) > 2) {
+            $resolved = $c;
+            return $resolved;
+        }
+    }
+
+    foreach ($candidates as $c) {
+        $d = dirname($c);
+        if (!is_dir($d)) @mkdir($d, 0777, true);
+        if (is_dir($d) && is_writable($d)) {
+            $test = @file_put_contents($c, '[]');
+            if ($test !== false) {
+                $resolved = $c;
+                return $resolved;
+            }
+        }
+    }
+
+    $resolved = sys_get_temp_dir() . '/5dquran_feedback_messages.json';
+    @file_put_contents($resolved, '[]');
+    return $resolved;
+}
+
+function q5_read_all_feedback() {
+    $candidates = [
+        __DIR__ . '/data/feedback_messages.json',
+        __DIR__ . '/feedback_messages.json',
+        '/var/tmp/5dquran_feedback_messages.json',
+        sys_get_temp_dir() . '/5dquran_feedback_messages.json',
+        '/tmp/5dquran_feedback_messages.json'
+    ];
+    $merged = [];
+    $seenIds = [];
+    foreach ($candidates as $c) {
+        if (file_exists($c) && filesize($c) > 2) {
+            $raw = @file_get_contents($c);
+            $data = $raw ? json_decode($raw, true) : null;
+            if (is_array($data)) {
+                foreach ($data as $item) {
+                    $id = $item['id'] ?? (string)mt_rand();
+                    if (!isset($seenIds[$id])) {
+                        $seenIds[$id] = true;
+                        $merged[] = $item;
+                    }
+                }
+            }
+        }
+    }
+    return $merged;
+}
+
+function q5_save_all_feedback($allChats) {
+    $targetFile = q5_feedback_file();
+    $json = json_encode(array_values($allChats), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    $ok = @file_put_contents($targetFile, $json);
+    if ($ok === false) {
+        @file_put_contents('/var/tmp/5dquran_feedback_messages.json', $json);
+        @file_put_contents(sys_get_temp_dir() . '/5dquran_feedback_messages.json', $json);
+        @file_put_contents('/tmp/5dquran_feedback_messages.json', $json);
+    }
+    return true;
+}
+
 $acao = isset($_GET['a']) ? $_GET['a'] : '';
 $raw  = file_get_contents('php://input');
 $in   = $raw ? json_decode($raw, true) : [];
@@ -295,82 +372,6 @@ case 'tulisan':
     }
     q5_json(['ok' => true, 'tulisan' => [$surah, $ayat]]);
 
-// ── Helper Multi-Path Penyimpanan Feedback ──
-function q5_feedback_file() {
-    static $resolved = null;
-    if ($resolved !== null) return $resolved;
-
-    $candidates = [
-        __DIR__ . '/data/feedback_messages.json',
-        __DIR__ . '/feedback_messages.json',
-        '/var/tmp/5dquran_feedback_messages.json',
-        sys_get_temp_dir() . '/5dquran_feedback_messages.json',
-        '/tmp/5dquran_feedback_messages.json'
-    ];
-
-    foreach ($candidates as $c) {
-        if (file_exists($c) && filesize($c) > 2) {
-            $resolved = $c;
-            return $resolved;
-        }
-    }
-
-    foreach ($candidates as $c) {
-        $d = dirname($c);
-        if (!is_dir($d)) @mkdir($d, 0777, true);
-        if (is_dir($d) && is_writable($d)) {
-            $test = @file_put_contents($c, '[]');
-            if ($test !== false) {
-                $resolved = $c;
-                return $resolved;
-            }
-        }
-    }
-
-    $resolved = sys_get_temp_dir() . '/5dquran_feedback_messages.json';
-    @file_put_contents($resolved, '[]');
-    return $resolved;
-}
-
-function q5_read_all_feedback() {
-    $candidates = [
-        __DIR__ . '/data/feedback_messages.json',
-        __DIR__ . '/feedback_messages.json',
-        '/var/tmp/5dquran_feedback_messages.json',
-        sys_get_temp_dir() . '/5dquran_feedback_messages.json',
-        '/tmp/5dquran_feedback_messages.json'
-    ];
-    $merged = [];
-    $seenIds = [];
-    foreach ($candidates as $c) {
-        if (file_exists($c) && filesize($c) > 2) {
-            $raw = @file_get_contents($c);
-            $data = $raw ? json_decode($raw, true) : null;
-            if (is_array($data)) {
-                foreach ($data as $item) {
-                    $id = $item['id'] ?? (string)mt_rand();
-                    if (!isset($seenIds[$id])) {
-                        $seenIds[$id] = true;
-                        $merged[] = $item;
-                    }
-                }
-            }
-        }
-    }
-    return $merged;
-}
-
-function q5_save_all_feedback($allChats) {
-    $targetFile = q5_feedback_file();
-    $json = json_encode(array_values($allChats), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-    $ok = @file_put_contents($targetFile, $json);
-    if ($ok === false) {
-        @file_put_contents('/var/tmp/5dquran_feedback_messages.json', $json);
-        @file_put_contents(sys_get_temp_dir() . '/5dquran_feedback_messages.json', $json);
-        @file_put_contents('/tmp/5dquran_feedback_messages.json', $json);
-    }
-    return true;
-}
 
 // ── Chat Pelaporan Kesalahan & Ide Usulan (Kirim ke pengembang) ──
 case 'chat_send':
@@ -618,13 +619,16 @@ case 'chat_admin':
                 <?php else: ?>
                     <ul class="thread-list">
                         <?php foreach ($threads as $tUid => $tMsgs): ?>
-                            <?php $last = end($tMsgs); ?>
+                            <?php 
+                            $tMsgsArr = array_values($tMsgs);
+                            $last = !empty($tMsgsArr) ? $tMsgsArr[count($tMsgsArr) - 1] : []; 
+                            ?>
                             <li class="thread-item">
-                                <a href="api.php?a=chat_admin&uid=<?= urlencode($tUid) ?>">
-                                    User: <?= htmlspecialchars($last['user_name'] ?? $tUid) ?> (<?= htmlspecialchars($tUid) ?>)
+                                <a href="api.php?a=chat_admin&uid=<?= urlencode((string)$tUid) ?>">
+                                    User: <?= htmlspecialchars($last['user_name'] ?? (string)$tUid) ?> (<?= htmlspecialchars((string)$tUid) ?>)
                                 </a>
                                 <div class="meta" style="margin-top:4px;">
-                                    Pesan terakhir: <?= htmlspecialchars(substr($last['pesan'] ?? '', 0, 70)) ?>... · <?= htmlspecialchars($last['created_at'] ?? '') ?>
+                                    Pesan terakhir: <?= htmlspecialchars(mb_substr($last['pesan'] ?? '', 0, 70)) ?>... · <?= htmlspecialchars($last['created_at'] ?? '') ?>
                                     (<?= count($tMsgs) ?> pesan)
                                 </div>
                             </li>
