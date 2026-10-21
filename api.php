@@ -295,6 +295,83 @@ case 'tulisan':
     }
     q5_json(['ok' => true, 'tulisan' => [$surah, $ayat]]);
 
+// ── Helper Multi-Path Penyimpanan Feedback ──
+function q5_feedback_file() {
+    static $resolved = null;
+    if ($resolved !== null) return $resolved;
+
+    $candidates = [
+        __DIR__ . '/data/feedback_messages.json',
+        __DIR__ . '/feedback_messages.json',
+        '/var/tmp/5dquran_feedback_messages.json',
+        sys_get_temp_dir() . '/5dquran_feedback_messages.json',
+        '/tmp/5dquran_feedback_messages.json'
+    ];
+
+    foreach ($candidates as $c) {
+        if (file_exists($c) && filesize($c) > 2) {
+            $resolved = $c;
+            return $resolved;
+        }
+    }
+
+    foreach ($candidates as $c) {
+        $d = dirname($c);
+        if (!is_dir($d)) @mkdir($d, 0777, true);
+        if (is_dir($d) && is_writable($d)) {
+            $test = @file_put_contents($c, '[]');
+            if ($test !== false) {
+                $resolved = $c;
+                return $resolved;
+            }
+        }
+    }
+
+    $resolved = sys_get_temp_dir() . '/5dquran_feedback_messages.json';
+    @file_put_contents($resolved, '[]');
+    return $resolved;
+}
+
+function q5_read_all_feedback() {
+    $candidates = [
+        __DIR__ . '/data/feedback_messages.json',
+        __DIR__ . '/feedback_messages.json',
+        '/var/tmp/5dquran_feedback_messages.json',
+        sys_get_temp_dir() . '/5dquran_feedback_messages.json',
+        '/tmp/5dquran_feedback_messages.json'
+    ];
+    $merged = [];
+    $seenIds = [];
+    foreach ($candidates as $c) {
+        if (file_exists($c) && filesize($c) > 2) {
+            $raw = @file_get_contents($c);
+            $data = $raw ? json_decode($raw, true) : null;
+            if (is_array($data)) {
+                foreach ($data as $item) {
+                    $id = $item['id'] ?? (string)mt_rand();
+                    if (!isset($seenIds[$id])) {
+                        $seenIds[$id] = true;
+                        $merged[] = $item;
+                    }
+                }
+            }
+        }
+    }
+    return $merged;
+}
+
+function q5_save_all_feedback($allChats) {
+    $targetFile = q5_feedback_file();
+    $json = json_encode(array_values($allChats), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    $ok = @file_put_contents($targetFile, $json);
+    if ($ok === false) {
+        @file_put_contents('/var/tmp/5dquran_feedback_messages.json', $json);
+        @file_put_contents(sys_get_temp_dir() . '/5dquran_feedback_messages.json', $json);
+        @file_put_contents('/tmp/5dquran_feedback_messages.json', $json);
+    }
+    return true;
+}
+
 // ── Chat Pelaporan Kesalahan & Ide Usulan (Kirim ke pengembang) ──
 case 'chat_send':
     $userId = trim((string)($in['user_id'] ?? ''));
@@ -310,16 +387,7 @@ case 'chat_send':
         q5_json(['ok' => false, 'error' => 'Pesan tidak boleh kosong'], 400);
     }
 
-    $dataFile = __DIR__ . '/data/feedback_messages.json';
-    $dataDir = dirname($dataFile);
-    if (!is_dir($dataDir)) @mkdir($dataDir, 0777, true);
-
-    $allChats = [];
-    if (file_exists($dataFile)) {
-        $raw = file_get_contents($dataFile);
-        $allChats = json_decode($raw, true) ?: [];
-    }
-
+    $allChats = q5_read_all_feedback();
     $msgId = 'msg_' . time() . '_' . substr(md5(uniqid(mt_rand(), true)), 0, 6);
     $newMsg = [
         'id'          => $msgId,
@@ -335,7 +403,7 @@ case 'chat_send':
     ];
 
     $allChats[] = $newMsg;
-    @file_put_contents($dataFile, json_encode($allChats, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    q5_save_all_feedback($allChats);
 
     // Kirim email notifikasi ke pengembang (ariadrianto@gmail.com)
     $destEmail = 'ariadrianto@gmail.com';
@@ -382,23 +450,19 @@ case 'chat_get':
         q5_json(['ok' => false, 'error' => 'user_id diperlukan'], 400);
     }
 
-    $dataFile = __DIR__ . '/data/feedback_messages.json';
+    $all = q5_read_all_feedback();
     $userChats = [];
-    if (file_exists($dataFile)) {
-        $raw = file_get_contents($dataFile);
-        $all = json_decode($raw, true) ?: [];
-        foreach ($all as $m) {
-            if (isset($m['user_id']) && $m['user_id'] === $userId) {
-                $userChats[] = [
-                    'id'         => $m['id'],
-                    'sender'     => $m['sender'], // 'user' atau 'admin'
-                    'user_name'  => $m['user_name'] ?? '',
-                    'tipe'       => $m['tipe'] ?? 'chat',
-                    'pesan'      => $m['pesan'],
-                    'created_at' => $m['created_at'] ?? '',
-                    'timestamp'  => $m['timestamp'] ?? 0
-                ];
-            }
+    foreach ($all as $m) {
+        if (isset($m['user_id']) && $m['user_id'] === $userId) {
+            $userChats[] = [
+                'id'         => $m['id'],
+                'sender'     => $m['sender'], // 'user' atau 'admin'
+                'user_name'  => $m['user_name'] ?? '',
+                'tipe'       => $m['tipe'] ?? 'chat',
+                'pesan'      => $m['pesan'],
+                'created_at' => $m['created_at'] ?? '',
+                'timestamp'  => $m['timestamp'] ?? 0
+            ];
         }
     }
     q5_json([
@@ -417,13 +481,7 @@ case 'chat_reply':
         q5_json(['ok' => false, 'error' => 'user_id dan pesan balasan harus diisi'], 400);
     }
 
-    $dataFile = __DIR__ . '/data/feedback_messages.json';
-    $allChats = [];
-    if (file_exists($dataFile)) {
-        $raw = file_get_contents($dataFile);
-        $allChats = json_decode($raw, true) ?: [];
-    }
-
+    $allChats = q5_read_all_feedback();
     $msgId = 'rep_' . time() . '_' . substr(md5(uniqid(mt_rand(), true)), 0, 6);
     $replyMsg = [
         'id'          => $msgId,
@@ -437,7 +495,7 @@ case 'chat_reply':
     ];
 
     $allChats[] = $replyMsg;
-    @file_put_contents($dataFile, json_encode($allChats, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    q5_save_all_feedback($allChats);
 
     if (isset($_POST['web_submit'])) {
         header('Location: api.php?a=chat_admin&uid=' . urlencode($userId) . '&success=1');
@@ -446,11 +504,36 @@ case 'chat_reply':
 
     q5_json(['ok' => true, 'reply_id' => $msgId, 'status' => 'Balasan tersimpan']);
 
+// ── Debug status penyimpanan feedback ──
+case 'chat_debug':
+    $candidates = [
+        __DIR__ . '/data/feedback_messages.json',
+        __DIR__ . '/feedback_messages.json',
+        '/var/tmp/5dquran_feedback_messages.json',
+        sys_get_temp_dir() . '/5dquran_feedback_messages.json',
+        '/tmp/5dquran_feedback_messages.json'
+    ];
+    $status = [];
+    foreach ($candidates as $c) {
+        $d = dirname($c);
+        $status[$c] = [
+            'dir_exists'   => is_dir($d),
+            'dir_writable' => is_writable($d),
+            'file_exists'  => file_exists($c),
+            'filesize'     => file_exists($c) ? filesize($c) : 0,
+        ];
+    }
+    q5_json([
+        'ok'            => true,
+        'resolved_file' => q5_feedback_file(),
+        'all_count'     => count(q5_read_all_feedback()),
+        'paths'         => $status
+    ]);
+
 // ── Web Admin Interface Balas Chat ──
 case 'chat_admin':
     $uid = trim((string)($_GET['uid'] ?? ''));
-    $dataFile = __DIR__ . '/data/feedback_messages.json';
-    $all = file_exists($dataFile) ? (json_decode(file_get_contents($dataFile), true) ?: []) : [];
+    $all = q5_read_all_feedback();
 
     // Filter pesan untuk uid jika ada, atau kelompokkan per user_id
     $threads = [];
