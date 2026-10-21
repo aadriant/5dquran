@@ -260,29 +260,29 @@ public class HafalanActivity extends AppCompatActivity {
             tvTargetArabic.setTypeface(tf);
             tvTargetArabic.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             tvTargetArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
-            tvTargetArabic.setGravity(android.view.Gravity.RIGHT | android.view.Gravity.END);
-            tvTargetArabic.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+            tvTargetArabic.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            tvTargetArabic.setGravity(android.view.Gravity.RIGHT);
         }
         if (tvLiveSpeech != null) {
             tvLiveSpeech.setTypeface(tf);
             tvLiveSpeech.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             tvLiveSpeech.setTextDirection(View.TEXT_DIRECTION_RTL);
-            tvLiveSpeech.setGravity(android.view.Gravity.RIGHT | android.view.Gravity.END);
-            tvLiveSpeech.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+            tvLiveSpeech.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            tvLiveSpeech.setGravity(android.view.Gravity.RIGHT);
         }
         if (tvUserRecitation != null) {
             tvUserRecitation.setTypeface(tf);
             tvUserRecitation.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             tvUserRecitation.setTextDirection(View.TEXT_DIRECTION_RTL);
-            tvUserRecitation.setGravity(android.view.Gravity.RIGHT | android.view.Gravity.END);
-            tvUserRecitation.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+            tvUserRecitation.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            tvUserRecitation.setGravity(android.view.Gravity.RIGHT);
         }
         if (tvWordDiff != null) {
             tvWordDiff.setTypeface(tf);
             tvWordDiff.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             tvWordDiff.setTextDirection(View.TEXT_DIRECTION_RTL);
-            tvWordDiff.setGravity(android.view.Gravity.RIGHT | android.view.Gravity.END);
-            tvWordDiff.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+            tvWordDiff.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            tvWordDiff.setGravity(android.view.Gravity.RIGHT);
         }
     }
 

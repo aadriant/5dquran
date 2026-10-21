@@ -71,10 +71,10 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:textColor="@color/gold_light"
-            android:gravity="right|end"
+            android:gravity="right"
             android:layoutDirection="rtl"
             android:textDirection="rtl"
-            android:textAlignment="gravity"
+            android:textAlignment="textStart"
             android:lineSpacingMultiplier="1.3"
             android:text="ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ" />
 

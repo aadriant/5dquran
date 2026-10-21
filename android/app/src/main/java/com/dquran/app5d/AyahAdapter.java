@@ -54,8 +54,8 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
         holder.tvArabic.setTypeface(PreferenceManager.getMushafTypeface(context));
         holder.tvArabic.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         holder.tvArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
-        holder.tvArabic.setGravity(android.view.Gravity.RIGHT | android.view.Gravity.END);
-        holder.tvArabic.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+        holder.tvArabic.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+        holder.tvArabic.setGravity(android.view.Gravity.RIGHT);
 
         if (position == karaokeAyahIndex && karaokeWordIndex >= 0) {
             applyKaraokeSpannable(holder.tvArabic, a.getArabic(), karaokeWordIndex);
@@ -105,6 +105,10 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
                     ViewHolder h = (ViewHolder) oldVh;
                     h.tvArabic.setText(ayahs.get(oldAyahIndex).getArabic());
                     h.tvArabic.setTextColor(context.getResources().getColor(R.color.gold_light));
+                    h.tvArabic.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                    h.tvArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
+                    h.tvArabic.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                    h.tvArabic.setGravity(android.view.Gravity.RIGHT);
                 } else {
                     notifyItemChanged(oldAyahIndex);
                 }
@@ -138,8 +142,8 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
                     h.tvArabic.setTextColor(context.getResources().getColor(R.color.gold_light));
                     h.tvArabic.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
                     h.tvArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
-                    h.tvArabic.setGravity(android.view.Gravity.RIGHT | android.view.Gravity.END);
-                    h.tvArabic.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+                    h.tvArabic.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                    h.tvArabic.setGravity(android.view.Gravity.RIGHT);
                     return;
                 }
             }
@@ -151,8 +155,8 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
         if (tv == null || arabicText == null) return;
         tv.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         tv.setTextDirection(View.TEXT_DIRECTION_RTL);
-        tv.setGravity(android.view.Gravity.RIGHT | android.view.Gravity.END);
-        tv.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+        tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+        tv.setGravity(android.view.Gravity.RIGHT);
 
         String[] words = arabicText.trim().split("\\s+");
         SpannableStringBuilder ssb = new SpannableStringBuilder();

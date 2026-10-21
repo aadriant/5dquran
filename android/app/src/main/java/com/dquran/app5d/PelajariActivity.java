@@ -143,8 +143,8 @@ public class PelajariActivity extends AppCompatActivity {
         tvPelajariArabic.setTypeface(PreferenceManager.getMushafTypeface(this));
         tvPelajariArabic.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         tvPelajariArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
-        tvPelajariArabic.setGravity(android.view.Gravity.RIGHT | android.view.Gravity.END);
-        tvPelajariArabic.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+        tvPelajariArabic.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+        tvPelajariArabic.setGravity(android.view.Gravity.RIGHT);
         tvPelajariIndo.setText(currentAyah.getIndo());
 
         // 0. Kosakata Per Kata (Cara baca & Arti)

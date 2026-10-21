@@ -97,15 +97,15 @@ public class SurahActivity extends AppCompatActivity {
             tvBismillah.setTypeface(PreferenceManager.getMushafTypeface(this));
             tvBismillah.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             tvBismillah.setTextDirection(View.TEXT_DIRECTION_RTL);
-            tvBismillah.setGravity(android.view.Gravity.RIGHT | android.view.Gravity.END);
-            tvBismillah.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+            tvBismillah.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            tvBismillah.setGravity(android.view.Gravity.RIGHT);
         }
         if (tvPlayerCurrent != null) {
             tvPlayerCurrent.setTypeface(PreferenceManager.getMushafTypeface(this));
             tvPlayerCurrent.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             tvPlayerCurrent.setTextDirection(View.TEXT_DIRECTION_RTL);
-            tvPlayerCurrent.setGravity(android.view.Gravity.RIGHT | android.view.Gravity.END);
-            tvPlayerCurrent.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+            tvPlayerCurrent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            tvPlayerCurrent.setGravity(android.view.Gravity.RIGHT);
         }
         if (adapter != null) {
             adapter.notifyDataSetChanged();
@@ -457,6 +457,10 @@ public class SurahActivity extends AppCompatActivity {
         tvTitle.setText(sName + " : Ayat " + ayah.getNumberInSurah());
         tvArabicFull.setText(ayah.getArabic());
         tvArabicFull.setTypeface(PreferenceManager.getMushafTypeface(this));
+        tvArabicFull.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        tvArabicFull.setTextDirection(View.TEXT_DIRECTION_RTL);
+        tvArabicFull.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+        tvArabicFull.setGravity(android.view.Gravity.RIGHT);
         tvIndoFull.setText(ayah.getIndo());
         btnClose.setOnClickListener(v -> dialog.dismiss());
 

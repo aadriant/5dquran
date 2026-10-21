@@ -218,22 +218,22 @@ public class TulisActivity extends AppCompatActivity {
             tvTargetArabic.setTypeface(tf);
             tvTargetArabic.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             tvTargetArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
-            tvTargetArabic.setGravity(android.view.Gravity.RIGHT | android.view.Gravity.END);
-            tvTargetArabic.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+            tvTargetArabic.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            tvTargetArabic.setGravity(android.view.Gravity.RIGHT);
         }
         if (etArabicInput != null) {
             etArabicInput.setTypeface(tf);
             etArabicInput.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             etArabicInput.setTextDirection(View.TEXT_DIRECTION_RTL);
-            etArabicInput.setGravity(android.view.Gravity.TOP | android.view.Gravity.RIGHT | android.view.Gravity.END);
-            etArabicInput.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+            etArabicInput.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            etArabicInput.setGravity(android.view.Gravity.TOP | android.view.Gravity.RIGHT);
         }
         if (tvCheckWordDiff != null) {
             tvCheckWordDiff.setTypeface(tf);
             tvCheckWordDiff.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             tvCheckWordDiff.setTextDirection(View.TEXT_DIRECTION_RTL);
-            tvCheckWordDiff.setGravity(android.view.Gravity.RIGHT | android.view.Gravity.END);
-            tvCheckWordDiff.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+            tvCheckWordDiff.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            tvCheckWordDiff.setGravity(android.view.Gravity.RIGHT);
         }
     }
 
