@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="14dp"
+    android:paddingVertical="8dp">
+
+    <!-- Page Divider & Info Banner (e.g. Page 2 · Ruku 2) -->
+    <LinearLayout
+        android:id="@+id/layout_page_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingVertical="6dp"
+        android:layout_marginBottom="6dp">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#2E344E" />
+
+        <TextView
+            android:id="@+id/tv_page_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip_action"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="4dp"
+            android:text="Page 2 · Ruku 2"
+            android:textColor="@color/emerald"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:layout_marginHorizontal="10dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#2E344E" />
+    </LinearLayout>
+
+    <!-- Mushaf Page Sheet Card (Paper look) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card_surah"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="18dp">
+
+        <!-- Surah Header (Shown only on first page of surah) -->
+        <LinearLayout
+            android:id="@+id/layout_surah_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:visibility="visible">
+
+            <!-- Number Circle Badge -->
+            <TextView
+                android:id="@+id/tv_surah_num_badge"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_badge_number"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="@color/gold_primary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Surah Name -->
+            <TextView
+                android:id="@+id/tv_surah_page_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Al-Baqarah"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- Translation -->
+            <TextView
+                android:id="@+id/tv_surah_page_trans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sapi Betina · The Cow"
+                android:textColor="@color/text_muted"
+                android:textSize="12sp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Bismillah Calligraphy Banner -->
+            <TextView
+                android:id="@+id/tv_page_bismillah"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
+                android:textColor="@color/gold_primary"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <View
+                android:layout_width="120dp"
+                android:layout_height="1dp"
+                android:background="#363A58"
+                android:layout_marginBottom="8dp" />
+        </LinearLayout>
+
+        <!-- Continuous Flowing Arabic Quran Text -->
+        <TextView
+            android:id="@+id/tv_page_arabic_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layoutDirection="rtl"
+            android:textDirection="rtl"
+            android:textAlignment="textStart"
+            android:lineSpacingMultiplier="1.85"
+            android:textColor="@color/gold_light"
+            android:textSize="25sp"
+            android:textColorHighlight="#3300FFD5" />
+
+    </LinearLayout>
+
+</LinearLayout>

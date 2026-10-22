@@ -32,15 +32,16 @@ if %BUILD_SUCCESS% neq 1 (
 
 if exist "android\app\build\outputs\apk\debug\app-debug.apk" (
     echo [3/3] Menyalin APK ke folder utama...
+    copy /Y "android\app\build\outputs\apk\debug\app-debug.apk" "5D-Quran-v1.0.2-Native.apk" >nul
     copy /Y "android\app\build\outputs\apk\debug\app-debug.apk" "5D-Quran-v1.0.1-Native.apk" >nul
     copy /Y "android\app\build\outputs\apk\debug\app-debug.apk" "5D-Quran-v1.0.0-beta-Native.apk" >nul
     copy /Y "android\app\build\outputs\apk\debug\app-debug.apk" "5D-Quran-v1.0.0-beta.apk" >nul
     copy /Y "android\app\build\outputs\apk\debug\app-debug.apk" "5dquran-debug.apk" >nul
     echo.
     echo ===================================================
-    echo  BERHASIL! PURE NATIVE APK v1.0.1 SIAP DIGUNAKAN
+    echo  BERHASIL! PURE NATIVE APK v1.0.2 SIAP DIGUNAKAN
     echo ===================================================
-    echo  File APK: %cd%\5D-Quran-v1.0.1-Native.apk
+    echo  File APK: %cd%\5D-Quran-v1.0.2-Native.apk
     echo ===================================================
 ) else (
     echo.

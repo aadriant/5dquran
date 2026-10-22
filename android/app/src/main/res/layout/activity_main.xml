@@ -53,7 +53,7 @@
                     android:background="@drawable/bg_chip_action"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:text="v1.0.1"
+                    android:text="v1.0.2"
                     android:textColor="@color/gold_light"
                     android:textSize="10sp" />
             </LinearLayout>

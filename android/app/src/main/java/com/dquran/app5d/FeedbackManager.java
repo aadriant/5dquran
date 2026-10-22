@@ -140,7 +140,7 @@ public class FeedbackManager {
                 payload.put("tipe", tipe);
                 payload.put("pesan", pesan);
                 payload.put("device_info", Build.MANUFACTURER + " " + Build.MODEL + " (Android " + Build.VERSION.RELEASE + ")");
-                payload.put("app_version", "1.0.1");
+                payload.put("app_version", "1.0.2");
 
                 byte[] bytes = payload.toString().getBytes(StandardCharsets.UTF_8);
                 try (OutputStream os = conn.getOutputStream()) {

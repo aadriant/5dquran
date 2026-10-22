@@ -1,4 +1,4 @@
-# 5D Quran (v1.0.1)
+# 5D Quran (v1.0.2)
 
 <p align="center">
   <img src="assets/icon.jpg" width="120" height="120" style="border-radius:24px;" alt="5D Quran Logo" />
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.1-gold.svg" alt="Version 1.0.1" />
+  <img src="https://img.shields.io/badge/version-1.0.2-gold.svg" alt="Version 1.0.2" />
   <img src="https://img.shields.io/badge/platform-Android%20%7C%20Web-blue.svg" alt="Platform" />
   <img src="https://img.shields.io/badge/architecture-Pure%20Native%20Android%20%2B%20PWA-emerald.svg" alt="Architecture" />
   <img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License" />
@@ -76,6 +76,19 @@
   - 📤 Bagikan intisari Tafsir Ibnu Katsir.
   - 📤 Bagikan rangkuman Tadabur lengkap.
 
+## 🆕 Pembaruan Fitur Versi 1.0.2
+
+1. **Dual View Mode Tampilan Surat**:
+   - **Mode 1: Card View (Per Ayat)**: Tampilan kartu interaktif per ayat lengkap dengan terjemahan dan panel aksi 5D cepat.
+   - **Mode 2: Page View (Halaman Mushaf Madani Standar)**: Tampilan teks Arab tersambung per halaman standar 604 mushaf Madani dengan perataan kanan (*RTL justified*), nomor ayat melingkar dekoratif `① ② ③`, banner `Page X · Ruku Y`, serta header surah dan bismillah yang elegan.
+   - Tombol toggle mode di bilah atas (*top bar*) untuk berganti mode seketika.
+2. **Perekaman Hafalan Cerdas (Toleransi Jeda Nafas pada Ayat Panjang)**:
+   - Waktu jeda (*silence timeout*) ditingkatkan hingga 12 detik.
+   - Deteksi jeda nafas cerdas (*Continuous Segment Accumulation*): perekaman tidak lagi terputus otomatis saat pengguna mengambil nafas atau waqaf pada ayat panjang, dan dapat dilanjutkan sampai selesai.
+3. **Tombol Record Hafalan Ringkas di Footer (View Page)**:
+   - Di mode Halaman Mushaf (*Page View*), panel hafalan diletakkan di footer bagian bawah dengan ukuran ringkas (*compact*), tidak menutupi atau mengganggu pandangan halaman Mushaf.
+   - Dilengkapi tombol intip/sembunyi teks (`👁️ Tutup / Buka`), tombol dengar contoh audio ayat, serta tombol penilaian langsung (`✓ Nilai`).
+
 ---
 
 ## 💬 Fitur Pelaporan & Pusat Masukan Pengembang (v1.0.1)
@@ -113,7 +126,7 @@ Atau menggunakan Gradle wrapper di folder `android/`:
 cd android
 ./gradlew assembleDebug
 ```
-File APK biner yang dihasilkan: `5D-Quran-v1.0.1-Native.apk`.
+File APK biner yang dihasilkan: `5D-Quran-v1.0.2-Native.apk`.
 
 ### Install Langsung ke HP Android (USB/ADB)
 ```bash

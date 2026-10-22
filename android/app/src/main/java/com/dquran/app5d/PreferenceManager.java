@@ -104,6 +104,17 @@ public class PreferenceManager {
         return "arab".equalsIgnoreCase(getTampilanAyat(context));
     }
 
+    // ── MODE TAMPILAN SURAT: CARD (PER AYAT) vs PAGE (PER HALAMAN MUSHAF) ──
+    public static final String KEY_SURAH_VIEW_MODE = "surah_view_mode"; // "card" vs "page"
+
+    public static String getSurahViewMode(Context context) {
+        return getPrefs(context).getString(KEY_SURAH_VIEW_MODE, "card");
+    }
+
+    public static void setSurahViewMode(Context context, String mode) {
+        getPrefs(context).edit().putString(KEY_SURAH_VIEW_MODE, mode).apply();
+    }
+
     // ── HURUF MUSHAF (MADANI, NASKH, INDOPAK) ──
     public static final String KEY_HURUF_MUSHAF = "huruf_mushaf";
     private static Typeface cachedMadani = null;

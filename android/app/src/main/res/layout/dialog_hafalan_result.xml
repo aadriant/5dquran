@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_card_surah"
+    android:padding="20dp">
+
+    <!-- Header: Title and Close -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hasil Penilaian Hafalan"
+                android:textColor="@color/gold_primary"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_dlg_result_ayah_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Surah Al-Baqarah : Ayat 1"
+                android:textColor="@color/text_muted"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_dlg_result_close"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_close"
+            android:contentDescription="Tutup" />
+    </LinearLayout>
+
+    <!-- Score & Grade Card -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#1F2342"
+        android:padding="14dp"
+        android:layout_marginBottom="14dp">
+
+        <TextView
+            android:id="@+id/tv_dlg_result_score"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/bg_badge_number"
+            android:gravity="center"
+            android:text="100%"
+            android:textColor="@color/emerald"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="14dp">
+
+            <TextView
+                android:id="@+id/tv_dlg_result_grade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mumtaz (Sempurna)"
+                android:textColor="@color/emerald"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_dlg_result_stats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Benar: 5 kata · Kurang/Salah: 0"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:layout_marginTop="3dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Target Ayah Word Diff -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Perbandingan Kata Target:"
+        android:textColor="@color/text_muted"
+        android:textSize="11sp"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tv_dlg_result_diff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#15172C"
+        android:padding="12dp"
+        android:gravity="right"
+        android:layoutDirection="rtl"
+        android:textDirection="rtl"
+        android:textAlignment="textStart"
+        android:textColor="@color/gold_light"
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp" />
+
+    <!-- Spoken Text Detected -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Suara yang Terdeteksi:"
+        android:textColor="@color/text_muted"
+        android:textSize="11sp"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tv_dlg_result_spoken"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#15172C"
+        android:padding="10dp"
+        android:gravity="right"
+        android:layoutDirection="rtl"
+        android:textDirection="rtl"
+        android:textAlignment="textStart"
+        android:textColor="@color/text_primary"
+        android:textSize="15sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btn_dlg_result_retry"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_chip_action"
+            android:gravity="center"
+            android:paddingVertical="10dp"
+            android:text="🔄 Ulangi"
+            android:textColor="@color/gold_light"
+            android:textSize="13sp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/btn_dlg_result_next"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_chip_action"
+            android:gravity="center"
+            android:paddingVertical="10dp"
+            android:text="Lanjut Ayat ➡️"
+            android:textColor="@color/emerald"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

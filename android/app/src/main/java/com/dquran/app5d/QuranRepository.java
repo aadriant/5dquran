@@ -314,4 +314,87 @@ public class QuranRepository {
         }
         return list.isEmpty() ? null : list;
     }
+
+    private static JSONObject cachedPagesMeta = null;
+    private static JSONArray cachedPagesArray = null;
+    private static JSONArray cachedRukusArray = null;
+
+    private static synchronized void ensurePagesMeta(Context context) {
+        if (cachedPagesMeta != null) return;
+        try {
+            String jsonStr = readAssetString(context, "pages_meta.json");
+            if (jsonStr != null) {
+                cachedPagesMeta = new JSONObject(jsonStr);
+                cachedPagesArray = cachedPagesMeta.optJSONArray("pages");
+                cachedRukusArray = cachedPagesMeta.optJSONArray("rukus");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int getPageForAyah(Context context, int surah, int ayah) {
+        ensurePagesMeta(context);
+        if (cachedPagesArray != null) {
+            for (int i = cachedPagesArray.length() - 1; i >= 0; i--) {
+                JSONObject p = cachedPagesArray.optJSONObject(i);
+                if (p != null) {
+                    int s = p.optInt("surah", 1);
+                    int a = p.optInt("ayah", 1);
+                    if (surah > s || (surah == s && ayah >= a)) {
+                        return i + 1;
+                    }
+                }
+            }
+        }
+        return 1;
+    }
+
+    public static int getRukuForAyah(Context context, int surah, int ayah) {
+        ensurePagesMeta(context);
+        if (cachedRukusArray != null) {
+            for (int i = cachedRukusArray.length() - 1; i >= 0; i--) {
+                JSONObject r = cachedRukusArray.optJSONObject(i);
+                if (r != null) {
+                    int s = r.optInt("surah", 1);
+                    int a = r.optInt("ayah", 1);
+                    if (surah > s || (surah == s && ayah >= a)) {
+                        return i + 1;
+                    }
+                }
+            }
+        }
+        return 1;
+    }
+
+    public static List<MushafPageModel> getMushafPagesForSurah(Context context, int surahNumber) {
+        List<AyahModel> allAyahs = getAyahs(context, surahNumber);
+        List<MushafPageModel> pages = new ArrayList<>();
+        if (allAyahs == null || allAyahs.isEmpty()) return pages;
+
+        int currentPageNum = -1;
+        List<AyahModel> pageAyahs = new ArrayList<>();
+
+        for (AyahModel a : allAyahs) {
+            int pNum = getPageForAyah(context, surahNumber, a.getNumberInSurah());
+            if (pNum != currentPageNum) {
+                if (currentPageNum != -1 && !pageAyahs.isEmpty()) {
+                    int ruku = getRukuForAyah(context, surahNumber, pageAyahs.get(0).getNumberInSurah());
+                    boolean isStart = (pageAyahs.get(0).getNumberInSurah() == 1);
+                    pages.add(new MushafPageModel(currentPageNum, ruku, 1, new ArrayList<>(pageAyahs), isStart));
+                    pageAyahs.clear();
+                }
+                currentPageNum = pNum;
+            }
+            pageAyahs.add(a);
+        }
+
+        if (currentPageNum != -1 && !pageAyahs.isEmpty()) {
+            int ruku = getRukuForAyah(context, surahNumber, pageAyahs.get(0).getNumberInSurah());
+            boolean isStart = (pageAyahs.get(0).getNumberInSurah() == 1);
+            pages.add(new MushafPageModel(currentPageNum, ruku, 1, new ArrayList<>(pageAyahs), isStart));
+        }
+
+        return pages;
+    }
 }

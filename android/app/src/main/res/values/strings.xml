@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">5D Quran</string>
     <string name="title_activity_main">5D Quran</string>
-    <string name="app_version">Versi 1.0.1</string>
+    <string name="app_version">Versi 1.0.2</string>
     <string name="app_tagline">5 Dimensi Interaksi dengan Al-Qur\'an</string>
     <string name="search_hint">Cari nama surah atau nomor...</string>
     <string name="filter_all">Semua (114)</string>

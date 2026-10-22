@@ -9,6 +9,8 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -81,6 +83,8 @@ public class HafalanActivity extends AppCompatActivity {
     private SpeechRecognizer speechRecognizer;
     private boolean isListening = false;
     private boolean isHidden = false;
+    private boolean isRecordingSessionActive = false;
+    private StringBuilder accumulatedSpeech = new StringBuilder();
 
     private MediaRecorder mediaRecorder;
     private File recordedAudioFile;
@@ -172,7 +176,7 @@ public class HafalanActivity extends AppCompatActivity {
         });
 
         btnMic.setOnClickListener(v -> {
-            if (isListening || isMediaRecording) {
+            if (isListening || isMediaRecording || isRecordingSessionActive) {
                 stopListeningAndRecording();
             } else {
                 checkPermissionAndStartListening();
@@ -313,21 +317,44 @@ public class HafalanActivity extends AppCompatActivity {
                 @Override public void onRmsChanged(float rmsdB) {}
                 @Override public void onBufferReceived(byte[] buffer) {}
                 @Override public void onEndOfSpeech() {
-                    tvMicStatus.setText("⏳ Selesai merekam. Memproses bacaan...");
-                    stopMediaRecordingOnly();
-                    if (tvLiveRecordingIndicator != null) {
-                        tvLiveRecordingIndicator.setText("Selesai Rekam");
-                        tvLiveRecordingIndicator.setTextColor(getResources().getColor(R.color.gold_primary));
-                    }
-                    if (lastSpokenText != null && !lastSpokenText.trim().isEmpty()) {
-                        if (layoutActionPeriksaHafalan != null) {
-                            layoutActionPeriksaHafalan.setVisibility(View.VISIBLE);
+                    if (isRecordingSessionActive) {
+                        tvMicStatus.setText("🎙️ Jeda nafas terdeteksi... Silakan lanjutkan atau ketuk 'Periksa'");
+                        if (tvLiveRecordingIndicator != null) {
+                            tvLiveRecordingIndicator.setText("⏳ Jeda Nafas");
+                            tvLiveRecordingIndicator.setTextColor(getResources().getColor(R.color.gold_primary));
                         }
-                        evaluateRecitation(lastSpokenText);
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            if (isRecordingSessionActive) {
+                                restartListeningIntent();
+                            }
+                        }, 300);
+                    } else {
+                        tvMicStatus.setText("⏳ Selesai merekam. Memproses bacaan...");
+                        stopMediaRecordingOnly();
+                        if (tvLiveRecordingIndicator != null) {
+                            tvLiveRecordingIndicator.setText("Selesai Rekam");
+                            tvLiveRecordingIndicator.setTextColor(getResources().getColor(R.color.gold_primary));
+                        }
+                        if (lastSpokenText != null && !lastSpokenText.trim().isEmpty()) {
+                            if (layoutActionPeriksaHafalan != null) {
+                                layoutActionPeriksaHafalan.setVisibility(View.VISIBLE);
+                            }
+                            evaluateRecitation(lastSpokenText);
+                        }
                     }
                 }
                 @Override public void onError(int error) {
+                    if (isRecordingSessionActive && (error == SpeechRecognizer.ERROR_NO_MATCH || error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT)) {
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            if (isRecordingSessionActive) {
+                                restartListeningIntent();
+                            }
+                        }, 400);
+                        return;
+                    }
+
                     isListening = false;
+                    isRecordingSessionActive = false;
                     stopMediaRecordingOnly();
                     ivMicIcon.setImageResource(R.drawable.ic_mic);
 
@@ -374,13 +401,32 @@ public class HafalanActivity extends AppCompatActivity {
                     }
                 }
                 @Override public void onResults(Bundle results) {
+                    ArrayList<String> matches = results != null ? results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) : null;
+                    if (matches != null && !matches.isEmpty()) {
+                        String seg = matches.get(0);
+                        if (seg != null && !seg.trim().isEmpty()) {
+                            if (accumulatedSpeech.length() > 0) accumulatedSpeech.append(" ");
+                            accumulatedSpeech.append(seg.trim());
+                            lastSpokenText = accumulatedSpeech.toString().trim();
+                            if (cardLiveSpeech != null) cardLiveSpeech.setVisibility(View.VISIBLE);
+                            if (tvLiveSpeech != null) tvLiveSpeech.setText(lastSpokenText);
+                            highlightLiveRecitedWords(lastSpokenText);
+                            if (layoutActionPeriksaHafalan != null) layoutActionPeriksaHafalan.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    if (isRecordingSessionActive) {
+                        // User is still reciting! Automatically continue listening for next segment
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            if (isRecordingSessionActive) {
+                                restartListeningIntent();
+                            }
+                        }, 300);
+                        return;
+                    }
+
                     isListening = false;
                     ivMicIcon.setImageResource(R.drawable.ic_mic);
-
-                    ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                    if (matches != null && !matches.isEmpty()) {
-                        lastSpokenText = matches.get(0);
-                    }
 
                     if (lastSpokenText != null && !lastSpokenText.trim().isEmpty()) {
                         if (cardLiveSpeech != null) cardLiveSpeech.setVisibility(View.VISIBLE);
@@ -398,16 +444,16 @@ public class HafalanActivity extends AppCompatActivity {
                     }
                 }
                 @Override public void onPartialResults(Bundle partialResults) {
-                    // Real-time voice tracking with Arabic text following microphone
-                    ArrayList<String> partials = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                    ArrayList<String> partials = partialResults != null ? partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) : null;
                     if (partials != null && !partials.isEmpty()) {
                         String live = partials.get(0);
                         if (live != null && !live.trim().isEmpty()) {
-                            lastSpokenText = live.trim();
+                            String fullLive = (accumulatedSpeech.length() > 0 ? (accumulatedSpeech + " ") : "") + live.trim();
+                            lastSpokenText = fullLive.trim();
                             if (cardLiveSpeech != null) cardLiveSpeech.setVisibility(View.VISIBLE);
-                            if (tvLiveSpeech != null) tvLiveSpeech.setText(live);
-                            tvMicStatus.setText("🎙️ Mengikuti suara: " + live);
-                            highlightLiveRecitedWords(live);
+                            if (tvLiveSpeech != null) tvLiveSpeech.setText(fullLive);
+                            tvMicStatus.setText("🎙️ Mengikuti suara: " + fullLive);
+                            highlightLiveRecitedWords(fullLive);
                         }
                     }
                 }
@@ -440,6 +486,8 @@ public class HafalanActivity extends AppCompatActivity {
         stopAllAudio();
 
         lastSpokenText = "";
+        accumulatedSpeech.setLength(0);
+        isRecordingSessionActive = true;
         if (cardLiveSpeech != null) {
             cardLiveSpeech.setVisibility(View.VISIBLE);
             if (tvLiveSpeech != null) tvLiveSpeech.setText("...");
@@ -457,28 +505,9 @@ public class HafalanActivity extends AppCompatActivity {
             tvTargetArabic.setTextColor(getResources().getColor(R.color.gold_primary));
         }
 
-        // Start SpeechRecognizer with exclusive microphone access (no MediaRecorder conflict)
+        // Start SpeechRecognizer with generous silence timeouts for long verses and pauses
         if (speechRecognizer == null) initSpeechRecognizer();
-        if (speechRecognizer != null) {
-            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-SA");
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "ar-SA");
-            intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-            intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
-            intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
-            intent.putExtra("android.speech.extra.EXTRA_ADDITIONAL_LANGUAGES", new String[]{"ar-SA", "ar-EG", "ar"});
-            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 3500L);
-            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 2500L);
-            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 1500L);
-            try {
-                speechRecognizer.startListening(intent);
-                isListening = true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                isListening = false;
-            }
-        }
+        restartListeningIntent();
 
         ivMicIcon.setImageResource(R.drawable.ic_pause);
         tvMicStatus.setText("🎙️ Mendengarkan suara hafalan Anda...");
@@ -497,11 +526,33 @@ public class HafalanActivity extends AppCompatActivity {
         }
     }
 
+    private void restartListeningIntent() {
+        if (!isRecordingSessionActive || speechRecognizer == null) return;
+        try {
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-SA");
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "ar-SA");
+            intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+            intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
+            intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+            intent.putExtra("android.speech.extra.EXTRA_ADDITIONAL_LANGUAGES", new String[]{"ar-SA", "ar-EG", "ar"});
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 12000L);
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 10000L);
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 6000L);
+            speechRecognizer.startListening(intent);
+            isListening = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void stopListeningAndRecording() {
+        isRecordingSessionActive = false;
+        isListening = false;
         stopMediaRecordingOnly();
-        if (speechRecognizer != null && isListening) {
+        if (speechRecognizer != null) {
             try { speechRecognizer.stopListening(); } catch (Exception ignored) {}
-            isListening = false;
         }
         ivMicIcon.setImageResource(R.drawable.ic_mic);
         tvMicStatus.setText("Memproses rekaman suara...");
