@@ -122,7 +122,7 @@ if __name__ == '__main__':
     print(f"\n=======================================================")
     print(f"  SERVER APK AKTIF!")
     print(f"  Buka browser di HP (Chrome / browser bawaan):")
-    print(f"  👉 http://{local_ip}:{PORT}")
+    print(f"  --> http://{local_ip}:{PORT}")
     print(f"=======================================================\n")
     with socketserver.TCPServer(("", PORT), ApkHandler) as httpd:
         httpd.serve_forever()
