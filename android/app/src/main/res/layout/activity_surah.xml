@@ -63,6 +63,16 @@
                 android:contentDescription="Ganti Mode Tampilan"
                 android:layout_marginEnd="4dp" />
 
+            <!-- Toggle Terjemahan Per Kata (Word by Word seperti Gambar Referensi) -->
+            <ImageButton
+                android:id="@+id/btn_toggle_wbw"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_tune"
+                android:contentDescription="Toggle Terjemahan Per Kata"
+                android:layout_marginEnd="4dp" />
+
             <!-- Quick Action 5D Buttons in Header -->
             <ImageButton
                 android:id="@+id/btn_surah_audio"
@@ -194,19 +204,6 @@
                 android:layout_marginEnd="4dp" />
 
             <TextView
-                android:id="@+id/btn_sheet_kosakata"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/bg_chip_action"
-                android:gravity="center"
-                android:paddingVertical="8dp"
-                android:text="📖 Kosakata"
-                android:textColor="@color/gold_light"
-                android:textSize="11sp"
-                android:layout_marginEnd="4dp" />
-
-            <TextView
                 android:id="@+id/btn_sheet_hafal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -214,7 +211,7 @@
                 android:background="@drawable/bg_chip_action"
                 android:gravity="center"
                 android:paddingVertical="8dp"
-                android:text="🧠 Hafal"
+                android:text="🔄 Murojaah"
                 android:textColor="@color/purple_accent"
                 android:textSize="11sp"
                 android:layout_marginEnd="4dp" />
@@ -415,17 +412,19 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tv_player_sub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Pilih ayat untuk memutar suara per ayat"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp" />
+
+                <TextView
                     android:id="@+id/tv_player_current"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:gravity="right"
-                    android:layoutDirection="rtl"
-                    android:textDirection="rtl"
-                    android:textAlignment="textStart"
-                    android:text="Pilih ayat untuk memutar suara per ayat"
-                    android:textColor="@color/cyan_accent"
-                    android:textSize="13sp" />
+                    android:visibility="gone" />
             </LinearLayout>
 
             <TextView

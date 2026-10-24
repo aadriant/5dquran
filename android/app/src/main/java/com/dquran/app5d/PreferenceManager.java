@@ -89,6 +89,17 @@ public class PreferenceManager {
         getPrefs(context).edit().putBoolean(KEY_HAFALAN_CONTOH, denganContoh).apply();
     }
 
+    // ── MODE TERUSAN HAFALAN (DEFAULT: TIDAK / FALSE) ──
+    public static final String KEY_HAFALAN_TERUSAN = "hafalan_terusan";
+
+    public static boolean isHafalanTerusan(Context context) {
+        return getPrefs(context).getBoolean(KEY_HAFALAN_TERUSAN, false);
+    }
+
+    public static void setHafalanTerusan(Context context, boolean terusan) {
+        getPrefs(context).edit().putBoolean(KEY_HAFALAN_TERUSAN, terusan).apply();
+    }
+
     // ── TAMPILAN AYAT (ARAB + TERJEMAH vs ARAB SAJA) ──
     public static final String KEY_TAMPILAN_AYAT = "tampilan_ayat";
 
@@ -336,6 +347,60 @@ public class PreferenceManager {
 
     public static void clearTulisDraft(Context context, int surah, int ayah) {
         getPrefs(context).edit().remove("tulis_draft_s" + surah + "_a" + ayah).apply();
+    }
+
+    // ── MAIN SCREEN ORDER MODE ("surah", "juz", "page", "turun") ──
+    public static final String KEY_MAIN_ORDER_MODE = "main_order_mode";
+
+    public static String getMainOrderMode(Context context) {
+        return getPrefs(context).getString(KEY_MAIN_ORDER_MODE, "surah");
+    }
+
+    public static void setMainOrderMode(Context context, String mode) {
+        getPrefs(context).edit().putString(KEY_MAIN_ORDER_MODE, mode).apply();
+    }
+
+    // ── TERJEMAHAN PER KATA (WORD-BY-WORD) MODE ──
+    public static final String KEY_WORD_BY_WORD = "word_by_word_enabled";
+
+    public static boolean isWordByWord(Context context) {
+        return getPrefs(context).getBoolean(KEY_WORD_BY_WORD, false);
+    }
+
+    public static void setWordByWord(Context context, boolean enabled) {
+        getPrefs(context).edit().putBoolean(KEY_WORD_BY_WORD, enabled).apply();
+    }
+
+    // ── HASIL PERIKSA HAFALAN PER AYAT ──
+    public static void saveHafalanEvaluation(Context context, int surah, int ayah, int score, String scoreText, String feedback, String userText) {
+        String keyPrefix = "eval_s" + surah + "_a" + ayah + "_";
+        getPrefs(context).edit()
+                .putInt(keyPrefix + "score", score)
+                .putString(keyPrefix + "score_text", scoreText != null ? scoreText : "")
+                .putString(keyPrefix + "feedback", feedback != null ? feedback : "")
+                .putString(keyPrefix + "user_text", userText != null ? userText : "")
+                .putLong(keyPrefix + "time", System.currentTimeMillis())
+                .apply();
+    }
+
+    public static boolean hasHafalanEvaluation(Context context, int surah, int ayah) {
+        return getPrefs(context).contains("eval_s" + surah + "_a" + ayah + "_score");
+    }
+
+    public static int getHafalanScore(Context context, int surah, int ayah) {
+        return getPrefs(context).getInt("eval_s" + surah + "_a" + ayah + "_score", 0);
+    }
+
+    public static String getHafalanScoreText(Context context, int surah, int ayah) {
+        return getPrefs(context).getString("eval_s" + surah + "_a" + ayah + "_score_text", "");
+    }
+
+    public static String getHafalanFeedback(Context context, int surah, int ayah) {
+        return getPrefs(context).getString("eval_s" + surah + "_a" + ayah + "_feedback", "");
+    }
+
+    public static String getHafalanUserText(Context context, int surah, int ayah) {
+        return getPrefs(context).getString("eval_s" + surah + "_a" + ayah + "_user_text", "");
     }
 }
 

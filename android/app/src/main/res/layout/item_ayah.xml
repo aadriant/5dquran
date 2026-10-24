@@ -46,18 +46,7 @@
             android:textSize="10sp"
             android:layout_marginEnd="4dp" />
 
-        <!-- 📖 Kosakata Verse -->
-        <TextView
-            android:id="@+id/btn_ayah_kosakata"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_chip_action"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
-            android:text="📖 Kosakata"
-            android:textColor="@color/gold_light"
-            android:textSize="10sp"
-            android:layout_marginEnd="4dp" />
+
 
         <!-- 🧠 Memorize Verse -->
         <TextView
@@ -98,7 +87,7 @@
             android:textSize="10sp" />
     </LinearLayout>
 
-    <!-- Arabic Text -->
+    <!-- Arabic Text (Mode Normal) -->
     <TextView
         android:id="@+id/tv_ayah_arabic"
         android:layout_width="match_parent"
@@ -114,6 +103,16 @@
         android:textStyle="bold"
         android:layout_marginBottom="12dp" />
 
+    <!-- Word-by-Word Flow Container (Mode Per Kata seperti Gambar Referensi) -->
+    <com.dquran.app5d.FlowLayout
+        android:id="@+id/flow_ayah_wbw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layoutDirection="rtl"
+        android:paddingVertical="4dp"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone" />
+
     <!-- Indonesian Translation -->
     <TextView
         android:id="@+id/tv_ayah_indo"
@@ -123,5 +122,13 @@
         android:text="Dengan nama Allah Yang Maha Pengasih, Maha Penyayang."
         android:textColor="@color/text_primary"
         android:textSize="13sp" />
+
+    <!-- Horizontal Divider Line (seperti gambar referensi) -->
+    <View
+        android:id="@+id/divider_ayah"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1E2342"
+        android:layout_marginTop="12dp" />
 
 </LinearLayout>

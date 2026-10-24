@@ -3,6 +3,7 @@ package com.dquran.app5d;
 import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -12,6 +13,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +32,14 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -65,6 +77,18 @@ public class ProfilActivity extends AppCompatActivity {
     private TextView tvLastRead;
     private TextView tvLastTulis;
     private TextView tvLastHafalan;
+
+    // PDF Export & Audio views
+    private TextView tvBadgePdfTulis;
+    private TextView tvBadgePlayRecordings;
+    private ProgressDialog pdfProgressDialog;
+
+    // User Recordings Playlist Player
+    private MediaPlayer allRecordingsPlayer;
+    private Dialog allRecordingsDialog;
+    private List<File> userAudioFiles = new ArrayList<>();
+    private int currentAudioIndex = 0;
+    private boolean isAudioPlaying = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,6 +137,9 @@ public class ProfilActivity extends AppCompatActivity {
         tvLastRead        = findViewById(R.id.tv_profil_last_read);
         tvLastTulis       = findViewById(R.id.tv_profil_last_tulis);
         tvLastHafalan     = findViewById(R.id.tv_profil_last_hafalan);
+
+        tvBadgePdfTulis        = findViewById(R.id.tv_badge_pdf_tulis);
+        tvBadgePlayRecordings  = findViewById(R.id.tv_badge_play_recordings);
     }
 
     private void setupListeners() {
@@ -206,6 +233,18 @@ public class ProfilActivity extends AppCompatActivity {
             intent.putExtra("ayah_number", ayah);
             startActivity(intent);
         });
+
+        // Export PDF listener
+        View btnPdfTulis = findViewById(R.id.btn_export_pdf_tulis);
+        if (btnPdfTulis != null) {
+            btnPdfTulis.setOnClickListener(v -> exportPdf(false));
+        }
+
+        // Play All Recordings listener
+        View btnPlayAll = findViewById(R.id.btn_play_all_recordings);
+        if (btnPlayAll != null) {
+            btnPlayAll.setOnClickListener(v -> playAllHafalanRecordings());
+        }
     }
 
     private void signInWithGoogle() {
@@ -444,6 +483,19 @@ public class ProfilActivity extends AppCompatActivity {
         updateBar(barBaca,    baca);
         updateBar(barTulis,   tulis);
         updateBar(barHafalan, hafalan);
+
+        if (tvBadgePdfTulis != null) {
+            tvBadgePdfTulis.setText(tulis > 0
+                    ? tulis + " ayat tersimpan • Siap dijadikan Mushaf Al-Quran"
+                    : "Format Mushaf dari ayat yang telah Anda ketik");
+        }
+
+        if (tvBadgePlayRecordings != null) {
+            int recCount = getUserHafalanAudioFiles().size();
+            tvBadgePlayRecordings.setText(recCount > 0
+                    ? recCount + " rekaman suara tersedia • Ketuk untuk memutar seluruhnya"
+                    : "Belum ada rekaman setoran hafalan");
+        }
     }
 
     private String formatStat(int count) {
@@ -650,5 +702,329 @@ public class ProfilActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    // ── CETAK / EXPORT DOKUMEN MUSHAF PDF ──
+
+    private void exportPdf(boolean isHafalan) {
+        if (pdfProgressDialog != null && pdfProgressDialog.isShowing()) {
+            return;
+        }
+
+        pdfProgressDialog = new ProgressDialog(this);
+        pdfProgressDialog.setTitle(isHafalan ? "Cetak PDF Hafalan" : "Cetak PDF Tulisan");
+        pdfProgressDialog.setMessage("Menyiapkan lembaran mushaf Al-Quran...");
+        pdfProgressDialog.setCancelable(false);
+        pdfProgressDialog.show();
+
+        MushafPdfGenerator.OnPdfGenerateListener listener = new MushafPdfGenerator.OnPdfGenerateListener() {
+            @Override
+            public void onProgress(String status) {
+                if (pdfProgressDialog != null && pdfProgressDialog.isShowing()) {
+                    pdfProgressDialog.setMessage(status);
+                }
+            }
+
+            @Override
+            public void onSuccess(File pdfFile, int totalAyahs, int totalPages) {
+                if (pdfProgressDialog != null && pdfProgressDialog.isShowing()) {
+                    pdfProgressDialog.dismiss();
+                }
+
+                String title = isHafalan ? "🌟 Mushaf Hafalan Siap!" : "🌟 Mushaf Tulisan Siap!";
+                String msg = totalAyahs + " ayat berhasil disusun ke dalam format Mushaf Al-Quran standar siap cetak.\n\n"
+                        + "Nama Berkas:\n" + pdfFile.getName() + "\n\n"
+                        + "Lokasi Penyimpanan:\nFolder Dokumen/5DQuran";
+
+                new AlertDialog.Builder(ProfilActivity.this)
+                        .setTitle(title)
+                        .setMessage(msg)
+                        .setPositiveButton("Buka Dokumen PDF", (d, w) -> openPdfFile(pdfFile))
+                        .setNeutralButton("Bagikan / Cetak", (d, w) -> sharePdfFile(pdfFile))
+                        .setNegativeButton("Tutup", null)
+                        .show();
+            }
+
+            @Override
+            public void onEmpty(String message) {
+                if (pdfProgressDialog != null && pdfProgressDialog.isShowing()) {
+                    pdfProgressDialog.dismiss();
+                }
+                new AlertDialog.Builder(ProfilActivity.this)
+                        .setTitle("Belum Ada Ayat")
+                        .setMessage(message)
+                        .setPositiveButton("Mengerti", null)
+                        .show();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                if (pdfProgressDialog != null && pdfProgressDialog.isShowing()) {
+                    pdfProgressDialog.dismiss();
+                }
+                Toast.makeText(ProfilActivity.this, "Gagal membuat PDF: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        };
+
+        if (isHafalan) {
+            MushafPdfGenerator.generateHafalanPdf(this, listener);
+        } else {
+            MushafPdfGenerator.generateTulisanPdf(this, listener);
+        }
+    }
+
+    private void openPdfFile(File file) {
+        if (file == null || !file.exists()) {
+            Toast.makeText(this, "Berkas PDF tidak ditemukan", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", file);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "application/pdf");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(Intent.createChooser(intent, "Buka Dokumen Mushaf PDF"));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "Tidak ada aplikasi pembuka PDF di HP ini. File tersimpan di folder Documents/5DQuran/" + file.getName(), Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "Gagal membuka PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void sharePdfFile(File file) {
+        if (file == null || !file.exists()) {
+            Toast.makeText(this, "Berkas PDF tidak ditemukan", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", file);
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("application/pdf");
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.putExtra(Intent.EXTRA_SUBJECT, file.getName());
+            intent.putExtra(Intent.EXTRA_TEXT, "Dokumen Mushaf Al-Quran Pribadi — Dihasilkan dari Aplikasi 5D Quran");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(intent, "Bagikan Dokumen Mushaf PDF"));
+        } catch (Exception e) {
+            Toast.makeText(this, "Gagal membagikan PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopAndReleaseAudioPlayer();
+    }
+
+    // ── PEMUTAR REKAMAN HAFALAN USER KESELURUHAN ──
+
+    private List<File> getUserHafalanAudioFiles() {
+        java.util.Map<String, File> uniqueMap = new java.util.HashMap<>();
+        File dir = new File(getCacheDir(), "hafalan_audio");
+        if (dir.exists() && dir.isDirectory()) {
+            File[] files = dir.listFiles();
+            if (files != null) {
+                Pattern pattern = Pattern.compile("^recitation_s(\\d+)_a(\\d+)\\.(m4a|wav)$");
+                for (File f : files) {
+                    if (f.isFile() && f.length() > 500) {
+                        Matcher m = pattern.matcher(f.getName());
+                        if (m.matches()) {
+                            String key = m.group(1) + "_" + m.group(2);
+                            File existing = uniqueMap.get(key);
+                            if (existing == null || f.lastModified() > existing.lastModified()) {
+                                uniqueMap.put(key, f);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        List<File> result = new ArrayList<>(uniqueMap.values());
+
+        // Urutkan berdasarkan nomor surat ASC, lalu nomor ayat ASC
+        Collections.sort(result, (f1, f2) -> {
+            int[] p1 = parseSurahAyah(f1.getName());
+            int[] p2 = parseSurahAyah(f2.getName());
+            if (p1[0] != p2[0]) return Integer.compare(p1[0], p2[0]);
+            return Integer.compare(p1[1], p2[1]);
+        });
+
+        return result;
+    }
+
+    private int[] parseSurahAyah(String fileName) {
+        Matcher m = Pattern.compile("^recitation_s(\\d+)_a(\\d+)\\.(m4a|wav)$").matcher(fileName);
+        if (m.matches()) {
+            try {
+                return new int[]{Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2))};
+            } catch (Exception ignored) {}
+        }
+        return new int[]{0, 0};
+    }
+
+    private void playAllHafalanRecordings() {
+        userAudioFiles = getUserHafalanAudioFiles();
+        if (userAudioFiles.isEmpty()) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Belum Ada Rekaman")
+                    .setMessage("Anda belum memiliki rekaman suara hafalan yang tersimpan di HP ini.\n\nSilakan setor hafalan terlebih dahulu di menu Dihafal.")
+                    .setPositiveButton("Mengerti", null)
+                    .show();
+            return;
+        }
+
+        showUserRecordingsPlayerDialog(userAudioFiles);
+    }
+
+    private void showUserRecordingsPlayerDialog(List<File> files) {
+        stopAndReleaseAudioPlayer();
+
+        allRecordingsDialog = new Dialog(this);
+        allRecordingsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        allRecordingsDialog.setContentView(R.layout.dialog_user_recordings_player);
+        if (allRecordingsDialog.getWindow() != null) {
+            allRecordingsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.94);
+            allRecordingsDialog.getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+
+        TextView tvCounter = allRecordingsDialog.findViewById(R.id.tv_player_counter);
+        TextView tvBadge = allRecordingsDialog.findViewById(R.id.tv_player_surah_badge);
+        TextView tvArabic = allRecordingsDialog.findViewById(R.id.tv_player_arabic);
+        TextView tvStatus = allRecordingsDialog.findViewById(R.id.tv_player_status);
+        ImageView ivToggle = allRecordingsDialog.findViewById(R.id.iv_player_toggle_icon);
+        View btnPrev = allRecordingsDialog.findViewById(R.id.btn_player_prev);
+        View btnToggle = allRecordingsDialog.findViewById(R.id.btn_player_toggle);
+        View btnNext = allRecordingsDialog.findViewById(R.id.btn_player_next);
+        ImageButton btnClose = allRecordingsDialog.findViewById(R.id.btn_player_close);
+
+        tvArabic.setTypeface(PreferenceManager.getMushafTypeface(this));
+
+        currentAudioIndex = 0;
+
+        btnPrev.setOnClickListener(v -> {
+            if (currentAudioIndex > 0) {
+                playAudioItem(currentAudioIndex - 1, tvCounter, tvBadge, tvArabic, tvStatus, ivToggle);
+            }
+        });
+
+        btnNext.setOnClickListener(v -> {
+            if (currentAudioIndex < files.size() - 1) {
+                playAudioItem(currentAudioIndex + 1, tvCounter, tvBadge, tvArabic, tvStatus, ivToggle);
+            }
+        });
+
+        btnToggle.setOnClickListener(v -> {
+            if (allRecordingsPlayer != null) {
+                if (isAudioPlaying) {
+                    allRecordingsPlayer.pause();
+                    isAudioPlaying = false;
+                    ivToggle.setImageResource(R.drawable.ic_play_arrow);
+                    tvStatus.setText("⏸️ Rekaman dijeda");
+                } else {
+                    allRecordingsPlayer.start();
+                    isAudioPlaying = true;
+                    ivToggle.setImageResource(R.drawable.ic_pause);
+                    tvStatus.setText("▶️ Sedang memutar rekaman suara Anda...");
+                }
+            }
+        });
+
+        btnClose.setOnClickListener(v -> allRecordingsDialog.dismiss());
+        allRecordingsDialog.setOnDismissListener(dialog -> stopAndReleaseAudioPlayer());
+
+        allRecordingsDialog.show();
+        playAudioItem(0, tvCounter, tvBadge, tvArabic, tvStatus, ivToggle);
+    }
+
+    private void playAudioItem(int index, TextView tvCounter, TextView tvBadge, TextView tvArabic, TextView tvStatus, ImageView ivToggle) {
+        if (userAudioFiles == null || index < 0 || index >= userAudioFiles.size()) return;
+        currentAudioIndex = index;
+        File audioFile = userAudioFiles.get(index);
+        int[] sa = parseSurahAyah(audioFile.getName());
+        int surah = sa[0];
+        int ayah = sa[1];
+
+        String surahName = QuranRepository.getSurahName(this, surah);
+        tvCounter.setText((index + 1) + " / " + userAudioFiles.size());
+        tvBadge.setText("Surat " + surahName + " : Ayat " + ayah);
+
+        // Ambil teks ayat Al-Quran
+        List<AyahModel> ayahs = QuranRepository.getAyahs(this, surah);
+        if (ayahs != null && ayah >= 1 && ayah <= ayahs.size()) {
+            tvArabic.setText(ayahs.get(ayah - 1).getArabic());
+        } else {
+            tvArabic.setText("");
+        }
+
+        stopAudioPlaybackOnly();
+
+        try {
+            allRecordingsPlayer = new MediaPlayer();
+            allRecordingsPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build());
+            allRecordingsPlayer.setDataSource(audioFile.getAbsolutePath());
+            allRecordingsPlayer.setOnPreparedListener(mp -> {
+                mp.start();
+                isAudioPlaying = true;
+                ivToggle.setImageResource(R.drawable.ic_pause);
+                tvStatus.setText("▶️ Sedang memutar (" + (currentAudioIndex + 1) + " dari " + userAudioFiles.size() + ")...");
+            });
+
+            allRecordingsPlayer.setOnCompletionListener(mp -> {
+                isAudioPlaying = false;
+                ivToggle.setImageResource(R.drawable.ic_play_arrow);
+                // Otomatis lanjut ke rekaman ayat berikutnya
+                if (currentAudioIndex + 1 < userAudioFiles.size()) {
+                    tvStatus.setText("Lanjut ke ayat berikutnya...");
+                    tvStatus.postDelayed(() -> {
+                        if (allRecordingsDialog != null && allRecordingsDialog.isShowing()) {
+                            playAudioItem(currentAudioIndex + 1, tvCounter, tvBadge, tvArabic, tvStatus, ivToggle);
+                        }
+                    }, 500);
+                } else {
+                    tvStatus.setText("✅ Seluruh rekaman (" + userAudioFiles.size() + " ayat) telah selesai diputar.");
+                }
+            });
+
+            allRecordingsPlayer.setOnErrorListener((mp, what, extra) -> {
+                tvStatus.setText("⚠️ Terjadi kesalahan memutar berkas ini.");
+                isAudioPlaying = false;
+                ivToggle.setImageResource(R.drawable.ic_play_arrow);
+                return true;
+            });
+
+            allRecordingsPlayer.prepareAsync();
+        } catch (Exception e) {
+            e.printStackTrace();
+            tvStatus.setText("Gagal memutar rekaman: " + e.getMessage());
+        }
+    }
+
+    private void stopAudioPlaybackOnly() {
+        if (allRecordingsPlayer != null) {
+            try {
+                if (allRecordingsPlayer.isPlaying()) {
+                    allRecordingsPlayer.stop();
+                }
+                allRecordingsPlayer.release();
+            } catch (Exception ignored) {}
+            allRecordingsPlayer = null;
+        }
+        isAudioPlaying = false;
+    }
+
+    private void stopAndReleaseAudioPlayer() {
+        stopAudioPlaybackOnly();
+        if (allRecordingsDialog != null && allRecordingsDialog.isShowing()) {
+            try {
+                allRecordingsDialog.dismiss();
+            } catch (Exception ignored) {}
+            allRecordingsDialog = null;
+        }
     }
 }

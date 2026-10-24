@@ -10,6 +10,7 @@ copy /Y "quran_complete.json" "android\app\src\main\assets\quran.json" >nul 2>&1
 copy /Y "surahs_meta.json" "android\app\src\main\assets\surahs.json" >nul 2>&1
 copy /Y "data\tafsir-jalalayn.json" "android\app\src\main\assets\tafsir_jalalayn.json" >nul 2>&1
 copy /Y "data\hadis\hadis-ayat.json" "android\app\src\main\assets\hadis_ayat.json" >nul 2>&1
+copy /Y "pages_meta.json" "android\app\src\main\assets\pages_meta.json" >nul 2>&1
 
 echo [2/3] Mengompilasi Pure Native Android APK...
 set BUILD_SUCCESS=0
@@ -32,12 +33,12 @@ if %BUILD_SUCCESS% neq 1 (
 
 if exist "android\app\build\outputs\apk\debug\app-debug.apk" (
     echo [3/3] Menyalin APK ke folder utama...
-    copy /Y "android\app\build\outputs\apk\debug\app-debug.apk" "5D-Quran-v1.0.2-Native.apk" >nul
+    copy /Y "android\app\build\outputs\apk\debug\app-debug.apk" "5D-Quran-v1.0.4e-Native.apk" >nul
     echo.
     echo ===================================================
-    echo  BERHASIL! PURE NATIVE APK v1.0.2 SIAP DIGUNAKAN
+    echo  BERHASIL! PURE NATIVE APK v1.0.4e SIAP DIGUNAKAN
     echo ===================================================
-    echo  File APK: %cd%\5D-Quran-v1.0.2-Native.apk
+    echo  File APK: %cd%\5D-Quran-v1.0.4e-Native.apk
     echo ===================================================
 ) else (
     echo.

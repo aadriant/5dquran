@@ -65,6 +65,14 @@ public class QuranRepository {
         return "Surah " + surahNumber;
     }
 
+    public static SurahModel getSurahByNumber(Context context, int surahNumber) {
+        List<SurahModel> list = getSurahs(context);
+        for (SurahModel s : list) {
+            if (s.getNumber() == surahNumber) return s;
+        }
+        return null;
+    }
+
     public static List<AyahModel> getAyahs(Context context, int surahNumber) {
         List<AyahModel> list = new ArrayList<>();
         try {
@@ -190,8 +198,33 @@ public class QuranRepository {
         return "Hadis terkait dan asbabun nuzul untuk ayat ini menguatkan makna ketakwaan, ibadah ikhlas, dan penegasan sunnah Rasulullah ﷺ.";
     }
 
+    private static final java.util.Map<Integer, java.util.Map<Integer, List<WordModel>>> wbwSurahCache = new java.util.concurrent.ConcurrentHashMap<>();
+
     public static List<WordModel> getWordByWord(Context context, int surah, int ayah) {
-        // 1. Check local file storage (downloaded cache)
+        // 0. Check in-memory cache
+        java.util.Map<Integer, List<WordModel>> surahMap = wbwSurahCache.get(surah);
+        if (surahMap != null && surahMap.containsKey(ayah)) {
+            return surahMap.get(ayah);
+        }
+
+        // 1. Check bundled assets (assets/wbw/{surah}.json) & populate whole surah
+        try {
+            String filename = "wbw/" + surah + ".json";
+            String jsonStr = readAssetString(context, filename);
+            if (jsonStr != null) {
+                java.util.Map<Integer, List<WordModel>> parsedMap = parseWholeSurahWbw(jsonStr);
+                if (parsedMap != null && !parsedMap.isEmpty()) {
+                    wbwSurahCache.put(surah, parsedMap);
+                    if (parsedMap.containsKey(ayah)) {
+                        return parsedMap.get(ayah);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 2. Fallback check local file storage (downloaded cache per ayah)
         try {
             java.io.File file = new java.io.File(context.getFilesDir(), "wbw_" + surah + "_" + ayah + ".json");
             if (file.exists()) {
@@ -207,19 +240,36 @@ public class QuranRepository {
             e.printStackTrace();
         }
 
-        // 2. Check bundled assets (assets/wbw/{surah}.json)
+        return null;
+    }
+
+    public static java.util.Map<Integer, List<WordModel>> parseWholeSurahWbw(String jsonStr) {
+        if (jsonStr == null || jsonStr.trim().isEmpty()) return null;
+        java.util.Map<Integer, List<WordModel>> map = new java.util.HashMap<>();
         try {
-            String filename = "wbw/" + surah + ".json";
-            String jsonStr = readAssetString(context, filename);
-            if (jsonStr != null) {
-                List<WordModel> parsed = parseWordJson(jsonStr, ayah);
-                if (parsed != null && !parsed.isEmpty()) return parsed;
+            JSONObject root = new JSONObject(jsonStr);
+            java.util.Iterator<String> keys = root.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                try {
+                    int ayahNum = Integer.parseInt(key);
+                    JSONArray arr = root.getJSONArray(key);
+                    List<WordModel> list = new ArrayList<>(arr.length());
+                    for (int i = 0; i < arr.length(); i++) {
+                        JSONObject obj = arr.getJSONObject(i);
+                        int pos = obj.optInt("pos", i + 1);
+                        String ar = obj.optString("ar", "");
+                        String tl = obj.optString("tl", "");
+                        String tr = obj.optString("tr", "");
+                        list.add(new WordModel(pos, ar, tl, tr));
+                    }
+                    map.put(ayahNum, list);
+                } catch (Exception ignored) {}
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return null;
+        return map;
     }
 
     public static boolean saveWordByWord(Context context, int surah, int ayah, String jsonContent) {
@@ -318,6 +368,21 @@ public class QuranRepository {
     private static JSONObject cachedPagesMeta = null;
     private static JSONArray cachedPagesArray = null;
     private static JSONArray cachedRukusArray = null;
+    private static JSONArray cachedJuzsArray = null;
+
+    private static List<QuranItem> cachedSurahItems = null;
+    private static List<QuranItem> cachedJuzItems = null;
+    private static List<QuranItem> cachedPageItems = null;
+    private static List<QuranItem> cachedRevelationItems = null;
+
+    public static final int[] REVELATION_ORDER = {
+        96, 68, 73, 74, 1, 111, 81, 87, 92, 89, 93, 94, 103, 100, 108, 102, 107, 109, 105, 113,
+        114, 112, 53, 80, 97, 91, 85, 95, 106, 101, 75, 104, 77, 50, 90, 86, 54, 38, 7, 72,
+        36, 25, 35, 19, 20, 56, 26, 27, 28, 17, 10, 11, 12, 15, 6, 37, 31, 34, 39, 40,
+        41, 42, 43, 44, 45, 46, 51, 88, 18, 16, 71, 14, 21, 23, 32, 52, 67, 69, 70, 78,
+        79, 82, 84, 30, 29, 83, 2, 98, 64, 62, 8, 47, 3, 61, 57, 4, 65, 59, 33, 63,
+        24, 58, 22, 48, 66, 60, 110, 49, 9, 5, 99, 55, 76, 13
+    };
 
     private static synchronized void ensurePagesMeta(Context context) {
         if (cachedPagesMeta != null) return;
@@ -327,6 +392,7 @@ public class QuranRepository {
                 cachedPagesMeta = new JSONObject(jsonStr);
                 cachedPagesArray = cachedPagesMeta.optJSONArray("pages");
                 cachedRukusArray = cachedPagesMeta.optJSONArray("rukus");
+                cachedJuzsArray = cachedPagesMeta.optJSONArray("juzs");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -341,6 +407,23 @@ public class QuranRepository {
                 if (p != null) {
                     int s = p.optInt("surah", 1);
                     int a = p.optInt("ayah", 1);
+                    if (surah > s || (surah == s && ayah >= a)) {
+                        return i + 1;
+                    }
+                }
+            }
+        }
+        return 1;
+    }
+
+    public static int getJuzForAyah(Context context, int surah, int ayah) {
+        ensurePagesMeta(context);
+        if (cachedJuzsArray != null) {
+            for (int i = cachedJuzsArray.length() - 1; i >= 0; i--) {
+                JSONObject j = cachedJuzsArray.optJSONObject(i);
+                if (j != null) {
+                    int s = j.optInt("surah", 1);
+                    int a = j.optInt("ayah", 1);
                     if (surah > s || (surah == s && ayah >= a)) {
                         return i + 1;
                     }
@@ -396,5 +479,123 @@ public class QuranRepository {
         }
 
         return pages;
+    }
+
+    public static List<QuranItem> getItemsBySurah(Context context) {
+        if (cachedSurahItems != null) return cachedSurahItems;
+        List<SurahModel> surahs = getSurahs(context);
+        List<QuranItem> items = new ArrayList<>(surahs.size());
+        for (SurahModel s : surahs) {
+            String type = "Meccan".equalsIgnoreCase(s.getRevelationType()) ? "Makkiyah" :
+                          ("Medinan".equalsIgnoreCase(s.getRevelationType()) ? "Madaniyah" : s.getRevelationType());
+            items.add(new QuranItem(
+                    QuranItem.Mode.SURAH,
+                    s.getNumber(),
+                    s.getEnglishName(),
+                    s.getIndonesianName() + " · " + s.getNumberOfAyahs() + " Ayat",
+                    type,
+                    cleanArabicSurahName(s.getName()),
+                    s.getNumber(),
+                    1,
+                    s
+            ));
+        }
+        cachedSurahItems = items;
+        return items;
+    }
+
+    public static List<QuranItem> getItemsByJuz(Context context) {
+        if (cachedJuzItems != null) return cachedJuzItems;
+        ensurePagesMeta(context);
+        List<QuranItem> items = new ArrayList<>();
+        if (cachedJuzsArray != null) {
+            for (int i = 0; i < cachedJuzsArray.length(); i++) {
+                JSONObject j = cachedJuzsArray.optJSONObject(i);
+                if (j != null) {
+                    int juzNum = i + 1;
+                    int sNum = j.optInt("surah", 1);
+                    int aNum = j.optInt("ayah", 1);
+                    SurahModel sModel = getSurahByNumber(context, sNum);
+                    String sName = sModel != null ? sModel.getEnglishName() : ("Surah " + sNum);
+                    int pageNum = getPageForAyah(context, sNum, aNum);
+                    String arab = sModel != null ? cleanArabicSurahName(sModel.getName()) : "";
+
+                    items.add(new QuranItem(
+                            QuranItem.Mode.JUZ,
+                            juzNum,
+                            "Juz " + juzNum,
+                            sName + " : " + aNum + " · Mulai Hal. " + pageNum,
+                            "Juz " + juzNum,
+                            arab,
+                            sNum,
+                            aNum,
+                            sModel
+                    ));
+                }
+            }
+        }
+        cachedJuzItems = items;
+        return items;
+    }
+
+    public static List<QuranItem> getItemsByPage(Context context) {
+        if (cachedPageItems != null) return cachedPageItems;
+        ensurePagesMeta(context);
+        List<QuranItem> items = new ArrayList<>();
+        if (cachedPagesArray != null) {
+            for (int i = 0; i < cachedPagesArray.length(); i++) {
+                JSONObject p = cachedPagesArray.optJSONObject(i);
+                if (p != null) {
+                    int pageNum = i + 1;
+                    int sNum = p.optInt("surah", 1);
+                    int aNum = p.optInt("ayah", 1);
+                    SurahModel sModel = getSurahByNumber(context, sNum);
+                    String sName = sModel != null ? sModel.getEnglishName() : ("Surah " + sNum);
+                    int juzNum = getJuzForAyah(context, sNum, aNum);
+                    String arab = sModel != null ? cleanArabicSurahName(sModel.getName()) : "";
+
+                    items.add(new QuranItem(
+                            QuranItem.Mode.PAGE,
+                            pageNum,
+                            "Halaman " + pageNum,
+                            sName + " : " + aNum + " · Juz " + juzNum,
+                            "Juz " + juzNum,
+                            arab,
+                            sNum,
+                            aNum,
+                            sModel
+                    ));
+                }
+            }
+        }
+        cachedPageItems = items;
+        return items;
+    }
+
+    public static List<QuranItem> getItemsByRevelation(Context context) {
+        if (cachedRevelationItems != null) return cachedRevelationItems;
+        List<QuranItem> items = new ArrayList<>(REVELATION_ORDER.length);
+        for (int i = 0; i < REVELATION_ORDER.length; i++) {
+            int wahyuNum = i + 1;
+            int sNum = REVELATION_ORDER[i];
+            SurahModel s = getSurahByNumber(context, sNum);
+            if (s != null) {
+                String type = "Meccan".equalsIgnoreCase(s.getRevelationType()) ? "Makkiyah" :
+                              ("Medinan".equalsIgnoreCase(s.getRevelationType()) ? "Madaniyah" : s.getRevelationType());
+                items.add(new QuranItem(
+                        QuranItem.Mode.TURUN,
+                        wahyuNum,
+                        s.getEnglishName(),
+                        "Surah ke-" + sNum + " · " + s.getNumberOfAyahs() + " Ayat (" + s.getIndonesianName() + ")",
+                        "Wahyu ke-" + wahyuNum + " · " + type,
+                        cleanArabicSurahName(s.getName()),
+                        sNum,
+                        1,
+                        s
+                ));
+            }
+        }
+        cachedRevelationItems = items;
+        return items;
     }
 }

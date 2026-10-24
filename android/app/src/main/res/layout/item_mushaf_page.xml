@@ -113,7 +113,7 @@
                 android:layout_marginBottom="8dp" />
         </LinearLayout>
 
-        <!-- Continuous Flowing Arabic Quran Text -->
+        <!-- Continuous Flowing Arabic Quran Text (Mode Biasa) -->
         <TextView
             android:id="@+id/tv_page_arabic_content"
             android:layout_width="match_parent"
@@ -126,6 +126,14 @@
             android:textColor="@color/gold_light"
             android:textSize="25sp"
             android:textColorHighlight="#3300FFD5" />
+
+        <!-- Word-by-Word Container for Mushaf Page (Mode Per Kata seperti Gambar Referensi) -->
+        <LinearLayout
+            android:id="@+id/layout_page_wbw_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone" />
 
     </LinearLayout>
 

@@ -19,4 +19,17 @@ public class AyahModel implements Serializable {
     public int getNumber() { return number; }
     public String getArabic() { return arabic; }
     public String getIndo() { return indo; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AyahModel that = (AyahModel) o;
+        return numberInSurah == that.numberInSurah && number == that.number;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * numberInSurah + number;
+    }
 }

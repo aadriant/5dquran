@@ -107,6 +107,36 @@
                 android:textSize="11sp" />
         </LinearLayout>
 
+        <!-- Mode Terusan Options Strip -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Alur Setoran:"
+                android:textColor="@color/text_muted"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/btn_toggle_terusan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_action"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="🔁 Mode Terusan: Tidak"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
         <!-- Target Verse Card -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -150,13 +180,15 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
+
+
         <!-- Voice Recording Interactive Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingVertical="20dp">
+            android:paddingVertical="16dp">
 
             <!-- Glowing Mic Button -->
             <FrameLayout
@@ -333,32 +365,7 @@
                 android:textAlignment="textStart"
                 android:text="Hasil suara..."
                 android:textColor="@color/text_primary"
-                android:textSize="20sp"
-                android:layout_marginBottom="12dp" />
-
-            <!-- Target verse Word-by-word diff display (colored) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Target Ayat Acuan:"
-                android:textColor="@color/text_muted"
-                android:textSize="10sp"
-                android:layout_marginBottom="4dp" />
-
-            <TextView
-                android:id="@+id/tv_word_diff"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#121326"
-                android:padding="12dp"
-                android:text=""
-                android:textSize="22sp"
-                android:gravity="right"
-                android:layoutDirection="rtl"
-                android:textDirection="rtl"
-                android:textAlignment="textStart"
-                android:lineSpacingMultiplier="1.5"
-                android:visibility="visible" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <!-- Audio Playback Section: Rekaman Pengguna vs Bacaan Qari -->
@@ -371,7 +378,7 @@
             android:background="@drawable/bg_card_surah"
             android:orientation="vertical"
             android:padding="16dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -388,7 +395,38 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <!-- 1. Putar Rekaman Suara Saya Sendiri -->
+                <!-- 1. Rekam Suara Saya (MediaRecorder murni tanpa interferensi) -->
+                <LinearLayout
+                    android:id="@+id/btn_record_user_audio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_chip_action"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingVertical="11dp"
+                    android:paddingHorizontal="6dp"
+                    android:layout_marginEnd="6dp">
+
+                    <ImageView
+                        android:id="@+id/iv_record_icon"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_mic"
+                        android:contentDescription="Rekam Suara" />
+
+                    <TextView
+                        android:id="@+id/tv_record_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="Rekam Suara"
+                        android:textColor="@color/gold_primary"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- 2. Putar Rekaman Suara Saya Sendiri -->
                 <LinearLayout
                     android:id="@+id/btn_play_user_recording"
                     android:layout_width="0dp"
@@ -398,13 +436,13 @@
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingVertical="11dp"
-                    android:paddingHorizontal="8dp"
-                    android:layout_marginEnd="8dp">
+                    android:paddingHorizontal="6dp"
+                    android:layout_marginEnd="6dp">
 
                     <ImageView
                         android:id="@+id/iv_user_play_icon"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:src="@drawable/ic_play_arrow"
                         android:contentDescription="Putar Suara Saya" />
 
@@ -412,14 +450,14 @@
                         android:id="@+id/tv_user_play_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
+                        android:layout_marginStart="4dp"
                         android:text="Rekaman Saya"
-                        android:textColor="@color/gold_primary"
-                        android:textSize="12sp"
+                        android:textColor="@color/emerald"
+                        android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- 2. Putar Suara Qari Alafasy (Pembanding) -->
+                <!-- 3. Putar Suara Qari Alafasy (Pembanding) -->
                 <LinearLayout
                     android:id="@+id/btn_listen_correct"
                     android:layout_width="0dp"
@@ -429,12 +467,12 @@
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingVertical="11dp"
-                    android:paddingHorizontal="8dp">
+                    android:paddingHorizontal="6dp">
 
                     <ImageView
                         android:id="@+id/iv_qari_play_icon"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:src="@drawable/ic_play_arrow"
                         android:contentDescription="Putar Suara Qari" />
 
@@ -442,10 +480,10 @@
                         android:id="@+id/tv_qari_play_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
+                        android:layout_marginStart="4dp"
                         android:text="Suara Qari"
                         android:textColor="@color/cyan_accent"
-                        android:textSize="12sp"
+                        android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 

@@ -1,7 +1,6 @@
 package com.dquran.app5d;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,46 +13,57 @@ import java.util.List;
 
 public class SurahAdapter extends RecyclerView.Adapter<SurahAdapter.ViewHolder> {
 
-    public interface OnSurahActionListener {
-        void onAction(SurahModel surah, String actionType);
+    public interface OnItemClickListener {
+        void onItemClick(QuranItem item);
     }
 
     private final Context context;
-    private final List<SurahModel> fullList;
-    private final List<SurahModel> displayList;
-    private final OnSurahActionListener actionListener;
+    private final List<QuranItem> fullList = new ArrayList<>();
+    private final List<QuranItem> displayList = new ArrayList<>();
+    private final OnItemClickListener clickListener;
 
-    public SurahAdapter(Context context, List<SurahModel> surahs, OnSurahActionListener listener) {
+    public SurahAdapter(Context context, List<QuranItem> items, OnItemClickListener listener) {
         this.context = context;
-        this.fullList = new ArrayList<>(surahs);
-        this.displayList = new ArrayList<>(surahs);
-        this.actionListener = listener;
+        this.clickListener = listener;
+        setItems(items);
     }
 
-    public void filter(String query, String typeFilter) {
+    public void setItems(List<QuranItem> items) {
+        this.fullList.clear();
+        if (items != null) {
+            this.fullList.addAll(items);
+        }
+        this.displayList.clear();
+        this.displayList.addAll(this.fullList);
+        notifyDataSetChanged();
+    }
+
+    public void filter(String query) {
         displayList.clear();
-        String q = query.toLowerCase().trim();
+        String q = query != null ? query.toLowerCase().trim() : "";
 
-        for (SurahModel s : fullList) {
-            boolean matchType = true;
-            if ("makkiyah".equalsIgnoreCase(typeFilter)) {
-                matchType = "Makkiyah".equalsIgnoreCase(s.getRevelationType()) || "Meccan".equalsIgnoreCase(s.getRevelationType());
-            } else if ("madaniyah".equalsIgnoreCase(typeFilter)) {
-                matchType = "Madaniyah".equalsIgnoreCase(s.getRevelationType()) || "Medinan".equalsIgnoreCase(s.getRevelationType());
-            }
+        if (q.isEmpty()) {
+            displayList.addAll(fullList);
+        } else {
+            for (QuranItem item : fullList) {
+                boolean matchTitle = item.getTitle() != null && item.getTitle().toLowerCase().contains(q);
+                boolean matchSubtitle = item.getSubtitle() != null && item.getSubtitle().toLowerCase().contains(q);
+                boolean matchTag = item.getTag() != null && item.getTag().toLowerCase().contains(q);
+                boolean matchNumber = String.valueOf(item.getNumber()).equals(q)
+                        || ("juz " + item.getNumber()).equalsIgnoreCase(q)
+                        || ("halaman " + item.getNumber()).equalsIgnoreCase(q)
+                        || ("hal " + item.getNumber()).equalsIgnoreCase(q)
+                        || ("wahyu " + item.getNumber()).equalsIgnoreCase(q);
+                boolean matchArabic = item.getArabic() != null && item.getArabic().contains(q);
+                boolean matchSurahRef = false;
+                if (item.getSurahRef() != null) {
+                    matchSurahRef = item.getSurahRef().getEnglishName().toLowerCase().contains(q)
+                            || item.getSurahRef().getIndonesianName().toLowerCase().contains(q)
+                            || String.valueOf(item.getSurahRef().getNumber()).equals(q);
+                }
 
-            if (!matchType) continue;
-
-            if (q.isEmpty()) {
-                displayList.add(s);
-            } else {
-                boolean matchName = s.getEnglishName().toLowerCase().contains(q);
-                boolean matchIndo = s.getIndonesianName().toLowerCase().contains(q);
-                boolean matchNumber = String.valueOf(s.getNumber()).equals(q);
-                boolean matchArabic = s.getName().contains(q);
-
-                if (matchName || matchIndo || matchNumber || matchArabic) {
-                    displayList.add(s);
+                if (matchTitle || matchSubtitle || matchTag || matchNumber || matchArabic || matchSurahRef) {
+                    displayList.add(item);
                 }
             }
         }
@@ -73,16 +83,20 @@ public class SurahAdapter extends RecyclerView.Adapter<SurahAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        SurahModel s = displayList.get(position);
+        QuranItem item = displayList.get(position);
 
-        holder.tvNumber.setText(String.valueOf(s.getNumber()));
-        holder.tvName.setText(s.getEnglishName());
-        holder.tvTranslation.setText(s.getIndonesianName() + " · " + s.getNumberOfAyahs() + " Ayat");
-        holder.tvType.setText(s.getRevelationType());
-        holder.tvArabic.setText(QuranRepository.cleanArabicSurahName(s.getName()));
+        holder.tvNumber.setText(String.valueOf(item.getNumber()));
+        holder.tvName.setText(item.getTitle());
+        holder.tvTranslation.setText(item.getSubtitle());
+        holder.tvType.setText(item.getTag());
+        holder.tvArabic.setText(item.getArabic());
         holder.tvArabic.setTypeface(PreferenceManager.getMushafTypeface(context));
 
-        holder.itemView.setOnClickListener(v -> actionListener.onAction(s, "baca"));
+        holder.itemView.setOnClickListener(v -> {
+            if (clickListener != null) {
+                clickListener.onItemClick(item);
+            }
+        });
     }
 
     @Override

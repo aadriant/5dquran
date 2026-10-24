@@ -312,6 +312,13 @@ input:checked + .haf-slider::before { transform:translateX(16px); }
           </span>
           Tampilkan teks Arab
         </label>
+        <label class="haf-toggle-label" for="toggle-terusan" style="margin-left:auto;cursor:pointer">
+          <span class="haf-switch">
+            <input type="checkbox" id="toggle-terusan" />
+            <span class="haf-slider"></span>
+          </span>
+          <span>🔁 Mode Terusan</span>
+        </label>
         <button class="haf-nbtn haf-play-ref" id="btn-play-ref">&#x1F50A; Dengar Contoh</button>
       </div>
 
@@ -481,6 +488,32 @@ let recording = false;
 let liveText = '';
 let finalText = '';
 let currentSurahNum = 1;
+let isTerusan = false;
+let silenceTimer = null;
+let autoNextTimer = null;
+
+function resetSilenceTimer() {
+  clearTimeout(silenceTimer);
+  if (recording) {
+    silenceTimer = setTimeout(() => {
+      if (recording) {
+        stopRec();
+        alert('⏱️ Rekaman otomatis dihentikan (tidak ada suara lebih dari 30 detik).');
+      }
+    }, 30000);
+  }
+}
+
+function cancelSilenceTimer() {
+  clearTimeout(silenceTimer);
+}
+
+const toggleTerusanEl = document.getElementById('toggle-terusan');
+if (toggleTerusanEl) {
+  toggleTerusanEl.addEventListener('change', function() {
+    isTerusan = this.checked;
+  });
+}
 
 /* ── SURAH START OFFSETS (for global ayah num → audio URL) ── */
 const S = [1,8,294,494,670,790,955,1121,1194,1323,1432,1556,1668,1710,1763,1856,1984,2096,2206,2304,2439,2551,2629,2748,2812,2889,3116,3210,3298,3387,3450,3484,3504,3578,3633,3677,3760,3942,4030,4150,4236,4290,4344,4433,4492,4530,4584,4622,4651,4680,4726,4787,4836,4886,4930,4974,5035,5098,5135,5160,5185,5200,5212,5222,5236,5249,5262,5292,5345,5405,5455,5484,5512,5533,5589,5629,5672,5706,5719,5748,5767,5779,5800,5810,5819,5827,5836,5844,5852,5861,5873,5881,5893,5906,5912,5917,5923,5929,5938,5944,5953,5959,5972,5979,5988,5993,5999,6003,6007,6011,6014,6019,6023,6027,6031,6034,6036,6039,6041];
@@ -682,8 +715,8 @@ document.getElementById('btn-play-ref').addEventListener('click', () => {
 });
 
 /* ── AYAT NAVIGATION ── */
-document.getElementById('btn-prev').addEventListener('click', () => { if (idx > 0) { idx--; loadAyat(); } });
-document.getElementById('btn-next').addEventListener('click', () => { if (idx < ayats.length - 1) { idx++; loadAyat(); } });
+document.getElementById('btn-prev').addEventListener('click', () => { if (idx > 0) { cancelSilenceTimer(); clearTimeout(autoNextTimer); idx--; loadAyat(); } });
+document.getElementById('btn-next').addEventListener('click', () => { if (idx < ayats.length - 1) { cancelSilenceTimer(); clearTimeout(autoNextTimer); idx++; loadAyat(); } });
 
 /* ── ARABIC NORMALIZER ── */
 function norm(s) {
@@ -795,6 +828,7 @@ function initSR() {
   recognition.maxAlternatives = 3;
 
   recognition.onresult = e => {
+    resetSilenceTimer();
     finalText = '';
     let interim = '';
     for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -814,6 +848,14 @@ function initSR() {
     tampilkanTombolNilai(liveText.trim().length > 0);
     /* Live highlight: warnai kata Arab sesuai bacaan saat ini */
     if (ayats[idx] && recording) liveHighlightWords(ayats[idx].arabic, liveText);
+
+    // Mode Terusan: otomatis nilai saat 1 ayat selesai & benar
+    if (isTerusan && recording && ayats[idx] && liveText.trim()) {
+      const check = align(ayats[idx].arabic, liveText.trim());
+      if (check.wrong === 0 && check.missing === 0 && check.total > 0) {
+        document.getElementById('btn-check').click();
+      }
+    }
   };
 
   recognition.onerror = e => {
@@ -910,6 +952,7 @@ function startRec() {
   liveText = ''; finalText = ''; recording = true;
   webAudioChunks = [];
   userAudioBlobUrl = null;
+  resetSilenceTimer();
 
   try { recognition.start(); } catch (e) {}
 
@@ -939,7 +982,7 @@ function startRec() {
 
   document.getElementById('mic-btn').classList.add('rec');
   document.getElementById('mic-icon').textContent = '\uD83D\uDD34';
-  document.getElementById('mic-lbl').textContent = 'Sedang merekam\u2026 (Tekan untuk berhenti)';
+  document.getElementById('mic-lbl').textContent = isTerusan ? 'Merekam (Mode Terusan)\u2026' : 'Sedang merekam\u2026 (Tekan untuk berhenti)';
   document.getElementById('mic-lbl').classList.add('rec');
   document.getElementById('btn-check').style.display = 'none';
   document.getElementById('btn-clear').style.display = 'none';
@@ -947,6 +990,7 @@ function startRec() {
 }
 
 function stopRec() {
+  cancelSilenceTimer();
   recording = false;
   try { recognition && recognition.stop(); } catch (e) {}
   if (webMediaRecorder && webMediaRecorder.state !== 'inactive') {
@@ -970,6 +1014,8 @@ function stopRec() {
 }
 
 function resetRec() {
+  cancelSilenceTimer();
+  clearTimeout(autoNextTimer);
   stopRec();
   liveText = ''; finalText = '';
   showTranscript('');
@@ -1073,6 +1119,20 @@ document.getElementById('btn-check').addEventListener('click', () => {
   updateSession();
   colorWords(ay.arabic, res);
   showResult(ay, res, spoken, akurasi, correct, near, wrong, missing, total);
+
+  // Mode Terusan: jika 1 ayat selesai & benar, otomatis lanjut ke ayat setelahnya tanpa tekan rekam lagi
+  if (isTerusan && wrong === 0 && missing === 0 && total > 0) {
+    if (idx < ayats.length - 1) {
+      clearTimeout(autoNextTimer);
+      autoNextTimer = setTimeout(() => {
+        if (isTerusan) {
+          idx++;
+          loadAyat();
+          startRec();
+        }
+      }, 1500);
+    }
+  }
 });
 
 function colorWords(arabic, res) {

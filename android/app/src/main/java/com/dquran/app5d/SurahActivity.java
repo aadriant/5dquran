@@ -31,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ public class SurahActivity extends AppCompatActivity {
     // View Mode & Page View (Versi 1.0.2 Feature 1)
     private String currentViewMode = "card"; // "card" or "page"
     private ImageButton btnToggleViewMode;
+    private ImageButton btnToggleWbw;
     private RecyclerView rvPages;
     private MushafPageAdapter pageAdapter;
     private List<MushafPageModel> mushafPages = new ArrayList<>();
@@ -76,25 +78,30 @@ public class SurahActivity extends AppCompatActivity {
     private View layoutPageActionSheet;
     private TextView tvSheetAyahBadge, tvSheetIndo;
     private ImageButton btnSheetClose;
-    private TextView btnSheetDengar, btnSheetKosakata, btnSheetHafal, btnSheetTulis, btnSheetTafsir;
+    private TextView btnSheetDengar, btnSheetHafal, btnSheetTulis, btnSheetTafsir;
     private AyahModel selectedPageAyah = null;
 
-    // Compact Hafalan Footer in Page View (Versi 1.0.2 Feature 2 & 3)
+    // Murojaah Mode (Mengikuti Suara User + Mode Karaoke, auto-advance, timeout 2 menit)
     private View layoutPageHafalanFooter;
     private TextView tvFooterHafalBadge, tvFooterHafalIndicator, tvFooterHafalStatus;
     private ImageButton btnFooterHafalMic, btnFooterHafalPlay, btnFooterHafalClose;
     private TextView btnFooterHafalEye, btnFooterHafalDone;
-    private AyahModel footerHafalAyah = null;
-    private boolean isPageHafalMasked = false;
     private SpeechRecognizer footerSpeechRecognizer;
-    private boolean isFooterRecordingActive = false;
-    private StringBuilder footerAccumulatedSpeech = new StringBuilder();
     private MediaPlayer footerPreviewPlayer;
+
+    private boolean isMurojaahActive = false;
+    private boolean isMurojaahPaused = false;
+    private int currentMurojaahIndex = 0;
+    private AyahModel currentMurojaahAyah = null;
+    private int lastMurojaahWordIndex = -1;
+    private final Handler murojaahSilenceHandler = new Handler(Looper.getMainLooper());
+    private Runnable murojaahSilenceRunnable;
+    private static final long MUROJAAH_SILENCE_TIMEOUT_MS = 120000L; // 2 menit
 
     // Mini Player
     private View bottomPlayerBar;
     private ImageButton btnPlayerToggle;
-    private TextView tvPlayerStatus, tvPlayerCurrent;
+    private TextView tvPlayerStatus, tvPlayerSub, tvPlayerCurrent;
     private TextView btnPlayerStop;
 
     private MediaPlayer mediaPlayer;
@@ -117,6 +124,7 @@ public class SurahActivity extends AppCompatActivity {
         boolean autoPlay = getIntent().getBooleanExtra("auto_play", false);
 
         initViews();
+        initMurojaahTimeout();
         loadData();
 
         if (targetAyah > 1) {
@@ -147,11 +155,14 @@ public class SurahActivity extends AppCompatActivity {
             tvPlayerCurrent.setGravity(android.view.Gravity.RIGHT);
         }
         if (adapter != null) {
+            adapter.setWordByWordEnabled(PreferenceManager.isWordByWord(this));
             adapter.notifyDataSetChanged();
         }
         if (pageAdapter != null) {
+            pageAdapter.setWordByWordEnabled(PreferenceManager.isWordByWord(this));
             pageAdapter.notifyDataSetChanged();
         }
+        updateWbwButtonUi();
     }
 
     private void initViews() {
@@ -162,10 +173,12 @@ public class SurahActivity extends AppCompatActivity {
         cardBismillah = findViewById(R.id.card_bismillah);
         btnSurahAudio = findViewById(R.id.btn_surah_audio);
         btnToggleViewMode = findViewById(R.id.btn_toggle_view_mode);
+        btnToggleWbw = findViewById(R.id.btn_toggle_wbw);
 
         bottomPlayerBar = findViewById(R.id.bottom_player_bar);
         btnPlayerToggle = findViewById(R.id.btn_player_toggle);
         tvPlayerStatus = findViewById(R.id.tv_player_status);
+        tvPlayerSub = findViewById(R.id.tv_player_sub);
         tvPlayerCurrent = findViewById(R.id.tv_player_current);
         btnPlayerStop = findViewById(R.id.btn_player_stop);
 
@@ -175,7 +188,6 @@ public class SurahActivity extends AppCompatActivity {
         tvSheetIndo = findViewById(R.id.tv_sheet_indo);
         btnSheetClose = findViewById(R.id.btn_sheet_close);
         btnSheetDengar = findViewById(R.id.btn_sheet_dengar);
-        btnSheetKosakata = findViewById(R.id.btn_sheet_kosakata);
         btnSheetHafal = findViewById(R.id.btn_sheet_hafal);
         btnSheetTulis = findViewById(R.id.btn_sheet_tulis);
         btnSheetTafsir = findViewById(R.id.btn_sheet_tafsir);
@@ -194,6 +206,27 @@ public class SurahActivity extends AppCompatActivity {
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
 
         btnToggleViewMode.setOnClickListener(v -> toggleViewMode());
+
+        updateWbwButtonUi();
+        if (btnToggleWbw != null) {
+            btnToggleWbw.setOnClickListener(v -> {
+                boolean current = PreferenceManager.isWordByWord(this);
+                boolean next = !current;
+                PreferenceManager.setWordByWord(this, next);
+                updateWbwButtonUi();
+                if (adapter != null) {
+                    adapter.setWordByWordEnabled(next);
+                }
+                if (pageAdapter != null) {
+                    pageAdapter.setWordByWordEnabled(next);
+                }
+                if (next) {
+                    Toast.makeText(this, "Terjemahan Per Kata: Aktif", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Terjemahan Per Kata: Nonaktif", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         btnPlayerToggle.setOnClickListener(v -> {
             if (mediaPlayer != null) {
@@ -253,7 +286,7 @@ public class SurahActivity extends AppCompatActivity {
         rvAyahs.setLayoutManager(new LinearLayoutManager(this));
 
         float fontSize = PreferenceManager.getArabicFontSize(this);
-        adapter = new AyahAdapter(this, ayahs, fontSize, (ayah, actionType) -> {
+        adapter = new AyahAdapter(this, surahNumber, ayahs, fontSize, (ayah, actionType) -> {
             int index = ayahs.indexOf(ayah);
             String surahName = currentSurah != null ? currentSurah.getEnglishName() : QuranRepository.getSurahName(this, surahNumber);
             PreferenceManager.setLastRead(SurahActivity.this, surahNumber, surahName, ayah.getNumberInSurah());
@@ -261,9 +294,6 @@ public class SurahActivity extends AppCompatActivity {
             switch (actionType) {
                 case "dengar":
                     playAyah(index);
-                    break;
-                case "kosakata":
-                    showKosakataDialog(ayah);
                     break;
                 case "hafal": {
                     Intent intent = new Intent(SurahActivity.this, HafalanActivity.class);
@@ -344,16 +374,40 @@ public class SurahActivity extends AppCompatActivity {
         });
     }
 
-    private void scrollToAyah(int ayahNum) {
+    private void scrollToAyahAccurate(int index) {
+        if (index < 0 || ayahs == null || index >= ayahs.size()) return;
+        AyahModel target = ayahs.get(index);
+
         if ("page".equalsIgnoreCase(currentViewMode)) {
-            if (pageAdapter != null) {
-                int pos = pageAdapter.findPositionForAyah(ayahNum);
-                rvPages.scrollToPosition(pos);
+            if (pageAdapter != null && rvPages != null) {
+                pageAdapter.setActiveAyah(target.getNumberInSurah(), false);
+                pageAdapter.scrollToAyah(rvPages, target.getNumberInSurah());
             }
         } else {
-            if (ayahs != null && ayahNum <= ayahs.size() && ayahNum >= 1) {
-                rvAyahs.scrollToPosition(ayahNum - 1);
+            if (rvAyahs != null) {
+                LinearLayoutManager lm = (LinearLayoutManager) rvAyahs.getLayoutManager();
+                if (lm != null) {
+                    int first = lm.findFirstCompletelyVisibleItemPosition();
+                    int last = lm.findLastCompletelyVisibleItemPosition();
+                    if (index >= first && index <= last && index != 0) {
+                        return;
+                    }
+                    LinearSmoothScroller scroller = new LinearSmoothScroller(this) {
+                        @Override
+                        protected int getVerticalSnapPreference() {
+                            return SNAP_TO_START;
+                        }
+                    };
+                    scroller.setTargetPosition(index);
+                    lm.startSmoothScroll(scroller);
+                }
             }
+        }
+    }
+
+    private void scrollToAyah(int ayahNum) {
+        if (ayahs != null && ayahNum >= 1 && ayahNum <= ayahs.size()) {
+            scrollToAyahAccurate(ayahNum - 1);
         }
     }
 
@@ -394,7 +448,7 @@ public class SurahActivity extends AppCompatActivity {
             btnToggleViewMode.setContentDescription("Ganti ke Tampilan Halaman Mushaf");
 
             hidePageActionSheet();
-            stopFooterHafalan();
+            stopMurojaah();
 
             if (targetAyah > 1 && ayahs != null && targetAyah <= ayahs.size()) {
                 rvAyahs.scrollToPosition(targetAyah - 1);
@@ -405,6 +459,20 @@ public class SurahActivity extends AppCompatActivity {
         }
     }
 
+    private void updateWbwButtonUi() {
+        if (btnToggleWbw == null) return;
+        boolean isWbw = PreferenceManager.isWordByWord(this);
+        if (isWbw) {
+            btnToggleWbw.setColorFilter(ContextCompat.getColor(this, R.color.gold_primary));
+            btnToggleWbw.setBackgroundResource(R.drawable.bg_chip_action_active);
+            btnToggleWbw.setContentDescription("Terjemahan Per Kata: Aktif (Ketuk untuk mematikan)");
+        } else {
+            btnToggleWbw.setColorFilter(Color.parseColor("#94A3B8"));
+            btnToggleWbw.setBackgroundResource(0);
+            btnToggleWbw.setContentDescription("Terjemahan Per Kata: Nonaktif (Ketuk untuk mengaktifkan)");
+        }
+    }
+
     // ── PAGE VIEW AYAH INTERACTION & ACTION SHEET ──
 
     private void onPageAyahClicked(AyahModel ayah) {
@@ -412,7 +480,7 @@ public class SurahActivity extends AppCompatActivity {
         selectedPageAyah = ayah;
 
         if (layoutPageHafalanFooter != null && layoutPageHafalanFooter.getVisibility() == View.VISIBLE) {
-            startFooterHafalanForAyah(ayah);
+            startMurojaahForAyah(ayah);
         } else {
             showPageActionSheet(ayah);
         }
@@ -435,14 +503,9 @@ public class SurahActivity extends AppCompatActivity {
             playAyah(ayahs.indexOf(ayah));
         });
 
-        btnSheetKosakata.setOnClickListener(v -> {
-            hidePageActionSheet();
-            showKosakataDialog(ayah);
-        });
-
         btnSheetHafal.setOnClickListener(v -> {
             hidePageActionSheet();
-            startFooterHafalanForAyah(ayah);
+            startMurojaahForAyah(ayah);
         });
 
         btnSheetTulis.setOnClickListener(v -> {
@@ -471,46 +534,368 @@ public class SurahActivity extends AppCompatActivity {
         }
     }
 
-    // ── COMPACT HAFALAN FOOTER IN PAGE VIEW (Versi 1.0.2 Feature 2 & 3) ──
+    // ── MUROJAAH MODE (Versi 1.0.4 Feature 4: Karaoke Suara User, Auto-Advance, 2 Menit Timeout) ──
 
-    private void startFooterHafalanForAyah(AyahModel ayah) {
+    private void initMurojaahTimeout() {
+        murojaahSilenceRunnable = () -> {
+            if (isMurojaahActive && !isMurojaahPaused) {
+                pauseMurojaah();
+                if (tvFooterHafalIndicator != null) {
+                    tvFooterHafalIndicator.setText("⏸️ Dijeda (2 Menit)");
+                    tvFooterHafalIndicator.setTextColor(getResources().getColor(R.color.gold_primary));
+                }
+                if (tvFooterHafalStatus != null) {
+                    tvFooterHafalStatus.setText("Murojaah dijeda otomatis karena 2 menit tanpa suara. Ketuk tombol mic untuk lanjut.");
+                }
+                Toast.makeText(SurahActivity.this, "Murojaah dijeda otomatis: 2 menit tanpa suara", Toast.LENGTH_LONG).show();
+            }
+        };
+    }
+
+    private void resetMurojaahSilenceTimeout() {
+        if (murojaahSilenceHandler != null && murojaahSilenceRunnable != null) {
+            murojaahSilenceHandler.removeCallbacks(murojaahSilenceRunnable);
+            if (isMurojaahActive && !isMurojaahPaused) {
+                murojaahSilenceHandler.postDelayed(murojaahSilenceRunnable, MUROJAAH_SILENCE_TIMEOUT_MS);
+            }
+        }
+    }
+
+    private void cancelMurojaahSilenceTimeout() {
+        if (murojaahSilenceHandler != null && murojaahSilenceRunnable != null) {
+            murojaahSilenceHandler.removeCallbacks(murojaahSilenceRunnable);
+        }
+    }
+
+    public void startMurojaahForAyah(AyahModel ayah) {
         if (ayah == null) return;
-        footerHafalAyah = ayah;
-        isPageHafalMasked = false;
-
+        stopAudio();
         hidePageActionSheet();
+
+        int targetIdx = 0;
+        if (ayahs != null) {
+            for (int i = 0; i < ayahs.size(); i++) {
+                if (ayahs.get(i).getNumberInSurah() == ayah.getNumberInSurah()) {
+                    targetIdx = i;
+                    currentMurojaahAyah = ayahs.get(i);
+                    break;
+                }
+            }
+        }
+        if (currentMurojaahAyah == null) currentMurojaahAyah = ayah;
+        currentMurojaahIndex = targetIdx;
+        isMurojaahActive = true;
+        isMurojaahPaused = false;
+        lastMurojaahWordIndex = -1;
+
         if (layoutPageHafalanFooter != null) {
             layoutPageHafalanFooter.setVisibility(View.VISIBLE);
         }
 
+        // Teks ayat selalu terbuka (mode karaoke qari), sembunyikan toggle mata & tombol nilai manual
+        if (btnFooterHafalEye != null) btnFooterHafalEye.setVisibility(View.GONE);
+        if (btnFooterHafalDone != null) btnFooterHafalDone.setVisibility(View.GONE);
+
+        if (tvFooterHafalBadge != null) tvFooterHafalBadge.setText("🔄 Ayat " + ayah.getNumberInSurah());
+        if (tvFooterHafalIndicator != null) {
+            tvFooterHafalIndicator.setText("● Murojaah Aktif");
+            tvFooterHafalIndicator.setTextColor(getResources().getColor(R.color.emerald));
+        }
+        if (tvFooterHafalStatus != null) {
+            tvFooterHafalStatus.setText("Silakan baca ayat ini... Kata akan menyala sesuai suara Anda");
+        }
+        if (btnFooterHafalMic != null) btnFooterHafalMic.setImageResource(R.drawable.ic_pause);
+
         if (pageAdapter != null) {
             pageAdapter.setActiveAyah(ayah.getNumberInSurah(), false);
-            int p = pageAdapter.findPositionForAyah(ayah.getNumberInSurah());
-            rvPages.smoothScrollToPosition(p);
+            pageAdapter.clearKaraokeHighlight(rvPages);
+        }
+        if (adapter != null && currentMurojaahIndex >= 0 && ayahs != null && currentMurojaahIndex < ayahs.size()) {
+            adapter.clearKaraokeHighlight(rvAyahs);
+        }
+        scrollToAyahAccurate(currentMurojaahIndex);
+
+        btnFooterHafalMic.setOnClickListener(v -> toggleMurojaahPause());
+        btnFooterHafalPlay.setOnClickListener(v -> playFooterAyahAudio(currentMurojaahAyah));
+        btnFooterHafalClose.setOnClickListener(v -> stopMurojaah());
+
+        resetMurojaahSilenceTimeout();
+        startMurojaahListening();
+    }
+
+    private void toggleMurojaahPause() {
+        if (!isMurojaahActive) return;
+        if (isMurojaahPaused) {
+            resumeMurojaah();
+        } else {
+            pauseMurojaah();
+        }
+    }
+
+    private void pauseMurojaah() {
+        isMurojaahPaused = true;
+        cancelMurojaahSilenceTimeout();
+        if (footerSpeechRecognizer != null) {
+            try { footerSpeechRecognizer.stopListening(); } catch (Exception ignored) {}
+        }
+        if (btnFooterHafalMic != null) {
+            btnFooterHafalMic.setImageResource(R.drawable.ic_mic);
+        }
+        if (tvFooterHafalIndicator != null) {
+            tvFooterHafalIndicator.setText("⏸️ Dijeda");
+            tvFooterHafalIndicator.setTextColor(getResources().getColor(R.color.gold_primary));
+        }
+        if (tvFooterHafalStatus != null) {
+            tvFooterHafalStatus.setText("Murojaah dijeda. Ketuk tombol mic untuk melanjutkan.");
+        }
+    }
+
+    private void resumeMurojaah() {
+        if (!isMurojaahActive) return;
+        isMurojaahPaused = false;
+        if (btnFooterHafalMic != null) {
+            btnFooterHafalMic.setImageResource(R.drawable.ic_pause);
+        }
+        if (tvFooterHafalIndicator != null) {
+            tvFooterHafalIndicator.setText("● Murojaah Aktif");
+            tvFooterHafalIndicator.setTextColor(getResources().getColor(R.color.emerald));
+        }
+        if (tvFooterHafalStatus != null) {
+            tvFooterHafalStatus.setText("Melanjutkan murojaah dari ayat " + (currentMurojaahAyah != null ? currentMurojaahAyah.getNumberInSurah() : "") + "...");
+        }
+        resetMurojaahSilenceTimeout();
+        restartMurojaahListeningIntent();
+    }
+
+    private void stopMurojaah() {
+        isMurojaahActive = false;
+        isMurojaahPaused = false;
+        cancelMurojaahSilenceTimeout();
+
+        if (footerSpeechRecognizer != null) {
+            try { footerSpeechRecognizer.stopListening(); } catch (Exception ignored) {}
+        }
+        if (footerPreviewPlayer != null) {
+            try { footerPreviewPlayer.release(); } catch (Exception ignored) {}
+            footerPreviewPlayer = null;
+        }
+        if (layoutPageHafalanFooter != null) {
+            layoutPageHafalanFooter.setVisibility(View.GONE);
+        }
+        if (pageAdapter != null) {
+            pageAdapter.clearKaraokeHighlight(rvPages);
+            pageAdapter.setActiveAyah(-1, false);
+        }
+        if (adapter != null) {
+            adapter.clearKaraokeHighlight(rvAyahs);
+        }
+        currentMurojaahAyah = null;
+    }
+
+    private void advanceMurojaahToNextAyah() {
+        if (!isMurojaahActive || isMurojaahPaused) return;
+
+        if (currentMurojaahAyah != null) {
+            PreferenceManager.markHafalan(this, surahNumber, currentMurojaahAyah.getNumberInSurah());
         }
 
-        tvFooterHafalBadge.setText("🧠 Ayat " + ayah.getNumberInSurah());
-        tvFooterHafalIndicator.setText("Siap");
-        tvFooterHafalIndicator.setTextColor(getResources().getColor(R.color.emerald));
-        tvFooterHafalStatus.setText("Ketuk mic untuk rekam (bisa jeda nafas)");
-        btnFooterHafalMic.setImageResource(R.drawable.ic_mic);
-        btnFooterHafalEye.setText("👁️ Tutup");
+        if (ayahs != null && currentMurojaahIndex < ayahs.size() - 1) {
+            currentMurojaahIndex++;
+            currentMurojaahAyah = ayahs.get(currentMurojaahIndex);
+            lastMurojaahWordIndex = -1;
+            resetMurojaahSilenceTimeout();
 
-        btnFooterHafalMic.setOnClickListener(v -> toggleFooterHafalanRecording());
-
-        btnFooterHafalPlay.setOnClickListener(v -> playFooterAyahAudio(ayah));
-
-        btnFooterHafalEye.setOnClickListener(v -> {
-            isPageHafalMasked = !isPageHafalMasked;
-            btnFooterHafalEye.setText(isPageHafalMasked ? "👁️ Buka" : "👁️ Tutup");
-            if (pageAdapter != null && footerHafalAyah != null) {
-                pageAdapter.setActiveAyah(footerHafalAyah.getNumberInSurah(), isPageHafalMasked);
+            if (tvFooterHafalBadge != null) {
+                tvFooterHafalBadge.setText("🔄 Ayat " + currentMurojaahAyah.getNumberInSurah());
             }
+            if (tvFooterHafalStatus != null) {
+                tvFooterHafalStatus.setText("Lanjut ayat " + currentMurojaahAyah.getNumberInSurah() + "... Teruskan membaca");
+            }
+
+            if (pageAdapter != null) {
+                pageAdapter.clearKaraokeHighlight(rvPages);
+                pageAdapter.setActiveAyah(currentMurojaahAyah.getNumberInSurah(), false);
+            }
+            if (adapter != null) {
+                adapter.clearKaraokeHighlight(rvAyahs);
+            }
+            scrollToAyahAccurate(currentMurojaahIndex);
+
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                if (isMurojaahActive && !isMurojaahPaused) {
+                    restartMurojaahListeningIntent();
+                }
+            }, 300);
+        } else {
+            stopMurojaah();
+            Toast.makeText(this, "🎉 Masya Allah! Selesai murojaah seluruh surah ini.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void startMurojaahListening() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_REQ_RECORD);
+            return;
+        }
+
+        if (footerSpeechRecognizer == null) {
+            initFooterSpeechRecognizer();
+        }
+
+        restartMurojaahListeningIntent();
+    }
+
+    private void restartMurojaahListeningIntent() {
+        if (!isMurojaahActive || isMurojaahPaused || footerSpeechRecognizer == null) return;
+        try {
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-SA");
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "ar-SA");
+            intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+            intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
+            intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+            intent.putExtra("android.speech.extra.EXTRA_ADDITIONAL_LANGUAGES", new String[]{"ar-SA", "ar-EG", "ar"});
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 120000L);
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 120000L);
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 10000L);
+            footerSpeechRecognizer.startListening(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQ_RECORD && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (isMurojaahActive && currentMurojaahAyah != null) {
+                startMurojaahListening();
+            }
+        } else if (requestCode == PERMISSION_REQ_RECORD) {
+            Toast.makeText(this, "Izin mikrofon diperlukan untuk murojaah suara", Toast.LENGTH_SHORT).show();
+            stopMurojaah();
+        }
+    }
+
+    private void initFooterSpeechRecognizer() {
+        if (!SpeechRecognizer.isRecognitionAvailable(this)) {
+            Toast.makeText(this, "Pengenal suara Google tidak tersedia pada perangkat ini.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        try {
+            footerSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            Toast.makeText(this, "Gagal mengaktifkan pengenal suara: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        footerSpeechRecognizer.setRecognitionListener(new RecognitionListener() {
+            @Override public void onReadyForSpeech(Bundle params) {
+                resetMurojaahSilenceTimeout();
+                if (tvFooterHafalIndicator != null && isMurojaahActive && !isMurojaahPaused) {
+                    tvFooterHafalIndicator.setText("● Siap Mendengarkan");
+                    tvFooterHafalIndicator.setTextColor(getResources().getColor(R.color.emerald));
+                }
+            }
+            @Override public void onBeginningOfSpeech() {
+                resetMurojaahSilenceTimeout();
+                if (tvFooterHafalIndicator != null && isMurojaahActive && !isMurojaahPaused) {
+                    tvFooterHafalIndicator.setText("● Suara Terdeteksi");
+                    tvFooterHafalIndicator.setTextColor(getResources().getColor(R.color.red_error));
+                }
+            }
+            @Override public void onRmsChanged(float rmsdB) {
+                if (rmsdB > 2.0f) resetMurojaahSilenceTimeout();
+            }
+            @Override public void onBufferReceived(byte[] buffer) {}
+            @Override public void onEndOfSpeech() {
+                if (isMurojaahActive && !isMurojaahPaused) {
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        if (isMurojaahActive && !isMurojaahPaused) {
+                            restartMurojaahListeningIntent();
+                        }
+                    }, 250);
+                }
+            }
+            @Override public void onError(int error) {
+                if (isMurojaahActive && !isMurojaahPaused) {
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        if (isMurojaahActive && !isMurojaahPaused) {
+                            restartMurojaahListeningIntent();
+                        }
+                    }, 350);
+                }
+            }
+            @Override public void onResults(Bundle results) {
+                resetMurojaahSilenceTimeout();
+                if (!isMurojaahActive || isMurojaahPaused || currentMurojaahAyah == null) return;
+                ArrayList<String> matches = results != null ? results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) : null;
+                if (matches != null && !matches.isEmpty()) {
+                    String finalSpoken = matches.get(0).trim();
+                    if (!finalSpoken.isEmpty()) {
+                        if (tvFooterHafalStatus != null) {
+                            tvFooterHafalStatus.setText("🎙️ " + finalSpoken);
+                        }
+                        int wordIdx = RecitationEvaluator.findSpokenWordIndex(currentMurojaahAyah.getArabic(), finalSpoken, lastMurojaahWordIndex);
+                        if (wordIdx >= 0) {
+                            lastMurojaahWordIndex = wordIdx;
+                            if (pageAdapter != null) {
+                                pageAdapter.setKaraokeHighlight(rvPages, currentMurojaahAyah.getNumberInSurah(), wordIdx);
+                            }
+                            if (adapter != null && currentMurojaahIndex >= 0) {
+                                adapter.setKaraokeHighlight(rvAyahs, currentMurojaahIndex, wordIdx);
+                            }
+                        }
+                        String[] targetWords = currentMurojaahAyah.getArabic().trim().split("\\s+");
+                        RecitationEvaluator.EvaluationResult res = RecitationEvaluator.evaluate(currentMurojaahAyah.getArabic(), finalSpoken);
+                        if (res.accuracy >= 65f || (wordIdx >= targetWords.length - 1 && targetWords.length > 0)) {
+                            advanceMurojaahToNextAyah();
+                            return;
+                        }
+                    }
+                }
+                if (isMurojaahActive && !isMurojaahPaused) {
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        if (isMurojaahActive && !isMurojaahPaused) {
+                            restartMurojaahListeningIntent();
+                        }
+                    }, 250);
+                }
+            }
+            @Override public void onPartialResults(Bundle partialResults) {
+                resetMurojaahSilenceTimeout();
+                if (!isMurojaahActive || isMurojaahPaused || currentMurojaahAyah == null) return;
+                ArrayList<String> partials = partialResults != null ? partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) : null;
+                if (partials != null && !partials.isEmpty()) {
+                    String live = partials.get(0).trim();
+                    if (!live.isEmpty()) {
+                        if (tvFooterHafalStatus != null) {
+                            tvFooterHafalStatus.setText("🎙️ " + live);
+                        }
+                        int wordIdx = RecitationEvaluator.findSpokenWordIndex(currentMurojaahAyah.getArabic(), live, lastMurojaahWordIndex);
+                        if (wordIdx >= 0) {
+                            lastMurojaahWordIndex = wordIdx;
+                            if (pageAdapter != null) {
+                                pageAdapter.setKaraokeHighlight(rvPages, currentMurojaahAyah.getNumberInSurah(), wordIdx);
+                            }
+                            if (adapter != null && currentMurojaahIndex >= 0) {
+                                adapter.setKaraokeHighlight(rvAyahs, currentMurojaahIndex, wordIdx);
+                            }
+                        }
+                        String[] targetWords = currentMurojaahAyah.getArabic().trim().split("\\s+");
+                        if (wordIdx >= targetWords.length - 1 && targetWords.length > 0) {
+                            RecitationEvaluator.EvaluationResult res = RecitationEvaluator.evaluate(currentMurojaahAyah.getArabic(), live);
+                            if (res.accuracy >= 60f) {
+                                advanceMurojaahToNextAyah();
+                            }
+                        }
+                    }
+                }
+            }
+            @Override public void onEvent(int eventType, Bundle params) {}
         });
-
-        btnFooterHafalDone.setOnClickListener(v -> finishAndEvaluateFooterHafalan());
-
-        btnFooterHafalClose.setOnClickListener(v -> stopFooterHafalan());
     }
 
     private void playFooterAyahAudio(AyahModel ayah) {
@@ -540,272 +925,6 @@ public class SurahActivity extends AppCompatActivity {
         }
     }
 
-    private void stopFooterHafalan() {
-        stopFooterListening(true);
-        if (footerPreviewPlayer != null) {
-            try { footerPreviewPlayer.release(); } catch (Exception ignored) {}
-            footerPreviewPlayer = null;
-        }
-        if (layoutPageHafalanFooter != null) {
-            layoutPageHafalanFooter.setVisibility(View.GONE);
-        }
-        if (pageAdapter != null) {
-            pageAdapter.setActiveAyah(-1, false);
-        }
-        footerHafalAyah = null;
-        isPageHafalMasked = false;
-    }
-
-    private void toggleFooterHafalanRecording() {
-        if (isFooterRecordingActive) {
-            finishAndEvaluateFooterHafalan();
-        } else {
-            startFooterListening();
-        }
-    }
-
-    private void startFooterListening() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_REQ_RECORD);
-            return;
-        }
-
-        if (footerSpeechRecognizer == null) {
-            initFooterSpeechRecognizer();
-        }
-
-        footerAccumulatedSpeech.setLength(0);
-        isFooterRecordingActive = true;
-        btnFooterHafalMic.setImageResource(R.drawable.ic_pause);
-        tvFooterHafalIndicator.setText("● Merekam...");
-        tvFooterHafalIndicator.setTextColor(getResources().getColor(R.color.red_error));
-        tvFooterHafalStatus.setText("Silakan baca ayat ini...");
-
-        restartFooterListeningIntent();
-    }
-
-    private void restartFooterListeningIntent() {
-        if (!isFooterRecordingActive || footerSpeechRecognizer == null) return;
-        try {
-            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ar-SA");
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "ar-SA");
-            intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-            intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
-            intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
-            intent.putExtra("android.speech.extra.EXTRA_ADDITIONAL_LANGUAGES", new String[]{"ar-SA", "ar-EG", "ar"});
-            // Generous silence timeouts for long verses and pauses between breath
-            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 12000L);
-            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 10000L);
-            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 6000L);
-            footerSpeechRecognizer.startListening(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void stopFooterListening(boolean resetStatus) {
-        isFooterRecordingActive = false;
-        if (footerSpeechRecognizer != null) {
-            try { footerSpeechRecognizer.stopListening(); } catch (Exception ignored) {}
-        }
-        if (btnFooterHafalMic != null) {
-            btnFooterHafalMic.setImageResource(R.drawable.ic_mic);
-        }
-        if (resetStatus && tvFooterHafalIndicator != null) {
-            tvFooterHafalIndicator.setText("Siap");
-            tvFooterHafalIndicator.setTextColor(getResources().getColor(R.color.emerald));
-        }
-    }
-
-    private void finishAndEvaluateFooterHafalan() {
-        stopFooterListening(false);
-        if (tvFooterHafalIndicator != null) {
-            tvFooterHafalIndicator.setText("Selesai Rekam");
-            tvFooterHafalIndicator.setTextColor(getResources().getColor(R.color.gold_primary));
-        }
-        evaluateFooterHafalan();
-    }
-
-    private void initFooterSpeechRecognizer() {
-        if (!SpeechRecognizer.isRecognitionAvailable(this)) {
-            Toast.makeText(this, "Pengenal suara Google tidak tersedia pada perangkat ini.", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        footerSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-        footerSpeechRecognizer.setRecognitionListener(new RecognitionListener() {
-            @Override public void onReadyForSpeech(Bundle params) {
-                if (tvFooterHafalIndicator != null) {
-                    tvFooterHafalIndicator.setText("● Siap Mendengarkan");
-                    tvFooterHafalIndicator.setTextColor(getResources().getColor(R.color.emerald));
-                }
-            }
-            @Override public void onBeginningOfSpeech() {
-                if (tvFooterHafalIndicator != null) {
-                    tvFooterHafalIndicator.setText("● Merekam...");
-                    tvFooterHafalIndicator.setTextColor(getResources().getColor(R.color.red_error));
-                }
-            }
-            @Override public void onRmsChanged(float rmsdB) {}
-            @Override public void onBufferReceived(byte[] buffer) {}
-            @Override public void onEndOfSpeech() {
-                if (isFooterRecordingActive) {
-                    if (tvFooterHafalIndicator != null) {
-                        tvFooterHafalIndicator.setText("⏳ Jeda Nafas");
-                        tvFooterHafalIndicator.setTextColor(getResources().getColor(R.color.gold_primary));
-                    }
-                    if (tvFooterHafalStatus != null) {
-                        tvFooterHafalStatus.setText("Jeda nafas... Silakan lanjutkan atau ketuk '✓ Nilai'");
-                    }
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                        if (isFooterRecordingActive) {
-                            restartFooterListeningIntent();
-                        }
-                    }, 300);
-                }
-            }
-            @Override public void onError(int error) {
-                if (isFooterRecordingActive && (error == SpeechRecognizer.ERROR_NO_MATCH || error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT)) {
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                        if (isFooterRecordingActive) {
-                            restartFooterListeningIntent();
-                        }
-                    }, 400);
-                    return;
-                }
-                stopFooterListening(true);
-            }
-            @Override public void onResults(Bundle results) {
-                ArrayList<String> matches = results != null ? results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) : null;
-                if (matches != null && !matches.isEmpty()) {
-                    String seg = matches.get(0);
-                    if (seg != null && !seg.trim().isEmpty()) {
-                        if (footerAccumulatedSpeech.length() > 0) footerAccumulatedSpeech.append(" ");
-                        footerAccumulatedSpeech.append(seg.trim());
-                        if (tvFooterHafalStatus != null) {
-                            tvFooterHafalStatus.setText(footerAccumulatedSpeech.toString().trim());
-                        }
-                    }
-                }
-                if (isFooterRecordingActive) {
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                        if (isFooterRecordingActive) {
-                            restartFooterListeningIntent();
-                        }
-                    }, 300);
-                }
-            }
-            @Override public void onPartialResults(Bundle partialResults) {
-                ArrayList<String> partials = partialResults != null ? partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) : null;
-                if (partials != null && !partials.isEmpty()) {
-                    String live = partials.get(0);
-                    if (live != null && !live.trim().isEmpty()) {
-                        String full = (footerAccumulatedSpeech.length() > 0 ? (footerAccumulatedSpeech + " ") : "") + live.trim();
-                        if (tvFooterHafalStatus != null) {
-                            tvFooterHafalStatus.setText(full);
-                        }
-                    }
-                }
-            }
-            @Override public void onEvent(int eventType, Bundle params) {}
-        });
-    }
-
-    private void evaluateFooterHafalan() {
-        if (footerHafalAyah == null) return;
-        String spoken = footerAccumulatedSpeech.toString().trim();
-        if (spoken.isEmpty()) {
-            Toast.makeText(this, "Belum ada suara yang terekam. Silakan ketuk mic dan baca ayat ini.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        RecitationEvaluator.EvaluationResult res = RecitationEvaluator.evaluate(footerHafalAyah.getArabic(), spoken);
-        PreferenceManager.markHafalan(this, surahNumber, footerHafalAyah.getNumberInSurah());
-        showHafalanResultDialog(footerHafalAyah, res);
-    }
-
-    private void showHafalanResultDialog(AyahModel ayah, RecitationEvaluator.EvaluationResult res) {
-        Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_hafalan_result);
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-
-        TextView tvAyahBadge = dialog.findViewById(R.id.tv_dlg_result_ayah_badge);
-        TextView tvScore = dialog.findViewById(R.id.tv_dlg_result_score);
-        TextView tvGrade = dialog.findViewById(R.id.tv_dlg_result_grade);
-        TextView tvStats = dialog.findViewById(R.id.tv_dlg_result_stats);
-        TextView tvDiff = dialog.findViewById(R.id.tv_dlg_result_diff);
-        TextView tvSpoken = dialog.findViewById(R.id.tv_dlg_result_spoken);
-        ImageButton btnClose = dialog.findViewById(R.id.btn_dlg_result_close);
-        TextView btnRetry = dialog.findViewById(R.id.btn_dlg_result_retry);
-        TextView btnNext = dialog.findViewById(R.id.btn_dlg_result_next);
-
-        String sName = currentSurah != null ? currentSurah.getEnglishName() : ("Surat " + surahNumber);
-        tvAyahBadge.setText(sName + " : Ayat " + ayah.getNumberInSurah());
-
-        int scorePercent = Math.round(res.accuracy);
-        tvScore.setText(scorePercent + "%");
-
-        if (scorePercent >= 85) {
-            tvScore.setTextColor(getResources().getColor(R.color.emerald));
-            tvGrade.setText("Mumtaz (Sempurna / Sangat Baik)");
-            tvGrade.setTextColor(getResources().getColor(R.color.emerald));
-        } else if (scorePercent >= 65) {
-            tvScore.setTextColor(getResources().getColor(R.color.gold_primary));
-            tvGrade.setText("Jayyid (Baik)");
-            tvGrade.setTextColor(getResources().getColor(R.color.gold_primary));
-        } else {
-            tvScore.setTextColor(getResources().getColor(R.color.red_error));
-            tvGrade.setText("Perlu Diulang (Dha'if)");
-            tvGrade.setTextColor(getResources().getColor(R.color.red_error));
-        }
-
-        tvStats.setText("Benar: " + res.correctWords + " kata · Kurang/Salah: " + (res.missingWords + res.wrongWords) + " kata");
-
-        // Format Word Diff with Colored Spans
-        Typeface tf = PreferenceManager.getMushafTypeface(this);
-        if (tf != null) tvDiff.setTypeface(tf);
-
-        SpannableStringBuilder diffSsb = new SpannableStringBuilder();
-        for (RecitationEvaluator.WordDiff wd : res.diffs) {
-            int st = diffSsb.length();
-            diffSsb.append(wd.targetWord);
-            int en = diffSsb.length();
-            int color = wd.isCorrect ? 0xFF00FFD5 : 0xFFFF5555;
-            diffSsb.setSpan(new ForegroundColorSpan(color), st, en, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            diffSsb.append(" ");
-        }
-        tvDiff.setText(diffSsb);
-
-        if (tf != null) tvSpoken.setTypeface(tf);
-        tvSpoken.setText(res.spokenText.isEmpty() ? "-" : res.spokenText);
-
-        btnClose.setOnClickListener(v -> dialog.dismiss());
-
-        btnRetry.setOnClickListener(v -> {
-            dialog.dismiss();
-            startFooterListening();
-        });
-
-        btnNext.setOnClickListener(v -> {
-            dialog.dismiss();
-            int curAyahNum = ayah.getNumberInSurah();
-            if (ayahs != null && curAyahNum < ayahs.size()) {
-                AyahModel nextAyah = ayahs.get(curAyahNum);
-                startFooterHafalanForAyah(nextAyah);
-            } else {
-                Toast.makeText(SurahActivity.this, "Alhamdulillah, sudah mencapai akhir surat!", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        dialog.show();
-    }
-
     // ── AUDIO PLAYER LOGIC ──
 
     private void playAyah(int index) {
@@ -823,25 +942,20 @@ public class SurahActivity extends AppCompatActivity {
 
         stopAudioInternal();
 
-        if ("page".equalsIgnoreCase(currentViewMode)) {
-            if (pageAdapter != null) {
-                int pos = pageAdapter.findPositionForAyah(ayah.getNumberInSurah());
-                rvPages.smoothScrollToPosition(pos);
-                pageAdapter.setActiveAyah(ayah.getNumberInSurah(), false);
-            }
-        } else {
-            if (rvAyahs != null) {
-                rvAyahs.smoothScrollToPosition(index);
-            }
-        }
+        scrollToAyahAccurate(index);
 
         String qariId = PreferenceManager.getQariId(this);
         String qariName = PreferenceManager.getQariName(this);
         String primaryUrl = String.format(Locale.US, "https://mirrors.quranicaudio.com/everyayah/%s/%03d%03d.mp3", qariId, surahNumber, ayah.getNumberInSurah());
         String fallbackUrl = String.format(Locale.US, "https://everyayah.com/data/%s/%03d%03d.mp3", qariId, surahNumber, ayah.getNumberInSurah());
 
-        tvPlayerStatus.setText("Memutar: " + surahName + " Ayat " + ayah.getNumberInSurah() + " (" + qariName + ")");
-        tvPlayerCurrent.setText(ayah.getArabic());
+        tvPlayerStatus.setText("Memutar: " + surahName + " Ayat " + ayah.getNumberInSurah());
+        if (tvPlayerSub != null) {
+            tvPlayerSub.setText(qariName + " · Menyimak bacaan qari");
+        }
+        if (tvPlayerCurrent != null) {
+            tvPlayerCurrent.setVisibility(View.GONE);
+        }
         btnPlayerToggle.setImageResource(R.drawable.ic_pause);
         isPlaying = true;
 
@@ -860,7 +974,7 @@ public class SurahActivity extends AppCompatActivity {
                 mp.start();
                 long dur = mp.getDuration();
                 if (dur <= 0) dur = 5000;
-                currentWordTimings = estimateWordTimings(ayah.getArabic(), dur);
+                currentWordTimings = estimateWordTimings(ayah, dur);
                 lastKaraokeWordIndex = -1;
                 startKaraokeTicker(ayah);
             });
@@ -938,40 +1052,57 @@ public class SurahActivity extends AppCompatActivity {
             if (adapter != null) {
                 adapter.setKaraokeHighlight(rvAyahs, currentPlayingAyahIndex, curIdx);
             }
-            if (tvPlayerCurrent != null) {
-                AyahAdapter.applyKaraokeSpannable(tvPlayerCurrent, ayah.getArabic(), curIdx);
+            if (pageAdapter != null) {
+                pageAdapter.setKaraokeHighlight(rvPages, ayah.getNumberInSurah(), curIdx);
             }
         }
     }
 
-    private List<WordTiming> estimateWordTimings(String arabicText, long durationMs) {
+    private List<WordTiming> estimateWordTimings(AyahModel ayah, long durationMs) {
         List<WordTiming> list = new ArrayList<>();
-        if (arabicText == null || arabicText.trim().isEmpty()) return list;
-        String[] words = arabicText.trim().split("\\s+");
-        if (words.length == 0) return list;
+        if (ayah == null) return list;
+
+        List<String> words = new ArrayList<>();
+        if (PreferenceManager.isWordByWord(this)) {
+            List<WordModel> wbw = QuranRepository.getWordByWord(this, surahNumber, ayah.getNumberInSurah());
+            if (wbw != null && !wbw.isEmpty()) {
+                for (WordModel w : wbw) {
+                    words.add(w.getArabic());
+                }
+            }
+        }
+        if (words.isEmpty()) {
+            String text = ayah.getArabic();
+            if (text != null && !text.trim().isEmpty()) {
+                for (String t : text.trim().split("\\s+")) {
+                    if (!t.isEmpty()) words.add(t);
+                }
+            }
+        }
+        if (words.isEmpty()) return list;
 
         String diacritics = "[\u064B-\u065F\u0610-\u061A\u0670\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]";
-        int[] weights = new int[words.length];
+        int[] weights = new int[words.size()];
         int totalWeight = 0;
-        for (int i = 0; i < words.length; i++) {
-            String stripped = words[i].replaceAll(diacritics, "");
+        for (int i = 0; i < words.size(); i++) {
+            String stripped = words.get(i).replaceAll(diacritics, "");
             weights[i] = Math.max(stripped.length(), 1);
             totalWeight += weights[i];
         }
-        if (totalWeight == 0) totalWeight = words.length;
+        if (totalWeight == 0) totalWeight = words.size();
 
         long leadIn = (long) Math.min(durationMs * 0.05f, 300f);
         long spoken = Math.max(durationMs - leadIn, 100);
         float gapRatio = 0.07f;
 
         long elapsed = leadIn;
-        for (int i = 0; i < words.length; i++) {
+        for (int i = 0; i < words.size(); i++) {
             float fraction = (float) weights[i] / totalWeight;
             long talkDur = (long) (fraction * spoken * (1f - gapRatio));
             long gapDur = (long) (fraction * spoken * gapRatio);
             long start = elapsed;
             elapsed += talkDur + gapDur;
-            list.add(new WordTiming(words[i], start, elapsed));
+            list.add(new WordTiming(words.get(i), start, elapsed));
         }
         return list;
     }
@@ -980,6 +1111,9 @@ public class SurahActivity extends AppCompatActivity {
         stopKaraokeTicker();
         if (adapter != null) {
             adapter.clearKaraokeHighlight(rvAyahs);
+        }
+        if (pageAdapter != null) {
+            pageAdapter.clearKaraokeHighlight(rvPages);
         }
         if (mediaPlayer != null) {
             try {
@@ -997,112 +1131,11 @@ public class SurahActivity extends AppCompatActivity {
         lastKaraokeWordIndex = -1;
         btnPlayerToggle.setImageResource(R.drawable.ic_play_arrow);
         tvPlayerStatus.setText("Audio Dihentikan");
-        tvPlayerCurrent.setText("Pilih ayat untuk memutar");
-    }
-
-    private void showKosakataDialog(AyahModel ayah) {
-        if (ayah == null) return;
-        Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_kosakata_ayat);
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (tvPlayerSub != null) {
+            tvPlayerSub.setText("Pilih ayat untuk memutar suara per ayat");
         }
-
-        TextView tvTitle = dialog.findViewById(R.id.tv_dlg_kosa_title);
-        TextView tvArabicFull = dialog.findViewById(R.id.tv_dlg_kosa_arabic_full);
-        TextView tvIndoFull = dialog.findViewById(R.id.tv_dlg_kosa_indo_full);
-        ImageButton btnClose = dialog.findViewById(R.id.btn_dlg_kosa_close);
-        ProgressBar pb = dialog.findViewById(R.id.pb_dlg_kosa);
-        FlowLayout flowWords = dialog.findViewById(R.id.flow_dlg_words);
-
-        String sName = currentSurah != null ? currentSurah.getEnglishName() : ("Surat " + surahNumber);
-        tvTitle.setText(sName + " : Ayat " + ayah.getNumberInSurah());
-        tvArabicFull.setText(ayah.getArabic());
-        tvArabicFull.setTypeface(PreferenceManager.getMushafTypeface(this));
-        tvArabicFull.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        tvArabicFull.setTextDirection(View.TEXT_DIRECTION_RTL);
-        tvArabicFull.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-        tvArabicFull.setGravity(android.view.Gravity.RIGHT);
-        tvIndoFull.setText(ayah.getIndo());
-        btnClose.setOnClickListener(v -> dialog.dismiss());
-
-        final int aNum = ayah.getNumberInSurah();
-        List<WordModel> cached = QuranRepository.getWordByWord(this, surahNumber, aNum);
-        if (cached != null && !cached.isEmpty()) {
-            renderDialogWords(flowWords, cached);
-        } else {
-            renderDialogFallback(flowWords, ayah.getArabic());
-            if (pb != null) pb.setVisibility(View.VISIBLE);
-            new Thread(() -> {
-                try {
-                    String urlStr = "https://api.quran.com/api/v4/verses/by_key/" + surahNumber + ":" + aNum
-                            + "?language=id&words=true&word_fields=text_uthmani,translation,transliteration";
-                    java.net.URL url = new java.net.URL(urlStr);
-                    java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-                    conn.setConnectTimeout(8000);
-                    conn.setReadTimeout(8000);
-                    if (conn.getResponseCode() == 200) {
-                        java.io.BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream(), "UTF-8"));
-                        StringBuilder sb = new StringBuilder();
-                        String line;
-                        while ((line = br.readLine()) != null) sb.append(line);
-                        br.close();
-                        String resp = sb.toString();
-                        List<WordModel> words = QuranRepository.parseWordJson(resp, aNum);
-                        if (words != null && !words.isEmpty()) {
-                            QuranRepository.saveWordByWord(SurahActivity.this, surahNumber, aNum, resp);
-                            runOnUiThread(() -> {
-                                if (pb != null) pb.setVisibility(View.GONE);
-                                renderDialogWords(flowWords, words);
-                            });
-                        }
-                    }
-                    conn.disconnect();
-                } catch (Exception ignored) {}
-                runOnUiThread(() -> {
-                    if (pb != null) pb.setVisibility(View.GONE);
-                });
-            }).start();
-        }
-
-        dialog.show();
-    }
-
-    private void renderDialogWords(FlowLayout flow, List<WordModel> words) {
-        if (flow == null || words == null) return;
-        flow.removeAllViews();
-        LayoutInflater inflater = LayoutInflater.from(this);
-        Typeface tf = PreferenceManager.getMushafTypeface(this);
-        for (WordModel w : words) {
-            View v = inflater.inflate(R.layout.item_wbw_reference, flow, false);
-            TextView tvAr = v.findViewById(R.id.tv_wbw_arabic);
-            TextView tvTr = v.findViewById(R.id.tv_wbw_meaning);
-            tvAr.setText(w.getArabic());
-            if (tf != null) tvAr.setTypeface(tf);
-            String tr = w.getTranslation();
-            tvTr.setText((tr == null || tr.trim().isEmpty()) ? "-" : tr.trim());
-            flow.addView(v);
-        }
-    }
-
-    private void renderDialogFallback(FlowLayout flow, String arabicText) {
-        if (flow == null || arabicText == null) return;
-        flow.removeAllViews();
-        LayoutInflater inflater = LayoutInflater.from(this);
-        Typeface tf = PreferenceManager.getMushafTypeface(this);
-        String[] tokens = arabicText.trim().split("\\s+");
-        for (int i = 0; i < tokens.length; i++) {
-            String token = tokens[i].trim();
-            if (token.isEmpty()) continue;
-            View v = inflater.inflate(R.layout.item_wbw_reference, flow, false);
-            TextView tvAr = v.findViewById(R.id.tv_wbw_arabic);
-            TextView tvTr = v.findViewById(R.id.tv_wbw_meaning);
-            tvAr.setText(token);
-            if (tf != null) tvAr.setTypeface(tf);
-            tvTr.setText("Kata " + (i + 1));
-            flow.addView(v);
+        if (tvPlayerCurrent != null) {
+            tvPlayerCurrent.setVisibility(View.GONE);
         }
     }
 
@@ -1110,7 +1143,7 @@ public class SurahActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         stopAudio();
-        stopFooterHafalan();
+        stopMurojaah();
         if (footerSpeechRecognizer != null) {
             try { footerSpeechRecognizer.destroy(); } catch (Exception ignored) {}
             footerSpeechRecognizer = null;

@@ -53,7 +53,7 @@
                     android:background="@drawable/bg_chip_action"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:text="v1.0.2"
+                    android:text="v1.0.4e"
                     android:textColor="@color/gold_light"
                     android:textSize="10sp" />
             </LinearLayout>
@@ -499,6 +499,78 @@
             android:visibility="gone"
             android:contentDescription="Hapus" />
     </LinearLayout>
+
+    <!-- Pilihan Urutan (Surat, Juz, Halaman, Turunnya Surat) -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:clipToPadding="false"
+        android:paddingHorizontal="16dp"
+        android:layout_marginBottom="8dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Tab 1: Surat -->
+            <TextView
+                android:id="@+id/tab_order_surah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_tab_active"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="6dp"
+                android:text="📖 Surat"
+                android:textColor="@color/gold_primary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Tab 2: Juz -->
+            <TextView
+                android:id="@+id/tab_order_juz"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_action"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="6dp"
+                android:text="📑 Juz"
+                android:textColor="@color/text_muted"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Tab 3: Halaman -->
+            <TextView
+                android:id="@+id/tab_order_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_action"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="6dp"
+                android:text="📄 Halaman"
+                android:textColor="@color/text_muted"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Tab 4: Turunnya Surat (Nuzulul Quran) -->
+            <TextView
+                android:id="@+id/tab_order_turun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_action"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="6dp"
+                android:text="⏳ Turunnya Surat"
+                android:textColor="@color/text_muted"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <!-- Surah Count Bar -->
     <LinearLayout

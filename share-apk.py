@@ -110,19 +110,57 @@ class ApkHandler(http.server.SimpleHTTPRequestHandler):
     </div>
 </body>
 </html>"""
+            content = html.encode('utf-8')
             self.send_response(200)
-            self.send_header('Content-type', 'text/html; charset=utf-8')
+            self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self.send_header('Content-Length', str(len(content)))
+            self.send_header('Connection', 'close')
             self.end_headers()
-            self.wfile.write(html.encode('utf-8'))
+            self.wfile.write(content)
         else:
             super().do_GET()
 
-if __name__ == '__main__':
+class ReusableThreadingServer(socketserver.ThreadingTCPServer):
+    allow_reuse_address = True
+    daemon_threads = True
+
+def run():
+    socketserver.TCPServer.allow_reuse_address = True
+    start_port = PORT
+    httpd = None
+    active_port = start_port
+
+    for port in range(start_port, start_port + 20):
+        try:
+            httpd = ReusableThreadingServer(("", port), ApkHandler)
+            active_port = port
+            break
+        except OSError as e:
+            # WinError 10048 / EADDRINUSE
+            if getattr(e, 'winerror', None) == 10048 or getattr(e, 'errno', None) in (48, 98, 10048):
+                continue
+            raise
+
+    if not httpd:
+        print(f"[ERROR] Port {start_port} sampai {start_port + 19} sedang digunakan.")
+        return
+
     local_ip = get_local_ip()
-    print(f"\n=======================================================")
-    print(f"  SERVER APK AKTIF!")
-    print(f"  Buka browser di HP (Chrome / browser bawaan):")
-    print(f"  --> http://{local_ip}:{PORT}")
-    print(f"=======================================================\n")
-    with socketserver.TCPServer(("", PORT), ApkHandler) as httpd:
+    print("\n=======================================================")
+    print("  SERVER APK AKTIF!")
+    print("  Buka browser di HP (Chrome / browser bawaan):")
+    print(f"  --> http://{local_ip}:{active_port}")
+    if active_port != start_port:
+        print(f"  (Catatan: Port {start_port} sedang sibuk, otomatis memakai port {active_port})")
+    print("  Tekan Ctrl+C di terminal ini untuk berhenti.")
+    print("=======================================================\n")
+
+    try:
         httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("\n[INFO] Server dihentikan.")
+    finally:
+        httpd.server_close()
+
+if __name__ == '__main__':
+    run()

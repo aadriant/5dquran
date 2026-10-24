@@ -29,17 +29,10 @@ public class PelajariActivity extends AppCompatActivity {
     private int ayahNumber = 1;
     private List<AyahModel> ayahs;
     private AyahModel currentAyah;
-    private List<WordModel> currentWords = null;
 
     private TextView tvPelajariTitle, tvPelajariAyahBadge;
     private TextView tvPelajariArabic, tvPelajariIndo;
     private TextView tvTafsirIbnuKatsir, tvHadisAyat;
-
-    // Kosakata per kata UI
-    private ProgressBar pbKosakata;
-    private TextView tvKosakataStatus;
-    private ViewGroup layoutKosakataItems;
-    private TextView btnReloadKosakata;
 
     // Download Tafsir UI
     private View layoutDownloadTafsir;
@@ -72,14 +65,6 @@ public class PelajariActivity extends AppCompatActivity {
         tvTafsirIbnuKatsir = findViewById(R.id.tv_tafsir_ibnukatsir);
         tvHadisAyat = findViewById(R.id.tv_hadis_ayat);
 
-        // Kosakata UI
-        pbKosakata = findViewById(R.id.pb_kosakata);
-        tvKosakataStatus = findViewById(R.id.tv_kosakata_status);
-        layoutKosakataItems = findViewById(R.id.layout_kosakata_items);
-        btnReloadKosakata = findViewById(R.id.btn_reload_kosakata);
-
-        btnReloadKosakata.setOnClickListener(v -> loadKosakataPerKata(surahNumber, ayahNumber, true));
-
         layoutDownloadTafsir = findViewById(R.id.layout_download_tafsir);
         btnDownloadTafsir = findViewById(R.id.btn_download_tafsir);
         pbDownloadTafsir = findViewById(R.id.pb_download_tafsir);
@@ -93,9 +78,6 @@ public class PelajariActivity extends AppCompatActivity {
 
         View btnShareAyah = findViewById(R.id.btn_share_ayah);
         if (btnShareAyah != null) btnShareAyah.setOnClickListener(v -> shareAyah());
-
-        View btnShareKosakata = findViewById(R.id.btn_share_kosakata);
-        if (btnShareKosakata != null) btnShareKosakata.setOnClickListener(v -> shareKosakata());
 
         View btnShareTafsir = findViewById(R.id.btn_share_tafsir);
         if (btnShareTafsir != null) btnShareTafsir.setOnClickListener(v -> shareTafsir());
@@ -147,9 +129,6 @@ public class PelajariActivity extends AppCompatActivity {
         tvPelajariArabic.setGravity(android.view.Gravity.RIGHT);
         tvPelajariIndo.setText(currentAyah.getIndo());
 
-        // 0. Kosakata Per Kata (Cara baca & Arti)
-        loadKosakataPerKata(surahNumber, ayahNumber, false);
-
         // 1. Tafsir Ibnu Katsir
         String ikHtml = QuranRepository.getTafsirIbnuKatsir(this, surahNumber, ayahNumber);
         if (ikHtml != null && !ikHtml.trim().isEmpty()) {
@@ -166,128 +145,6 @@ public class PelajariActivity extends AppCompatActivity {
         // 2. Hadis Terkait & Asbabun Nuzul
         String hadisText = QuranRepository.getHadisAyat(this, surahNumber, ayahNumber);
         tvHadisAyat.setText(hadisText);
-    }
-
-    private void loadKosakataPerKata(int surah, int ayah, boolean forceReload) {
-        layoutKosakataItems.removeAllViews();
-
-        if (!forceReload) {
-            List<WordModel> cached = QuranRepository.getWordByWord(this, surah, ayah);
-            if (cached != null && !cached.isEmpty()) {
-                currentWords = cached;
-                pbKosakata.setVisibility(View.GONE);
-                tvKosakataStatus.setVisibility(View.GONE);
-                btnReloadKosakata.setVisibility(View.GONE);
-                renderWordItems(cached);
-                return;
-            }
-        }
-
-        pbKosakata.setVisibility(View.VISIBLE);
-        tvKosakataStatus.setVisibility(View.GONE);
-        btnReloadKosakata.setVisibility(View.GONE);
-
-        final int targetSurah = surah;
-        final int targetAyah = ayah;
-
-        executor.execute(() -> {
-            List<WordModel> words = null;
-            try {
-                String urlStr = "https://api.quran.com/api/v4/verses/by_key/" + targetSurah + ":" + targetAyah
-                        + "?language=id&words=true&word_fields=text_uthmani,translation,transliteration";
-                URL url = new URL(urlStr);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setConnectTimeout(12000);
-                conn.setReadTimeout(12000);
-
-                if (conn.getResponseCode() == 200) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line);
-                    }
-                    br.close();
-                    String respStr = sb.toString();
-                    words = QuranRepository.parseWordJson(respStr, targetAyah);
-                    if (words != null && !words.isEmpty()) {
-                        QuranRepository.saveWordByWord(PelajariActivity.this, targetSurah, targetAyah, respStr);
-                    }
-                }
-                conn.disconnect();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            final List<WordModel> finalWords = words;
-            mainHandler.post(() -> {
-                if (surahNumber != targetSurah || ayahNumber != targetAyah) {
-                    return; // Stale request
-                }
-                pbKosakata.setVisibility(View.GONE);
-                if (finalWords != null && !finalWords.isEmpty()) {
-                    currentWords = finalWords;
-                    tvKosakataStatus.setVisibility(View.GONE);
-                    btnReloadKosakata.setVisibility(View.GONE);
-                    renderWordItems(finalWords);
-                } else {
-                    currentWords = null;
-                    renderFallbackWords();
-                }
-            });
-        });
-    }
-
-    private void renderWordItems(List<WordModel> words) {
-        layoutKosakataItems.removeAllViews();
-        if (words == null || words.isEmpty()) return;
-
-        android.view.LayoutInflater inflater = android.view.LayoutInflater.from(this);
-        android.graphics.Typeface mushafTf = PreferenceManager.getMushafTypeface(this);
-
-        for (WordModel word : words) {
-            View itemView = inflater.inflate(R.layout.item_wbw_reference, layoutKosakataItems, false);
-            TextView tvArabic = itemView.findViewById(R.id.tv_wbw_arabic);
-            TextView tvMeaning = itemView.findViewById(R.id.tv_wbw_meaning);
-
-            tvArabic.setText(word.getArabic());
-            if (mushafTf != null) {
-                tvArabic.setTypeface(mushafTf);
-            }
-            String tr = word.getTranslation();
-            tvMeaning.setText((tr == null || tr.trim().isEmpty()) ? "-" : tr.trim());
-            layoutKosakataItems.addView(itemView);
-        }
-    }
-
-    private void renderFallbackWords() {
-        layoutKosakataItems.removeAllViews();
-        tvKosakataStatus.setVisibility(View.VISIBLE);
-        tvKosakataStatus.setText("⚠️ Kosakata lengkap memerlukan internet untuk diunduh pertama kali.");
-        btnReloadKosakata.setVisibility(View.VISIBLE);
-
-        if (currentAyah == null || currentAyah.getArabic() == null) return;
-        String[] tokens = currentAyah.getArabic().trim().split("\\s+");
-        android.view.LayoutInflater inflater = android.view.LayoutInflater.from(this);
-        android.graphics.Typeface mushafTf = PreferenceManager.getMushafTypeface(this);
-
-        for (int i = 0; i < tokens.length; i++) {
-            String token = tokens[i].trim();
-            if (token.isEmpty()) continue;
-            View itemView = inflater.inflate(R.layout.item_wbw_reference, layoutKosakataItems, false);
-            TextView tvArabic = itemView.findViewById(R.id.tv_wbw_arabic);
-            TextView tvMeaning = itemView.findViewById(R.id.tv_wbw_meaning);
-
-            tvArabic.setText(token);
-            if (mushafTf != null) {
-                tvArabic.setTypeface(mushafTf);
-            }
-            tvMeaning.setText("Kata " + (i + 1));
-            layoutKosakataItems.addView(itemView);
-        }
     }
 
     private void downloadTafsirOnline(int surah) {
@@ -372,30 +229,8 @@ public class PelajariActivity extends AppCompatActivity {
         String text = "📖 QS. " + surahName + " : Ayat " + ayahNumber + "\n\n"
                 + currentAyah.getArabic() + "\n\n"
                 + "Artinya:\n\"" + currentAyah.getIndo() + "\"\n\n"
-                + "Dibagikan via 5D Quran (v1.0.2)";
+                + "Dibagikan via 5D Quran (v1.0.4)";
         shareText("Ayat QS. " + surahName + ":" + ayahNumber, text);
-    }
-
-    private void shareKosakata() {
-        if (currentAyah == null) return;
-        String surahName = QuranRepository.getSurahName(this, surahNumber);
-        StringBuilder sb = new StringBuilder();
-        sb.append("📖 Kosakata Per Kata QS. ").append(surahName).append(" : Ayat ").append(ayahNumber).append("\n\n");
-        sb.append("Teks Ayat:\n").append(currentAyah.getArabic()).append("\n\n");
-        sb.append("Arti Kata demi Kata:\n");
-        if (currentWords != null && !currentWords.isEmpty()) {
-            for (WordModel w : currentWords) {
-                String ar = w.getArabic();
-                String tr = w.getTranslation();
-                if (ar != null && !ar.trim().isEmpty()) {
-                    sb.append("• ").append(ar).append(" : ").append(tr != null && !tr.trim().isEmpty() ? tr.trim() : "-").append("\n");
-                }
-            }
-        } else {
-            sb.append("(Terjemah lengkap): \"").append(currentAyah.getIndo()).append("\"\n");
-        }
-        sb.append("\nDibagikan via 5D Quran (v1.0.2)");
-        shareText("Kosakata QS. " + surahName + ":" + ayahNumber, sb.toString());
     }
 
     private void shareTafsir() {
@@ -407,7 +242,7 @@ public class PelajariActivity extends AppCompatActivity {
         sb.append("Ayat:\n").append(currentAyah.getArabic()).append("\n\n");
         sb.append("Artinya:\n\"").append(currentAyah.getIndo()).append("\"\n\n");
         sb.append("Penjelasan Tafsir:\n").append(tafsir).append("\n\n");
-        sb.append("Dibagikan via 5D Quran (v1.0.2)");
+        sb.append("Dibagikan via 5D Quran (v1.0.4)");
         shareText("Tafsir Ibnu Katsir QS. " + surahName + ":" + ayahNumber, sb.toString());
     }
 
@@ -419,18 +254,6 @@ public class PelajariActivity extends AppCompatActivity {
         sb.append("【 Teks Ayat 】\n").append(currentAyah.getArabic()).append("\n\n");
         sb.append("【 Terjemah 】\n\"").append(currentAyah.getIndo()).append("\"\n\n");
 
-        if (currentWords != null && !currentWords.isEmpty()) {
-            sb.append("【 Kosakata Kata Demi Kata 】\n");
-            for (WordModel w : currentWords) {
-                String ar = w.getArabic();
-                String tr = w.getTranslation();
-                if (ar != null && !ar.trim().isEmpty()) {
-                    sb.append("• ").append(ar).append(" : ").append(tr != null && !tr.trim().isEmpty() ? tr.trim() : "-").append("\n");
-                }
-            }
-            sb.append("\n");
-        }
-
         String tafsir = tvTafsirIbnuKatsir != null ? tvTafsirIbnuKatsir.getText().toString() : "";
         if (tafsir != null && !tafsir.isEmpty() && !tafsir.contains("belum diunduh")) {
             sb.append("【 Ringkasan Tafsir Ibnu Katsir 】\n").append(tafsir).append("\n\n");
@@ -441,7 +264,7 @@ public class PelajariActivity extends AppCompatActivity {
             sb.append("【 Hadis Terkait / Asbabun Nuzul 】\n").append(hadis).append("\n\n");
         }
 
-        sb.append("Dibagikan via 5D Quran (v1.0.2)");
+        sb.append("Dibagikan via 5D Quran (v1.0.4)");
         shareText("Tadabur Lengkap QS. " + surahName + ":" + ayahNumber, sb.toString());
     }
 

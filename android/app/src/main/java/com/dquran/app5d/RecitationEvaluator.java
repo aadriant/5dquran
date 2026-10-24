@@ -152,4 +152,53 @@ public class RecitationEvaluator {
 
         return new EvaluationResult(total, correctCount, wrongCount, missingCount, accuracy, isPerfect, diffs, spokenArabic);
     }
+
+    public static int findSpokenWordIndex(String targetArabic, String spokenArabic, int previousMatchedIndex) {
+        if (targetArabic == null || spokenArabic == null) return -1;
+        String[] rawTargetWords = targetArabic.trim().split("\\s+");
+        if (rawTargetWords.length == 0) return -1;
+
+        String[] targetNorm = new String[rawTargetWords.length];
+        for (int i = 0; i < rawTargetWords.length; i++) {
+            targetNorm[i] = normAr(rawTargetWords[i]);
+        }
+
+        String[] rawSpokenWords = spokenArabic.trim().isEmpty() ? new String[0] : spokenArabic.trim().split("\\s+");
+        if (rawSpokenWords.length == 0) return -1;
+
+        // Ambil token kata spoken terakhir yang diucapkan
+        String lastSpoken = normAr(rawSpokenWords[rawSpokenWords.length - 1]);
+        if (lastSpoken.isEmpty() && rawSpokenWords.length > 1) {
+            lastSpoken = normAr(rawSpokenWords[rawSpokenWords.length - 2]);
+        }
+        if (lastSpoken.isEmpty()) return -1;
+
+        // 1. Cari di sekitar previousMatchedIndex ke depan
+        int startSearch = Math.max(0, previousMatchedIndex);
+        int endSearch = Math.min(targetNorm.length, startSearch + 5);
+
+        int bestIndex = -1;
+        float bestSim = 0f;
+
+        for (int i = startSearch; i < endSearch; i++) {
+            float sim = similarity(targetNorm[i], lastSpoken);
+            if (sim > bestSim && sim >= 0.62f) {
+                bestSim = sim;
+                bestIndex = i;
+            }
+        }
+
+        // 2. Jika tidak ditemukan, cari di seluruh kata target
+        if (bestIndex == -1) {
+            for (int i = 0; i < targetNorm.length; i++) {
+                float sim = similarity(targetNorm[i], lastSpoken);
+                if (sim > bestSim && sim >= 0.68f) {
+                    bestSim = sim;
+                    bestIndex = i;
+                }
+            }
+        }
+
+        return bestIndex;
+    }
 }

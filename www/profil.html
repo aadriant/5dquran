@@ -103,6 +103,22 @@
       <p class="gr-note">Ayat dihitung selesai bila: baca&nbsp;=&nbsp;ayat sudah dibuka &middot; hafalan &amp; tulisan&nbsp;=&nbsp;tanpa salah dan tanpa terlewat.</p>
     </div>
 
+    <!-- CETAK MUSHAF PRIBADI PDF -->
+    <div class="kartu">
+      <h2 class="judul">📄 Cetak Mushaf Pribadi (PDF)</h2>
+      <p style="color:var(--muted);font-size:.78rem;margin-bottom:.85rem">Jadikan lembaran Mushaf Al-Quran standar siap cetak atau simpan sebagai file PDF.</p>
+      <div style="display:flex;flex-direction:column;gap:.6rem">
+        <button class="btn utama" id="btn-cetak-tulis" style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem">
+          <span>✍️ Cetak PDF Tulisan Saya</span>
+          <span style="font-size:.75rem;opacity:.85">Unduh PDF →</span>
+        </button>
+        <button class="btn utama" id="btn-cetak-hafalan" style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.35);color:#4ade80">
+          <span>🎤 Cetak PDF Hafalan Saya</span>
+          <span style="font-size:.75rem;opacity:.85">Unduh PDF →</span>
+        </button>
+      </div>
+    </div>
+
     <div class="kartu">
       <h2 class="judul">📊 Aktivitas</h2>
       <div class="stats">
@@ -232,6 +248,80 @@ const DAFTAR = {
       });
     });
   });
+
+  // ── CETAK / UNDUH PDF MUSHAF ──
+  const toArDigits = (n) => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+
+  async function cetakPdfMushaf(isHafalan) {
+    const title = isHafalan ? 'Mushaf Hafalan Pribadi' : 'Mushaf Tulis Pribadi';
+    const userName = (Auth.profil() && Auth.profil().nama) || 'Pengguna 5D Quran';
+    
+    let list = [];
+    if (isHafalan) {
+      const hafalanKeys = Object.keys(localStorage).filter(k => k.startsWith('hafalan_') || k.startsWith('rec_'));
+      for (const k of hafalanKeys) {
+        const m = k.match(/_s(\d+)_a(\d+)/);
+        if (m) list.push({ surah: parseInt(m[1]), ayah: parseInt(m[2]) });
+      }
+    } else {
+      const tulisKeys = Object.keys(localStorage).filter(k => k.startsWith('tulis_s') || k.startsWith('tulis_draft_s'));
+      for (const k of tulisKeys) {
+        const m = k.match(/_s(\d+)_a(\d+)/);
+        if (m) {
+          const val = localStorage.getItem(k);
+          if (val && val.trim()) {
+            list.push({ surah: parseInt(m[1]), ayah: parseInt(m[2]), text: val.trim() });
+          }
+        }
+      }
+    }
+
+    if (!list.length) {
+      alert(isHafalan ? 'Belum ada riwayat hafalan yang tersimpan di perangkat ini.' : 'Belum ada riwayat tulisan yang tersimpan di perangkat ini.');
+      return;
+    }
+
+    list.sort((a,b) => a.surah !== b.surah ? a.surah - b.surah : a.ayah - b.ayah);
+
+    const win = window.open('', '_blank');
+    let html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title} - ${userName}</title>
+    <style>
+      @page { size: A4; margin: 15mm 12mm; }
+      body { font-family: 'Amiri Quran', 'Traditional Arabic', serif; background: #FAF8F2; color: #1E293B; margin: 0; padding: 20px; }
+      .page-frame { border: 2px solid #2E6F40; outline: 1px solid #D4AF37; outline-offset: -5px; padding: 25px 20px; border-radius: 8px; min-height: 90vh; box-sizing: border-box; }
+      .mushaf-header { display: flex; justify-content: space-between; font-size: 11px; color: #64748B; border-bottom: 1px solid #E2E8F0; padding-bottom: 6px; margin-bottom: 18px; font-family: sans-serif; }
+      .surah-box { background: #F1F8F1; border: 1px solid #A5D6A7; border-radius: 8px; text-align: center; padding: 10px 14px; margin: 18px 0 12px; font-family: sans-serif; }
+      .surah-num { display: inline-block; width: 22px; height: 22px; line-height: 22px; background: #C8E6C9; color: #1B5E20; border-radius: 50%; font-weight: bold; font-size: 11px; margin-bottom: 3px; }
+      .surah-name { font-size: 18px; font-weight: bold; color: #1E293B; font-family: serif; }
+      .surah-sub { font-size: 11px; color: #64748B; }
+      .bismillah { text-align: center; font-size: 20px; margin: 12px 0 16px; color: #0F172A; }
+      .verses { direction: rtl; text-align: justify; font-size: 21px; line-height: 2.2; word-spacing: 3px; }
+      .badge { color: #15803D; font-weight: bold; margin: 0 4px; }
+    </style></head><body><div class="page-frame"><div class="mushaf-header"><span>5D Quran</span><span>${title} — ${userName}</span><span>Halaman 1</span></div>`;
+
+    let curSurah = -1;
+    for (const item of list) {
+      if (item.surah !== curSurah) {
+        if (curSurah !== -1) html += `</div>`;
+        curSurah = item.surah;
+        html += `<div class="surah-box"><div class="surah-num">${curSurah}</div><div class="surah-name">Surat ke-${curSurah}</div></div>`;
+        if (curSurah !== 1 && curSurah !== 9) {
+          html += `<div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>`;
+        }
+        html += `<div class="verses">`;
+      }
+      let t = item.text || ('Ayat ' + item.ayah);
+      html += `${t} <span class="badge">﴿${toArDigits(item.ayah)}﴾</span> `;
+    }
+    html += `</div></div><script>window.onload = function() { window.print(); }<\/script></body></html>`;
+    win.document.write(html);
+    win.document.close();
+  }
+
+  const btnCetakTulis = document.getElementById('btn-cetak-tulis');
+  if (btnCetakTulis) btnCetakTulis.addEventListener('click', () => cetakPdfMushaf(false));
+  const btnCetakHafalan = document.getElementById('btn-cetak-hafalan');
+  if (btnCetakHafalan) btnCetakHafalan.addEventListener('click', () => cetakPdfMushaf(true));
 
   document.getElementById('keluar').addEventListener('click', () => Auth.logout());
 })();

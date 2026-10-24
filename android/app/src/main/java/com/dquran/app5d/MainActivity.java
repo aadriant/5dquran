@@ -33,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton btnClearSearch;
     private TextView tvCount;
 
+    // Tabs Urutan (Surat, Juz, Halaman, Turunnya Surat)
+    private TextView tabOrderSurah, tabOrderJuz, tabOrderPage, tabOrderTurun;
+    private String currentOrderMode = "surah";
+
     // 3 Lanjutkan cards
     private View cardLastRead;
     private TextView tvLastReadSurah;
@@ -134,6 +138,17 @@ public class MainActivity extends AppCompatActivity {
         cardLastHafalan    = findViewById(R.id.card_last_hafalan);
         tvLastHafalanSurah = findViewById(R.id.tv_last_hafalan_surah);
 
+        // Tab Urutan
+        tabOrderSurah = findViewById(R.id.tab_order_surah);
+        tabOrderJuz   = findViewById(R.id.tab_order_juz);
+        tabOrderPage  = findViewById(R.id.tab_order_page);
+        tabOrderTurun = findViewById(R.id.tab_order_turun);
+
+        if (tabOrderSurah != null) tabOrderSurah.setOnClickListener(v -> setOrderMode("surah"));
+        if (tabOrderJuz != null)   tabOrderJuz.setOnClickListener(v -> setOrderMode("juz"));
+        if (tabOrderPage != null)  tabOrderPage.setOnClickListener(v -> setOrderMode("page"));
+        if (tabOrderTurun != null) tabOrderTurun.setOnClickListener(v -> setOrderMode("turun"));
+
         ImageButton btnProfile = findViewById(R.id.btn_profile);
         if (btnProfile != null) {
             btnProfile.setOnClickListener(v -> {
@@ -158,49 +173,64 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupData() {
-        List<SurahModel> surahs = QuranRepository.getSurahs(this);
         rvSurahs.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new SurahAdapter(this, surahs, (surah, actionType) -> {
-            switch (actionType) {
-                case "baca": {
-                    Intent intent = new Intent(MainActivity.this, SurahActivity.class);
-                    intent.putExtra("surah_number", surah.getNumber());
-                    startActivity(intent);
-                    break;
-                }
-                case "dengar": {
-                    Intent intent = new Intent(MainActivity.this, SurahActivity.class);
-                    intent.putExtra("surah_number", surah.getNumber());
-                    intent.putExtra("auto_play", true);
-                    startActivity(intent);
-                    break;
-                }
-                case "hafal": {
-                    Intent intent = new Intent(MainActivity.this, HafalanActivity.class);
-                    intent.putExtra("surah_number", surah.getNumber());
-                    intent.putExtra("ayah_number", 1);
-                    startActivity(intent);
-                    break;
-                }
-                case "tulis": {
-                    Intent intent = new Intent(MainActivity.this, TulisActivity.class);
-                    intent.putExtra("surah_number", surah.getNumber());
-                    intent.putExtra("ayah_number", 1);
-                    startActivity(intent);
-                    break;
-                }
-                case "pelajari": {
-                    Intent intent = new Intent(MainActivity.this, PelajariActivity.class);
-                    intent.putExtra("surah_number", surah.getNumber());
-                    intent.putExtra("ayah_number", 1);
-                    startActivity(intent);
-                    break;
-                }
-            }
+        adapter = new SurahAdapter(this, null, item -> {
+            Intent intent = new Intent(MainActivity.this, SurahActivity.class);
+            intent.putExtra("surah_number", item.getTargetSurah());
+            intent.putExtra("target_ayah", item.getTargetAyah());
+            startActivity(intent);
         });
 
         rvSurahs.setAdapter(adapter);
+
+        String savedMode = PreferenceManager.getMainOrderMode(this);
+        setOrderMode(savedMode != null ? savedMode : "surah");
+    }
+
+    private void setOrderMode(String mode) {
+        currentOrderMode = mode;
+        PreferenceManager.setMainOrderMode(this, mode);
+
+        int activeBg = R.drawable.bg_chip_tab_active;
+        int normalBg = R.drawable.bg_chip_action;
+        int activeColor = getResources().getColor(R.color.gold_primary);
+        int normalColor = getResources().getColor(R.color.text_muted);
+
+        if (tabOrderSurah != null) {
+            tabOrderSurah.setBackgroundResource("surah".equals(mode) ? activeBg : normalBg);
+            tabOrderSurah.setTextColor("surah".equals(mode) ? activeColor : normalColor);
+        }
+        if (tabOrderJuz != null) {
+            tabOrderJuz.setBackgroundResource("juz".equals(mode) ? activeBg : normalBg);
+            tabOrderJuz.setTextColor("juz".equals(mode) ? activeColor : normalColor);
+        }
+        if (tabOrderPage != null) {
+            tabOrderPage.setBackgroundResource("page".equals(mode) ? activeBg : normalBg);
+            tabOrderPage.setTextColor("page".equals(mode) ? activeColor : normalColor);
+        }
+        if (tabOrderTurun != null) {
+            tabOrderTurun.setBackgroundResource("turun".equals(mode) ? activeBg : normalBg);
+            tabOrderTurun.setTextColor("turun".equals(mode) ? activeColor : normalColor);
+        }
+
+        List<QuranItem> items;
+        if ("juz".equals(mode)) {
+            items = QuranRepository.getItemsByJuz(this);
+        } else if ("page".equals(mode)) {
+            items = QuranRepository.getItemsByPage(this);
+        } else if ("turun".equals(mode)) {
+            items = QuranRepository.getItemsByRevelation(this);
+        } else {
+            items = QuranRepository.getItemsBySurah(this);
+        }
+
+        if (adapter != null) {
+            adapter.setItems(items);
+            if (etSearch != null && etSearch.getText().length() > 0) {
+                adapter.filter(etSearch.getText().toString());
+            }
+        }
         updateCount();
     }
 
@@ -299,7 +329,9 @@ public class MainActivity extends AppCompatActivity {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                 btnClearSearch.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
-                adapter.filter(s.toString(), "all");
+                if (adapter != null) {
+                    adapter.filter(s.toString());
+                }
                 updateCount();
             }
             @Override public void afterTextChanged(Editable s) {}
@@ -308,7 +340,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateCount() {
-        if (adapter != null) tvCount.setText(adapter.getDisplayCount() + " Surah");
+        if (adapter == null || tvCount == null) return;
+        String query = etSearch != null ? etSearch.getText().toString().trim() : "";
+        if (!query.isEmpty()) {
+            tvCount.setText(adapter.getDisplayCount() + " hasil ditemukan");
+            return;
+        }
+
+        if ("juz".equals(currentOrderMode)) {
+            tvCount.setText("30 Juz");
+        } else if ("page".equals(currentOrderMode)) {
+            tvCount.setText("604 Halaman Mushaf");
+        } else if ("turun".equals(currentOrderMode)) {
+            tvCount.setText("114 Surah (Urutan Pewahyuan / Nuzulul Quran)");
+        } else {
+            tvCount.setText("114 Surah");
+        }
     }
 
     private void showSettingsDialog() {

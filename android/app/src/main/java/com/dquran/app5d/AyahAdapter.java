@@ -23,19 +23,36 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
     }
 
     private final Context context;
+    private final int surahNumber;
     private final List<AyahModel> ayahs;
     private final OnAyahActionListener listener;
     private final float arabicFontSize;
+    private boolean isWordByWordEnabled = false;
 
     // Karaoke state
     private int karaokeAyahIndex = -1;
     private int karaokeWordIndex = -1;
 
-    public AyahAdapter(Context context, List<AyahModel> ayahs, float fontSize, OnAyahActionListener listener) {
+    public AyahAdapter(Context context, int surahNumber, List<AyahModel> ayahs, float fontSize, OnAyahActionListener listener) {
         this.context = context;
+        this.surahNumber = surahNumber;
         this.ayahs = ayahs;
         this.arabicFontSize = fontSize;
         this.listener = listener;
+        this.isWordByWordEnabled = PreferenceManager.isWordByWord(context);
+    }
+
+    public AyahAdapter(Context context, List<AyahModel> ayahs, float fontSize, OnAyahActionListener listener) {
+        this(context, 1, ayahs, fontSize, listener);
+    }
+
+    public void setWordByWordEnabled(boolean enabled) {
+        this.isWordByWordEnabled = enabled;
+        notifyDataSetChanged();
+    }
+
+    public boolean isWordByWordEnabled() {
+        return isWordByWordEnabled;
     }
 
     @NonNull
@@ -50,18 +67,36 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
         AyahModel a = ayahs.get(position);
 
         holder.tvNumber.setText(String.valueOf(a.getNumberInSurah()));
-        holder.tvArabic.setTextSize(arabicFontSize);
-        holder.tvArabic.setTypeface(PreferenceManager.getMushafTypeface(context));
-        holder.tvArabic.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        holder.tvArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
-        holder.tvArabic.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-        holder.tvArabic.setGravity(android.view.Gravity.RIGHT);
 
-        if (position == karaokeAyahIndex && karaokeWordIndex >= 0) {
-            applyKaraokeSpannable(holder.tvArabic, a.getArabic(), karaokeWordIndex);
+        if (isWordByWordEnabled) {
+            holder.tvArabic.setVisibility(View.GONE);
+            if (holder.flowWbw != null) {
+                holder.flowWbw.setVisibility(View.VISIBLE);
+                renderWordByWord(holder.flowWbw, a);
+                if (position == karaokeAyahIndex && karaokeWordIndex >= 0) {
+                    applyWbwHighlight(holder.flowWbw, karaokeWordIndex);
+                }
+            }
         } else {
-            holder.tvArabic.setText(a.getArabic());
-            holder.tvArabic.setTextColor(context.getResources().getColor(R.color.gold_light));
+            holder.tvArabic.setVisibility(View.VISIBLE);
+            if (holder.flowWbw != null) {
+                holder.flowWbw.setVisibility(View.GONE);
+                holder.flowWbw.removeAllViews();
+            }
+
+            holder.tvArabic.setTextSize(arabicFontSize);
+            holder.tvArabic.setTypeface(PreferenceManager.getMushafTypeface(context));
+            holder.tvArabic.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            holder.tvArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
+            holder.tvArabic.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            holder.tvArabic.setGravity(android.view.Gravity.RIGHT);
+
+            if (position == karaokeAyahIndex && karaokeWordIndex >= 0) {
+                applyKaraokeSpannable(holder.tvArabic, a.getArabic(), karaokeWordIndex);
+            } else {
+                holder.tvArabic.setText(a.getArabic());
+                holder.tvArabic.setTextColor(context.getResources().getColor(R.color.gold_light));
+            }
         }
 
         if (PreferenceManager.isArabSaja(context)) {
@@ -77,12 +112,55 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
         holder.tvIndo.setOnClickListener(v -> listener.onAction(a, "pelajari"));
 
         holder.btnPlay.setOnClickListener(v -> listener.onAction(a, "dengar"));
-        if (holder.btnKosakata != null) {
-            holder.btnKosakata.setOnClickListener(v -> listener.onAction(a, "kosakata"));
-        }
         holder.btnHafal.setOnClickListener(v -> listener.onAction(a, "hafal"));
         holder.btnTulis.setOnClickListener(v -> listener.onAction(a, "tulis"));
         holder.btnPelajari.setOnClickListener(v -> listener.onAction(a, "pelajari"));
+    }
+
+    private void renderWordByWord(FlowLayout flow, AyahModel a) {
+        flow.removeAllViews();
+        int aNum = a.getNumberInSurah();
+        List<WordModel> words = QuranRepository.getWordByWord(context, surahNumber, aNum);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        Typeface tf = PreferenceManager.getMushafTypeface(context);
+
+        if (words != null && !words.isEmpty()) {
+            for (WordModel w : words) {
+                View v = inflater.inflate(R.layout.item_wbw_reference, flow, false);
+                TextView tvAr = v.findViewById(R.id.tv_wbw_arabic);
+                TextView tvTr = v.findViewById(R.id.tv_wbw_meaning);
+
+                tvAr.setText(w.getArabic());
+                if (tf != null) tvAr.setTypeface(tf);
+                if (arabicFontSize > 0) tvAr.setTextSize(arabicFontSize);
+
+                String tr = w.getTranslation();
+                tvTr.setText((tr == null || tr.trim().isEmpty()) ? "-" : tr.trim());
+
+                v.setOnClickListener(clickV -> {
+                    if (listener != null) listener.onAction(a, "pelajari");
+                });
+                flow.addView(v);
+            }
+        } else {
+            // Fallback token split
+            String[] tokens = a.getArabic().trim().split("\\s+");
+            for (int i = 0; i < tokens.length; i++) {
+                String token = tokens[i].trim();
+                if (token.isEmpty()) continue;
+                View v = inflater.inflate(R.layout.item_wbw_reference, flow, false);
+                TextView tvAr = v.findViewById(R.id.tv_wbw_arabic);
+                TextView tvTr = v.findViewById(R.id.tv_wbw_meaning);
+                tvAr.setText(token);
+                if (tf != null) tvAr.setTypeface(tf);
+                if (arabicFontSize > 0) tvAr.setTextSize(arabicFontSize);
+                tvTr.setText("Kata " + (i + 1));
+                v.setOnClickListener(clickV -> {
+                    if (listener != null) listener.onAction(a, "pelajari");
+                });
+                flow.addView(v);
+            }
+        }
     }
 
     @Override
@@ -103,12 +181,16 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
                 RecyclerView.ViewHolder oldVh = rv.findViewHolderForAdapterPosition(oldAyahIndex);
                 if (oldVh instanceof ViewHolder && oldAyahIndex < ayahs.size()) {
                     ViewHolder h = (ViewHolder) oldVh;
-                    h.tvArabic.setText(ayahs.get(oldAyahIndex).getArabic());
-                    h.tvArabic.setTextColor(context.getResources().getColor(R.color.gold_light));
-                    h.tvArabic.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-                    h.tvArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
-                    h.tvArabic.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-                    h.tvArabic.setGravity(android.view.Gravity.RIGHT);
+                    if (isWordByWordEnabled) {
+                        clearWbwHighlight(h.flowWbw, context);
+                    } else {
+                        h.tvArabic.setText(ayahs.get(oldAyahIndex).getArabic());
+                        h.tvArabic.setTextColor(context.getResources().getColor(R.color.gold_light));
+                        h.tvArabic.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                        h.tvArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
+                        h.tvArabic.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                        h.tvArabic.setGravity(android.view.Gravity.RIGHT);
+                    }
                 } else {
                     notifyItemChanged(oldAyahIndex);
                 }
@@ -122,7 +204,11 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
             RecyclerView.ViewHolder vh = rv.findViewHolderForAdapterPosition(ayahIndex);
             if (vh instanceof ViewHolder) {
                 ViewHolder h = (ViewHolder) vh;
-                applyKaraokeSpannable(h.tvArabic, ayahs.get(ayahIndex).getArabic(), wordIndex);
+                if (isWordByWordEnabled) {
+                    applyWbwHighlight(h.flowWbw, wordIndex);
+                } else {
+                    applyKaraokeSpannable(h.tvArabic, ayahs.get(ayahIndex).getArabic(), wordIndex);
+                }
                 return;
             }
         }
@@ -138,16 +224,82 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
                 RecyclerView.ViewHolder vh = rv.findViewHolderForAdapterPosition(old);
                 if (vh instanceof ViewHolder) {
                     ViewHolder h = (ViewHolder) vh;
-                    h.tvArabic.setText(ayahs.get(old).getArabic());
-                    h.tvArabic.setTextColor(context.getResources().getColor(R.color.gold_light));
-                    h.tvArabic.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-                    h.tvArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
-                    h.tvArabic.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-                    h.tvArabic.setGravity(android.view.Gravity.RIGHT);
+                    if (isWordByWordEnabled) {
+                        clearWbwHighlight(h.flowWbw, context);
+                    } else {
+                        h.tvArabic.setText(ayahs.get(old).getArabic());
+                        h.tvArabic.setTextColor(context.getResources().getColor(R.color.gold_light));
+                        h.tvArabic.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                        h.tvArabic.setTextDirection(View.TEXT_DIRECTION_RTL);
+                        h.tvArabic.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                        h.tvArabic.setGravity(android.view.Gravity.RIGHT);
+                    }
                     return;
                 }
             }
             notifyItemChanged(old);
+        }
+    }
+
+    public static void applyWbwHighlight(FlowLayout flow, int currentWordIndex) {
+        if (flow == null) return;
+        int count = flow.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View wordV = flow.getChildAt(i);
+            TextView tvAr = wordV.findViewById(R.id.tv_wbw_arabic);
+            TextView tvTr = wordV.findViewById(R.id.tv_wbw_meaning);
+
+            if (i == currentWordIndex) {
+                wordV.setBackgroundResource(R.drawable.bg_word_karaoke_active);
+                if (tvAr != null) {
+                    tvAr.setTextColor(0xFF00FFD5);
+                    tvAr.setTypeface(null, Typeface.BOLD);
+                }
+                if (tvTr != null) {
+                    tvTr.setTextColor(0xFFFFFFFF);
+                    tvTr.setTypeface(null, Typeface.BOLD);
+                }
+            } else if (i < currentWordIndex) {
+                wordV.setBackground(null);
+                if (tvAr != null) {
+                    tvAr.setTextColor(0xFFD4AF37); // warm gold
+                    tvAr.setTypeface(null, Typeface.NORMAL);
+                }
+                if (tvTr != null) {
+                    tvTr.setTextColor(0xFF94A3B8);
+                    tvTr.setTypeface(null, Typeface.NORMAL);
+                }
+            } else {
+                wordV.setBackground(null);
+                if (tvAr != null) {
+                    tvAr.setTextColor(0x88D4AF37); // dimmed gold
+                    tvAr.setTypeface(null, Typeface.NORMAL);
+                }
+                if (tvTr != null) {
+                    tvTr.setTextColor(0x5594A3B8); // dimmed meaning
+                    tvTr.setTypeface(null, Typeface.NORMAL);
+                }
+            }
+        }
+    }
+
+    public static void clearWbwHighlight(FlowLayout flow, Context context) {
+        if (flow == null) return;
+        int count = flow.getChildCount();
+        int normalGold = context != null ? context.getResources().getColor(R.color.gold_light) : 0xFFFDE68A;
+        for (int i = 0; i < count; i++) {
+            View wordV = flow.getChildAt(i);
+            wordV.setBackground(null);
+            TextView tvAr = wordV.findViewById(R.id.tv_wbw_arabic);
+            TextView tvTr = wordV.findViewById(R.id.tv_wbw_meaning);
+            if (tvAr != null) {
+                tvAr.setTextColor(normalGold);
+                tvAr.setTypeface(null, Typeface.NORMAL);
+            }
+            if (tvTr != null) {
+                tvTr.setTextColor(0xFF94A3B8);
+                tvTr.setTypeface(null, Typeface.NORMAL);
+            }
         }
     }
 
@@ -184,16 +336,17 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvNumber, tvArabic, tvIndo;
-        TextView btnPlay, btnKosakata, btnHafal, btnTulis, btnPelajari;
+        FlowLayout flowWbw;
+        TextView btnPlay, btnHafal, btnTulis, btnPelajari;
 
         ViewHolder(View itemView) {
             super(itemView);
             tvNumber = itemView.findViewById(R.id.tv_ayah_number);
             tvArabic = itemView.findViewById(R.id.tv_ayah_arabic);
-            tvIndo = itemView.findViewById(R.id.tv_ayah_indo);
+            flowWbw  = itemView.findViewById(R.id.flow_ayah_wbw);
+            tvIndo   = itemView.findViewById(R.id.tv_ayah_indo);
 
             btnPlay = itemView.findViewById(R.id.btn_ayah_play);
-            btnKosakata = itemView.findViewById(R.id.btn_ayah_kosakata);
             btnHafal = itemView.findViewById(R.id.btn_ayah_hafal);
             btnTulis = itemView.findViewById(R.id.btn_ayah_tulis);
             btnPelajari = itemView.findViewById(R.id.btn_ayah_pelajari);

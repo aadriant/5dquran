@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_card_surah"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- Top Header & Close -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🎧 Rekaman Hafalan Saya"
+            android:textColor="@color/gold_primary"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_player_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip_action"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:text="1 / 1"
+            android:textColor="@color/cyan_accent"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="10dp" />
+
+        <ImageButton
+            android:id="@+id/btn_player_close"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_close"
+            android:contentDescription="Tutup" />
+    </LinearLayout>
+
+    <!-- Surah & Ayah Badge -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/tv_player_surah_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip_action_active"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:text="Surat Al-Baqarah : Ayat 1"
+            android:textColor="@color/emerald"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Arabic Verse Box -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_search_input"
+        android:padding="14dp"
+        android:layout_marginBottom="14dp">
+
+        <TextView
+            android:id="@+id/tv_player_arabic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:lineSpacingMultiplier="1.3"
+            android:text="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp" />
+    </FrameLayout>
+
+    <!-- Status text -->
+    <TextView
+        android:id="@+id/tv_player_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="▶️ Sedang memutar rekaman suara Anda..."
+        android:textColor="@color/gold_light"
+        android:textSize="12sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Control Buttons: Prev, Play/Pause, Next -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="6dp">
+
+        <!-- Previous -->
+        <FrameLayout
+            android:id="@+id/btn_player_prev"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_chip_action"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginEnd="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="⏮"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+        </FrameLayout>
+
+        <!-- Play / Pause -->
+        <FrameLayout
+            android:id="@+id/btn_player_toggle"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:background="@drawable/bg_mic_circle"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/iv_player_toggle_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_pause"
+                android:tint="#080812" />
+        </FrameLayout>
+
+        <!-- Next -->
+        <FrameLayout
+            android:id="@+id/btn_player_next"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_chip_action"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginStart="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="⏭"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Otomatis melanjutkan ke rekaman ayat berikutnya"
+        android:textColor="@color/text_muted"
+        android:textSize="10sp"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>
