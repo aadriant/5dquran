@@ -4,13 +4,13 @@ plugins {
 
 android {
     namespace 'com.dquran.app5d'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.dquran.app5d"
         minSdk 24
-        targetSdk 34
-        versionCode 12
+        targetSdk 36
+        versionCode 13
         versionName "1.0.4f"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
