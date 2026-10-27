@@ -31,7 +31,7 @@
             android:paddingVertical="4dp"
             android:text="Page 2 · Ruku 2"
             android:textColor="@color/emerald"
-            android:textSize="11sp"
+            android:textSize="10sp"
             android:textStyle="bold"
             android:layout_marginHorizontal="10dp" />
 
@@ -49,7 +49,7 @@
         android:orientation="vertical"
         android:background="@drawable/bg_card_surah"
         android:paddingHorizontal="16dp"
-        android:paddingVertical="18dp">
+        android:paddingVertical="14dp">
 
         <!-- Surah Header (Shown only on first page of surah) -->
         <LinearLayout
@@ -64,13 +64,13 @@
             <!-- Number Circle Badge -->
             <TextView
                 android:id="@+id/tv_surah_num_badge"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:background="@drawable/bg_badge_number"
                 android:gravity="center"
                 android:text="2"
                 android:textColor="@color/gold_primary"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="4dp" />
 
@@ -81,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:text="Al-Baqarah"
                 android:textColor="@color/text_primary"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <!-- Translation -->
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:text="Sapi Betina · The Cow"
                 android:textColor="@color/text_muted"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:layout_marginBottom="12dp" />
 
             <!-- Bismillah Calligraphy Banner -->
@@ -102,7 +102,7 @@
                 android:gravity="center"
                 android:text="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
                 android:textColor="@color/gold_primary"
-                android:textSize="24sp"
+                android:textSize="21sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
 
@@ -122,9 +122,9 @@
             android:layoutDirection="rtl"
             android:textDirection="rtl"
             android:textAlignment="textStart"
-            android:lineSpacingMultiplier="1.85"
+            android:lineSpacingMultiplier="1.42"
             android:textColor="@color/gold_light"
-            android:textSize="25sp"
+            android:textSize="22sp"
             android:textColorHighlight="#3300FFD5" />
 
         <!-- Word-by-Word Container for Mushaf Page (Mode Per Kata seperti Gambar Referensi) -->

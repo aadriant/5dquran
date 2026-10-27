@@ -11,6 +11,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,14 +76,24 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
     }
 
     public void scrollToAyah(RecyclerView rv, int ayahNumber) {
-        if (rv == null) return;
+        scrollToAyah(rv, ayahNumber, false);
+    }
+
+    public void scrollToAyah(RecyclerView rv, int ayahNumber, boolean immediate) {
+        if (rv == null || ayahNumber <= 0) return;
         int pagePos = findPositionForAyah(ayahNumber);
         if (pagePos < 0 || pagePos >= pages.size()) return;
 
         LinearLayoutManager lm = (LinearLayoutManager) rv.getLayoutManager();
         if (lm == null) return;
 
-        int marginPx = (int) (18 * context.getResources().getDisplayMetrics().density);
+        if (rv.getHeight() <= 0) {
+            rv.post(() -> scrollToAyah(rv, ayahNumber, immediate));
+            return;
+        }
+
+        int rvHeight = rv.getHeight();
+        int targetCenterY = (int) (rvHeight * 0.44f);
 
         RecyclerView.ViewHolder vh = rv.findViewHolderForAdapterPosition(pagePos);
         if (vh instanceof PageViewHolder) {
@@ -91,27 +102,34 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
             int currentItemTop = pvh.itemView.getTop();
             int currentAyahScreenTop = currentItemTop + ayahOffsetInPage;
 
-            int rvHeight = rv.getHeight();
-            if (currentAyahScreenTop >= marginPx && currentAyahScreenTop <= rvHeight * 0.55f) {
-                // Posisi ayat sudah nyaman terlihat di layar, tidak perlu geser layar
+            if (!immediate && currentAyahScreenTop >= rvHeight * 0.36f && currentAyahScreenTop <= rvHeight * 0.52f) {
+                // Posisi ayat sudah nyaman di tengah layar, tidak perlu geser layar
                 return;
             }
 
-            int targetScrollY = currentAyahScreenTop - marginPx;
-            rv.smoothScrollBy(0, targetScrollY);
+            int targetScrollY = currentAyahScreenTop - targetCenterY;
+            if (immediate) {
+                rv.scrollBy(0, targetScrollY);
+            } else {
+                rv.smoothScrollBy(0, targetScrollY);
+            }
         } else {
             // Halaman target belum terlihat di viewport, posisikan halaman terlebih dahulu
             lm.scrollToPositionWithOffset(pagePos, 0);
-            rv.post(() -> {
+            rv.postDelayed(() -> {
                 RecyclerView.ViewHolder newVh = rv.findViewHolderForAdapterPosition(pagePos);
                 if (newVh instanceof PageViewHolder) {
                     PageViewHolder pvh = (PageViewHolder) newVh;
                     int ayahOffsetInPage = pvh.getAyahVerticalOffset(ayahNumber, isWordByWordEnabled);
                     int currentItemTop = pvh.itemView.getTop();
-                    int targetScrollY = currentItemTop + ayahOffsetInPage - marginPx;
-                    rv.smoothScrollBy(0, targetScrollY);
+                    int targetScrollY = currentItemTop + ayahOffsetInPage - targetCenterY;
+                    if (immediate) {
+                        rv.scrollBy(0, targetScrollY);
+                    } else {
+                        rv.smoothScrollBy(0, targetScrollY);
+                    }
                 }
-            });
+            }, 80);
         }
     }
 
@@ -132,6 +150,56 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
                 notifyItemChanged(position);
             } catch (Exception ignored) {}
         }
+    }
+
+    private long lastWordScrollTime = 0;
+
+    public void scrollToActiveWord(RecyclerView rv, int ayahNumber, int wordIndex) {
+        if (rv == null || ayahNumber <= 0 || wordIndex < 0) return;
+        int pagePos = findPositionForAyah(ayahNumber);
+        if (pagePos < 0 || pagePos >= pages.size()) return;
+
+        RecyclerView.ViewHolder vh = rv.findViewHolderForAdapterPosition(pagePos);
+        if (!(vh instanceof PageViewHolder)) {
+            LinearLayoutManager lm = (LinearLayoutManager) rv.getLayoutManager();
+            if (lm != null) {
+                lm.scrollToPositionWithOffset(pagePos, 0);
+                rv.post(() -> scrollToActiveWord(rv, ayahNumber, wordIndex));
+            }
+            return;
+        }
+
+        PageViewHolder pvh = (PageViewHolder) vh;
+        int wordYInPage = isWordByWordEnabled
+                ? pvh.getWordVerticalOffsetWbw(ayahNumber, wordIndex)
+                : pvh.getWordVerticalOffset(ayahNumber, wordIndex);
+
+        int currentItemTop = pvh.itemView.getTop();
+        int wordScreenY = currentItemTop + wordYInPage;
+
+        int rvHeight = rv.getHeight();
+        if (rvHeight <= 0) return;
+
+        // Target: Letakkan kata tepat di tengah layar (~44% tinggi viewport, di atas footer murojaah)
+        int targetCenterY = (int) (rvHeight * 0.44f);
+        int scrollDelta = wordScreenY - targetCenterY;
+
+        // Toleransi nyaman: jika kata berada di rentang tengah layar (36% - 52% tinggi layar),
+        // tidak perlu scroll agar layar tenang saat membaca kata-kata pada baris yang sama.
+        int minComfortY = (int) (rvHeight * 0.36f);
+        int maxComfortY = (int) (rvHeight * 0.52f);
+
+        if (wordScreenY >= minComfortY && wordScreenY <= maxComfortY) {
+            return;
+        }
+
+        long now = System.currentTimeMillis();
+        if (now - lastWordScrollTime < 250) {
+            return;
+        }
+        lastWordScrollTime = now;
+
+        rv.smoothScrollBy(0, scrollDelta);
     }
 
     public void setKaraokeHighlight(RecyclerView rv, int ayahNumber, int wordIndex) {
@@ -169,6 +237,11 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
                     }
                 } else if (!isWordByWordEnabled) {
                     safeNotifyItemChanged(rv, pagePos);
+                }
+
+                // Letakkan kata yang sedang dibaca tepat di tengah layar saat murojaah suara user
+                if (wordIndex >= 0) {
+                    scrollToActiveWord(rv, ayahNumber, wordIndex);
                 }
             }
         } catch (Exception ignored) {}
@@ -262,6 +335,11 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
             holder.tvPageArabicContent.setTextDirection(View.TEXT_DIRECTION_RTL);
             holder.tvPageArabicContent.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
             holder.tvPageArabicContent.setGravity(android.view.Gravity.RIGHT);
+
+            float arabicFontSize = PreferenceManager.getArabicFontSize(context);
+            if (arabicFontSize > 0) {
+                holder.tvPageArabicContent.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.max(18f, arabicFontSize - 1f));
+            }
 
             int goldCircle = context.getResources().getColor(R.color.gold_primary);
             int goldText = context.getResources().getColor(R.color.gold_light);
@@ -490,6 +568,95 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
                 }
             }
             return 0;
+        }
+
+        public int getWordVerticalOffset(int ayahNumber, int wordIndex) {
+            if (tvPageArabicContent != null) {
+                Layout layout = tvPageArabicContent.getLayout();
+                Integer startChar = ayahCharOffsets.get(ayahNumber);
+                CharSequence fullText = tvPageArabicContent.getText();
+                if (layout != null && startChar != null && fullText != null && startChar >= 0 && startChar < fullText.length()) {
+                    try {
+                        if (wordIndex <= 0) {
+                            int line = layout.getLineForOffset(startChar);
+                            int lineCenter = (layout.getLineTop(line) + layout.getLineBottom(line)) / 2;
+                            return tvPageArabicContent.getTop() + lineCenter;
+                        }
+
+                        int curToken = 0;
+                        int idx = startChar;
+                        int wStart = -1;
+                        int textLen = fullText.length();
+
+                        while (idx < textLen) {
+                            while (idx < textLen && Character.isWhitespace(fullText.charAt(idx))) idx++;
+                            if (idx >= textLen) break;
+                            int tStart = idx;
+                            while (idx < textLen && !Character.isWhitespace(fullText.charAt(idx))) idx++;
+                            if (curToken == wordIndex) {
+                                wStart = tStart;
+                                break;
+                            }
+                            curToken++;
+                        }
+
+                        if (wStart >= 0 && wStart < layout.getText().length()) {
+                            int line = layout.getLineForOffset(wStart);
+                            int lineCenter = (layout.getLineTop(line) + layout.getLineBottom(line)) / 2;
+                            return tvPageArabicContent.getTop() + lineCenter;
+                        }
+                    } catch (Exception ignored) {}
+                }
+            }
+            return getAyahVerticalOffset(ayahNumber, false);
+        }
+
+        public int getWordVerticalOffsetWbw(int ayahNumber, int wordIndex) {
+            if (layoutPageWbwContainer != null) {
+                try {
+                    View ayahRow = layoutPageWbwContainer.findViewWithTag("ayah_row_" + ayahNumber);
+                    if (ayahRow != null) {
+                        int rowTop = layoutPageWbwContainer.getTop() + ayahRow.getTop();
+                        FlowLayout flowWords = ayahRow.findViewWithTag("flow_ayah_" + ayahNumber);
+                        if (flowWords != null) {
+                            int childCount = flowWords.getChildCount();
+                            if (childCount > 0) {
+                                int targetIndex = Math.min(Math.max(0, wordIndex), childCount - 1);
+                                View wordChild = flowWords.getChildAt(targetIndex);
+                                if (wordChild != null) {
+                                    int wordMidY = wordChild.getTop() + (wordChild.getHeight() / 2);
+                                    return rowTop + flowWords.getTop() + wordMidY;
+                                }
+                            }
+                            return rowTop + flowWords.getTop();
+                        }
+                        return rowTop;
+                    }
+                } catch (Exception ignored) {}
+            }
+            return getAyahVerticalOffset(ayahNumber, true);
+        }
+
+        public int findAyahAtViewportY(RecyclerView rv, List<AyahModel> pageAyahs, boolean isWbw) {
+            if (pageAyahs == null || pageAyahs.isEmpty() || rv == null) return -1;
+            int cardTop = itemView.getTop();
+            int rvHeight = rv.getHeight();
+            int targetY = rvHeight > 0 ? (int) (rvHeight * 0.38f) : 0;
+
+            int bestAyah = pageAyahs.get(0).getNumberInSurah();
+            for (AyahModel a : pageAyahs) {
+                int ayahOffset = getAyahVerticalOffset(a.getNumberInSurah(), isWbw);
+                int screenY = cardTop + ayahOffset;
+                if (screenY <= targetY) {
+                    bestAyah = a.getNumberInSurah();
+                } else {
+                    if (bestAyah == pageAyahs.get(0).getNumberInSurah() && screenY < rvHeight) {
+                        bestAyah = a.getNumberInSurah();
+                    }
+                    break;
+                }
+            }
+            return bestAyah;
         }
     }
 }

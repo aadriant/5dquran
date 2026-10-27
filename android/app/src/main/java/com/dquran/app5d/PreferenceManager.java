@@ -62,7 +62,7 @@ public class PreferenceManager {
 
     // ── FONT SIZE PREFERENCES ──
     public static int getArabicFontSize(Context context) {
-        return getPrefs(context).getInt(KEY_FONT_SIZE, 26);
+        return getPrefs(context).getInt(KEY_FONT_SIZE, 23);
     }
 
     public static void setArabicFontSize(Context context, int size) {

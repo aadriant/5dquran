@@ -10,7 +10,7 @@ android {
         applicationId "com.dquran.app5d"
         minSdk 24
         targetSdk 36
-        versionCode 13
+        versionCode 14
         versionName "1.0.4f"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

@@ -23,18 +23,23 @@ class ApkHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == '/' or self.path == '/index.html':
-            # Find latest apk
+            # Find latest apk and aab
             apks = [f for f in os.listdir(DIRECTORY) if f.endswith('.apk')]
             apks.sort(key=lambda x: os.path.getmtime(os.path.join(DIRECTORY, x)), reverse=True)
             latest_apk = apks[0] if apks else ''
             size_mb = f"{os.path.getsize(os.path.join(DIRECTORY, latest_apk)) / (1024*1024):.1f} MB" if latest_apk else '0 MB'
+
+            aabs = [f for f in os.listdir(DIRECTORY) if f.endswith('.aab')]
+            aabs.sort(key=lambda x: os.path.getmtime(os.path.join(DIRECTORY, x)), reverse=True)
+            latest_aab = aabs[0] if aabs else ''
+            aab_size_mb = f"{os.path.getsize(os.path.join(DIRECTORY, latest_aab)) / (1024*1024):.1f} MB" if latest_aab else '0 MB'
 
             html = f"""<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5D Quran — Install APK</title>
+    <title>5D Quran — Install APK & Play Store AAB</title>
     <style>
         body {{
             background: #080812;
@@ -53,7 +58,7 @@ class ApkHandler(http.server.SimpleHTTPRequestHandler):
             border: 1px solid #262847;
             border-radius: 20px;
             padding: 30px 24px;
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -76,7 +81,7 @@ class ApkHandler(http.server.SimpleHTTPRequestHandler):
         p {{
             color: #94A3B8;
             font-size: 14px;
-            margin: 0 0 24px;
+            margin: 0 0 20px;
             line-height: 1.5;
         }}
         .btn {{
@@ -84,29 +89,33 @@ class ApkHandler(http.server.SimpleHTTPRequestHandler):
             background: linear-gradient(135deg, #F0C060, #C8860A);
             color: #080812;
             text-decoration: none;
-            padding: 16px;
+            padding: 14px;
             border-radius: 12px;
             font-weight: bold;
-            font-size: 16px;
-            transition: opacity 0.2s;
+            font-size: 15px;
+            margin-bottom: 12px;
         }}
-        .btn:active {{
-            opacity: 0.85;
+        .btn-aab {{
+            background: linear-gradient(135deg, #00FFD5, #00A389);
+            color: #080812;
         }}
         .meta {{
-            margin-top: 16px;
-            font-size: 12px;
+            margin-top: 8px;
+            margin-bottom: 18px;
+            font-size: 11px;
             color: #64748B;
         }}
     </style>
 </head>
 <body>
     <div class="card">
-        <div class="badge">TESTING LANGSUNG</div>
+        <div class="badge">RILIS &amp; PENGUJIAN</div>
         <h1>📱 5D Quran Native</h1>
-        <p>Unduh versi terbaru langsung di HP Anda tanpa kabel:</p>
-        <a href="/{latest_apk}" class="btn" download>📥 Download &amp; Install APK</a>
-        <div class="meta">{latest_apk}<br>Ukuran: {size_mb}</div>
+        <p>Pilih file yang ingin diunduh:</p>
+        <a href="/{latest_apk}" class="btn" download>📥 Download APK (Pasang di HP)</a>
+        <div class="meta">{latest_apk} ({size_mb})</div>
+        <a href="/{latest_aab}" class="btn btn-aab" download>🚀 Download AAB (Upload ke Play Store)</a>
+        <div class="meta">{latest_aab} ({aab_size_mb})</div>
     </div>
 </body>
 </html>"""

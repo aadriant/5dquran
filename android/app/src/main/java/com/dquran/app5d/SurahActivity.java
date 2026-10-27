@@ -128,7 +128,16 @@ public class SurahActivity extends AppCompatActivity {
         loadData();
 
         if (targetAyah > 1) {
-            scrollToAyah(targetAyah);
+            rvPages.postDelayed(() -> {
+                if ("page".equalsIgnoreCase(currentViewMode)) {
+                    if (pageAdapter != null) {
+                        pageAdapter.setActiveAyah(targetAyah, false);
+                        pageAdapter.scrollToAyah(rvPages, targetAyah, true);
+                    }
+                } else {
+                    scrollToAyah(targetAyah);
+                }
+            }, 100);
         }
 
         if (autoPlay && !ayahs.isEmpty()) {
@@ -324,15 +333,18 @@ public class SurahActivity extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
-                if (lm == null) return;
+                if (lm == null || ayahs == null || ayahs.isEmpty()) return;
                 int first = lm.findFirstVisibleItemPosition();
                 int last  = lm.findLastVisibleItemPosition();
                 for (int i = first; i <= last && i >= 0 && i < ayahs.size(); i++) {
                     PreferenceManager.markBaca(SurahActivity.this, surahNumber, ayahs.get(i).getNumberInSurah());
                 }
-                if (first >= 0 && first < ayahs.size()) {
-                    String sName = currentSurah != null ? currentSurah.getEnglishName() : QuranRepository.getSurahName(SurahActivity.this, surahNumber);
-                    PreferenceManager.setLastRead(SurahActivity.this, surahNumber, sName, ayahs.get(first).getNumberInSurah());
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    saveCurrentReadingPosition();
                 }
             }
         });
@@ -352,20 +364,24 @@ public class SurahActivity extends AppCompatActivity {
                 if (first >= 0 && first < mushafPages.size()) {
                     MushafPageModel page = mushafPages.get(first);
                     if (page.getAyahs() != null && !page.getAyahs().isEmpty()) {
-                        AyahModel firstA = page.getAyahs().get(0);
-                        String sName = currentSurah != null ? currentSurah.getEnglishName() : QuranRepository.getSurahName(SurahActivity.this, surahNumber);
-                        PreferenceManager.setLastRead(SurahActivity.this, surahNumber, sName, firstA.getNumberInSurah());
                         for (AyahModel a : page.getAyahs()) {
                             PreferenceManager.markBaca(SurahActivity.this, surahNumber, a.getNumberInSurah());
                         }
                     }
                 }
             }
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    saveCurrentReadingPosition();
+                }
+            }
         });
 
         // Restore saved view mode preference
         currentViewMode = PreferenceManager.getSurahViewMode(this);
-        applyViewMode(currentViewMode, false);
+        applyViewMode(currentViewMode, false, targetAyah);
 
         rvAyahs.post(() -> {
             if (!ayahs.isEmpty()) {
@@ -413,14 +429,71 @@ public class SurahActivity extends AppCompatActivity {
 
     // ── VIEW MODE TOGGLE (CARD VIEW vs PAGE VIEW) ──
 
+    private int getCurrentVisibleAyahNumber() {
+        if ("page".equalsIgnoreCase(currentViewMode)) {
+            if (rvPages != null && pageAdapter != null && mushafPages != null && !mushafPages.isEmpty()) {
+                int activeNum = pageAdapter.getActiveAyahNumber();
+                if (activeNum > 0) {
+                    return activeNum;
+                }
+
+                LinearLayoutManager lm = (LinearLayoutManager) rvPages.getLayoutManager();
+                if (lm != null) {
+                    int pagePos = lm.findFirstVisibleItemPosition();
+                    if (pagePos >= 0 && pagePos < mushafPages.size()) {
+                        MushafPageModel page = mushafPages.get(pagePos);
+                        if (page.getAyahs() != null && !page.getAyahs().isEmpty()) {
+                            RecyclerView.ViewHolder vh = rvPages.findViewHolderForAdapterPosition(pagePos);
+                            if (vh instanceof MushafPageAdapter.PageViewHolder) {
+                                MushafPageAdapter.PageViewHolder pvh = (MushafPageAdapter.PageViewHolder) vh;
+                                int visibleAyah = pvh.findAyahAtViewportY(rvPages, page.getAyahs(), PreferenceManager.isWordByWord(this));
+                                if (visibleAyah > 0) return visibleAyah;
+                            }
+                            return page.getAyahs().get(0).getNumberInSurah();
+                        }
+                    }
+                }
+            }
+        } else {
+            if (rvAyahs != null && ayahs != null && !ayahs.isEmpty()) {
+                LinearLayoutManager lm = (LinearLayoutManager) rvAyahs.getLayoutManager();
+                if (lm != null) {
+                    int pos = lm.findFirstVisibleItemPosition();
+                    if (pos >= 0 && pos < ayahs.size()) {
+                        return ayahs.get(pos).getNumberInSurah();
+                    }
+                }
+            }
+        }
+        return targetAyah > 0 ? targetAyah : 1;
+    }
+
+    private void saveCurrentReadingPosition() {
+        int currentAyahNum = getCurrentVisibleAyahNumber();
+        if (currentAyahNum > 0 && currentSurah != null) {
+            targetAyah = currentAyahNum;
+            PreferenceManager.setLastRead(this, surahNumber, currentSurah.getEnglishName(), currentAyahNum);
+            PreferenceManager.setSurahViewMode(this, currentViewMode);
+        }
+    }
+
     private void toggleViewMode() {
+        int currentAyahNum = getCurrentVisibleAyahNumber();
         String newMode = "card".equalsIgnoreCase(currentViewMode) ? "page" : "card";
-        applyViewMode(newMode, true);
+        applyViewMode(newMode, true, currentAyahNum);
     }
 
     private void applyViewMode(String mode, boolean notifyToast) {
+        applyViewMode(mode, notifyToast, targetAyah);
+    }
+
+    private void applyViewMode(String mode, boolean notifyToast, int ayahToFocus) {
         currentViewMode = mode;
+        targetAyah = ayahToFocus > 0 ? ayahToFocus : (targetAyah > 0 ? targetAyah : 1);
         PreferenceManager.setSurahViewMode(this, mode);
+        if (currentSurah != null) {
+            PreferenceManager.setLastRead(this, surahNumber, currentSurah.getEnglishName(), targetAyah);
+        }
 
         if ("page".equalsIgnoreCase(mode)) {
             rvAyahs.setVisibility(View.GONE);
@@ -429,12 +502,12 @@ public class SurahActivity extends AppCompatActivity {
             btnToggleViewMode.setImageResource(R.drawable.ic_view_list);
             btnToggleViewMode.setContentDescription("Ganti ke Tampilan Per Ayat");
 
-            if (targetAyah > 1 && pageAdapter != null) {
-                int pos = pageAdapter.findPositionForAyah(targetAyah);
-                rvPages.scrollToPosition(pos);
+            if (pageAdapter != null) {
+                pageAdapter.setActiveAyah(targetAyah, false);
+                rvPages.post(() -> pageAdapter.scrollToAyah(rvPages, targetAyah, true));
             }
             if (notifyToast) {
-                Toast.makeText(this, "Mode Tampilan Halaman Mushaf", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Mode Halaman Mushaf", Toast.LENGTH_SHORT).show();
             }
         } else {
             rvAyahs.setVisibility(View.VISIBLE);
@@ -450,8 +523,13 @@ public class SurahActivity extends AppCompatActivity {
             hidePageActionSheet();
             stopMurojaah();
 
-            if (targetAyah > 1 && ayahs != null && targetAyah <= ayahs.size()) {
-                rvAyahs.scrollToPosition(targetAyah - 1);
+            if (ayahs != null && targetAyah >= 1 && targetAyah <= ayahs.size()) {
+                rvAyahs.post(() -> {
+                    LinearLayoutManager lm = (LinearLayoutManager) rvAyahs.getLayoutManager();
+                    if (lm != null) {
+                        lm.scrollToPositionWithOffset(targetAyah - 1, 0);
+                    }
+                });
             }
             if (notifyToast) {
                 Toast.makeText(this, "Mode Tampilan Per Ayat", Toast.LENGTH_SHORT).show();
@@ -494,6 +572,10 @@ public class SurahActivity extends AppCompatActivity {
 
         if (pageAdapter != null) {
             pageAdapter.setActiveAyah(ayah.getNumberInSurah(), false);
+        }
+        if (currentSurah != null) {
+            targetAyah = ayah.getNumberInSurah();
+            PreferenceManager.setLastRead(this, surahNumber, currentSurah.getEnglishName(), targetAyah);
         }
 
         btnSheetClose.setOnClickListener(v -> hidePageActionSheet());
@@ -1140,8 +1222,21 @@ public class SurahActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        saveCurrentReadingPosition();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveCurrentReadingPosition();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        saveCurrentReadingPosition();
         stopAudio();
         stopMurojaah();
         if (footerSpeechRecognizer != null) {
