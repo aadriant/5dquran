@@ -35,8 +35,10 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class SurahActivity extends AppCompatActivity {
 
@@ -94,6 +96,7 @@ public class SurahActivity extends AppCompatActivity {
     private int currentMurojaahIndex = 0;
     private AyahModel currentMurojaahAyah = null;
     private int lastMurojaahWordIndex = -1;
+    private final Set<Integer> murojaahErrorWords = new HashSet<>();
     private final Handler murojaahSilenceHandler = new Handler(Looper.getMainLooper());
     private Runnable murojaahSilenceRunnable;
     private static final long MUROJAAH_SILENCE_TIMEOUT_MS = 120000L; // 2 menit
@@ -223,12 +226,40 @@ public class SurahActivity extends AppCompatActivity {
                 boolean next = !current;
                 PreferenceManager.setWordByWord(this, next);
                 updateWbwButtonUi();
+
+                // 1. Dapatkan nomor ayat yang sedang di-highlight
+                int highlightedAyah = -1;
+                if (pageAdapter != null) {
+                    highlightedAyah = pageAdapter.getActiveAyahNumber();
+                }
+                if (highlightedAyah <= 0) {
+                    highlightedAyah = getCurrentVisibleAyahNumber();
+                }
+                if (highlightedAyah <= 0) {
+                    highlightedAyah = (targetAyah > 0) ? targetAyah : 1;
+                }
+
+                targetAyah = highlightedAyah;
+
                 if (adapter != null) {
                     adapter.setWordByWordEnabled(next);
                 }
                 if (pageAdapter != null) {
+                    // Pastikan ayat yang di-highlight TETAP SAMA
+                    pageAdapter.setActiveAyah(highlightedAyah, false);
                     pageAdapter.setWordByWordEnabled(next);
                 }
+
+                // 2. Letakkan ayat yang di-highlight tepat di tengah layar
+                final int finalAyah = highlightedAyah;
+                if ("page".equalsIgnoreCase(currentViewMode) && pageAdapter != null && rvPages != null) {
+                    rvPages.post(() -> pageAdapter.scrollToAyah(rvPages, finalAyah, true));
+                    rvPages.postDelayed(() -> pageAdapter.scrollToAyah(rvPages, finalAyah, true), 80);
+                    rvPages.postDelayed(() -> pageAdapter.scrollToAyah(rvPages, finalAyah, false), 220);
+                } else if (rvAyahs != null && finalAyah > 0) {
+                    rvAyahs.post(() -> scrollToAyahAccurate(finalAyah - 1));
+                }
+
                 if (next) {
                     Toast.makeText(this, "Terjemahan Per Kata: Aktif", Toast.LENGTH_SHORT).show();
                 } else {
@@ -611,9 +642,7 @@ public class SurahActivity extends AppCompatActivity {
         if (layoutPageActionSheet != null) {
             layoutPageActionSheet.setVisibility(View.GONE);
         }
-        if (pageAdapter != null && (layoutPageHafalanFooter == null || layoutPageHafalanFooter.getVisibility() != View.VISIBLE)) {
-            pageAdapter.setActiveAyah(-1, false);
-        }
+        // Jangan hapus activeAyah agar highlight ayat tetap bertahan di mushaf
     }
 
     // ── MUROJAAH MODE (Versi 1.0.4 Feature 4: Karaoke Suara User, Auto-Advance, 2 Menit Timeout) ──
@@ -669,6 +698,7 @@ public class SurahActivity extends AppCompatActivity {
         isMurojaahActive = true;
         isMurojaahPaused = false;
         lastMurojaahWordIndex = -1;
+        murojaahErrorWords.clear();
 
         if (layoutPageHafalanFooter != null) {
             layoutPageHafalanFooter.setVisibility(View.VISIBLE);
@@ -701,6 +731,7 @@ public class SurahActivity extends AppCompatActivity {
         btnFooterHafalPlay.setOnClickListener(v -> playFooterAyahAudio(currentMurojaahAyah));
         btnFooterHafalClose.setOnClickListener(v -> stopMurojaah());
 
+        SoundFeedbackManager.playStartSound();
         resetMurojaahSilenceTimeout();
         startMurojaahListening();
     }
@@ -717,6 +748,7 @@ public class SurahActivity extends AppCompatActivity {
     private void pauseMurojaah() {
         isMurojaahPaused = true;
         cancelMurojaahSilenceTimeout();
+        SoundFeedbackManager.playStopSound();
         if (footerSpeechRecognizer != null) {
             try { footerSpeechRecognizer.stopListening(); } catch (Exception ignored) {}
         }
@@ -735,6 +767,7 @@ public class SurahActivity extends AppCompatActivity {
     private void resumeMurojaah() {
         if (!isMurojaahActive) return;
         isMurojaahPaused = false;
+        SoundFeedbackManager.playStartSound();
         if (btnFooterHafalMic != null) {
             btnFooterHafalMic.setImageResource(R.drawable.ic_pause);
         }
@@ -753,6 +786,8 @@ public class SurahActivity extends AppCompatActivity {
         isMurojaahActive = false;
         isMurojaahPaused = false;
         cancelMurojaahSilenceTimeout();
+        murojaahErrorWords.clear();
+        SoundFeedbackManager.playStopSound();
 
         if (footerSpeechRecognizer != null) {
             try { footerSpeechRecognizer.stopListening(); } catch (Exception ignored) {}
@@ -785,6 +820,7 @@ public class SurahActivity extends AppCompatActivity {
             currentMurojaahIndex++;
             currentMurojaahAyah = ayahs.get(currentMurojaahIndex);
             lastMurojaahWordIndex = -1;
+            murojaahErrorWords.clear();
             resetMurojaahSilenceTimeout();
 
             if (tvFooterHafalBadge != null) {
@@ -917,25 +953,7 @@ public class SurahActivity extends AppCompatActivity {
                 if (matches != null && !matches.isEmpty()) {
                     String finalSpoken = matches.get(0).trim();
                     if (!finalSpoken.isEmpty()) {
-                        if (tvFooterHafalStatus != null) {
-                            tvFooterHafalStatus.setText("🎙️ " + finalSpoken);
-                        }
-                        int wordIdx = RecitationEvaluator.findSpokenWordIndex(currentMurojaahAyah.getArabic(), finalSpoken, lastMurojaahWordIndex);
-                        if (wordIdx >= 0) {
-                            lastMurojaahWordIndex = wordIdx;
-                            if (pageAdapter != null) {
-                                pageAdapter.setKaraokeHighlight(rvPages, currentMurojaahAyah.getNumberInSurah(), wordIdx);
-                            }
-                            if (adapter != null && currentMurojaahIndex >= 0) {
-                                adapter.setKaraokeHighlight(rvAyahs, currentMurojaahIndex, wordIdx);
-                            }
-                        }
-                        String[] targetWords = currentMurojaahAyah.getArabic().trim().split("\\s+");
-                        RecitationEvaluator.EvaluationResult res = RecitationEvaluator.evaluate(currentMurojaahAyah.getArabic(), finalSpoken);
-                        if (res.accuracy >= 65f || (wordIdx >= targetWords.length - 1 && targetWords.length > 0)) {
-                            advanceMurojaahToNextAyah();
-                            return;
-                        }
+                        processMurojaahSpokenText(finalSpoken, true);
                     }
                 }
                 if (isMurojaahActive && !isMurojaahPaused) {
@@ -953,31 +971,146 @@ public class SurahActivity extends AppCompatActivity {
                 if (partials != null && !partials.isEmpty()) {
                     String live = partials.get(0).trim();
                     if (!live.isEmpty()) {
-                        if (tvFooterHafalStatus != null) {
-                            tvFooterHafalStatus.setText("🎙️ " + live);
-                        }
-                        int wordIdx = RecitationEvaluator.findSpokenWordIndex(currentMurojaahAyah.getArabic(), live, lastMurojaahWordIndex);
-                        if (wordIdx >= 0) {
-                            lastMurojaahWordIndex = wordIdx;
-                            if (pageAdapter != null) {
-                                pageAdapter.setKaraokeHighlight(rvPages, currentMurojaahAyah.getNumberInSurah(), wordIdx);
-                            }
-                            if (adapter != null && currentMurojaahIndex >= 0) {
-                                adapter.setKaraokeHighlight(rvAyahs, currentMurojaahIndex, wordIdx);
-                            }
-                        }
-                        String[] targetWords = currentMurojaahAyah.getArabic().trim().split("\\s+");
-                        if (wordIdx >= targetWords.length - 1 && targetWords.length > 0) {
-                            RecitationEvaluator.EvaluationResult res = RecitationEvaluator.evaluate(currentMurojaahAyah.getArabic(), live);
-                            if (res.accuracy >= 60f) {
-                                advanceMurojaahToNextAyah();
-                            }
-                        }
+                        processMurojaahSpokenText(live, false);
                     }
                 }
             }
             @Override public void onEvent(int eventType, Bundle params) {}
         });
+    }
+
+    private void processMurojaahSpokenText(String spokenText, boolean isFinal) {
+        if (!isMurojaahActive || isMurojaahPaused || currentMurojaahAyah == null) return;
+        if (spokenText == null || spokenText.trim().isEmpty()) return;
+
+        String rawArabic = currentMurojaahAyah.getArabic().trim();
+        String[] rawTargetWords = rawArabic.split("\\s+");
+        int totalWords = rawTargetWords.length;
+        if (totalWords == 0) return;
+
+        String[] normTargetWords = new String[totalWords];
+        for (int i = 0; i < totalWords; i++) {
+            normTargetWords[i] = RecitationEvaluator.normAr(rawTargetWords[i]);
+        }
+
+        String[] rawSpokenTokens = spokenText.trim().split("\\s+");
+        List<String> normSpokenTokens = new ArrayList<>();
+        for (String s : rawSpokenTokens) {
+            String n = RecitationEvaluator.normAr(s);
+            if (!n.isEmpty()) normSpokenTokens.add(n);
+        }
+        if (normSpokenTokens.isEmpty()) return;
+
+        int expectedWordIdx = lastMurojaahWordIndex + 1;
+        boolean errorDetectedInThisPass = false;
+
+        // Periksa setiap token kata yang diucapkan secara berurutan
+        for (int sIdx = 0; sIdx < normSpokenTokens.size(); sIdx++) {
+            String spk = normSpokenTokens.get(sIdx);
+
+            // 1. Cek apakah kata ini mengoreksi kata yang sebelumnya salah/terlewati
+            boolean corrected = false;
+            for (int errIdx : new ArrayList<>(murojaahErrorWords)) {
+                if (errIdx >= 0 && errIdx < totalWords) {
+                    float sim = RecitationEvaluator.similarity(normTargetWords[errIdx], spk);
+                    if (sim >= 0.70f) {
+                        murojaahErrorWords.remove(errIdx);
+                        lastMurojaahWordIndex = Math.max(lastMurojaahWordIndex, errIdx);
+                        expectedWordIdx = lastMurojaahWordIndex + 1;
+                        corrected = true;
+                        break;
+                    }
+                }
+            }
+            if (corrected) continue;
+
+            if (expectedWordIdx >= totalWords) break;
+
+            // 2. Cek apakah kata ini cocok dengan kata berikutnya yang diharapkan (berurutan)
+            float simCurrent = RecitationEvaluator.similarity(normTargetWords[expectedWordIdx], spk);
+            if (simCurrent >= 0.65f) {
+                murojaahErrorWords.remove(expectedWordIdx);
+                lastMurojaahWordIndex = expectedWordIdx;
+                expectedWordIdx++;
+                continue;
+            }
+
+            // Cek apakah mengulang kata sebelumnya yang sudah matched
+            if (lastMurojaahWordIndex >= 0 && lastMurojaahWordIndex < totalWords) {
+                float simPrev = RecitationEvaluator.similarity(normTargetWords[lastMurojaahWordIndex], spk);
+                if (simPrev >= 0.72f) {
+                    continue;
+                }
+            }
+
+            // 3. Cek apakah user MELOMPATI kata (melewati kata ke depan)
+            int aheadMatch = -1;
+            for (int a = expectedWordIdx + 1; a < Math.min(totalWords, expectedWordIdx + 4); a++) {
+                float simAhead = RecitationEvaluator.similarity(normTargetWords[a], spk);
+                if (simAhead >= 0.72f) {
+                    aheadMatch = a;
+                    break;
+                }
+            }
+
+            if (aheadMatch != -1) {
+                // Ada kata yang dilewati! Tandai semua kata yang dilewati dengan warna MERAH
+                for (int k = expectedWordIdx; k < aheadMatch; k++) {
+                    murojaahErrorWords.add(k);
+                }
+                errorDetectedInThisPass = true;
+                lastMurojaahWordIndex = aheadMatch;
+                murojaahErrorWords.remove(aheadMatch);
+                expectedWordIdx = aheadMatch + 1;
+                continue;
+            }
+
+            // 4. Jika final dan belum cocok sama sekali: kata salah
+            if (isFinal && expectedWordIdx < totalWords) {
+                murojaahErrorWords.add(expectedWordIdx);
+                errorDetectedInThisPass = true;
+            }
+        }
+
+        // Jika ada kesalahan atau kata dilewati, bunyikan tanda suara salah yang berbeda
+        if (errorDetectedInThisPass) {
+            SoundFeedbackManager.playWrongSound();
+        }
+
+        // Update highlight ke UI
+        updateMurojaahHighlightUi(rawTargetWords, spokenText);
+
+        // Jika seluruh kata ayat selesai dibaca berurutan tanpa ada kata yang salah/terlewat
+        if (lastMurojaahWordIndex >= totalWords - 1 && murojaahErrorWords.isEmpty()) {
+            new Handler(Looper.getMainLooper()).postDelayed(this::advanceMurojaahToNextAyah, 400);
+        }
+    }
+
+    private void updateMurojaahHighlightUi(String[] rawTargetWords, String spokenText) {
+        if (currentMurojaahAyah == null) return;
+        int ayahNum = currentMurojaahAyah.getNumberInSurah();
+
+        if (pageAdapter != null) {
+            pageAdapter.setKaraokeHighlight(rvPages, ayahNum, lastMurojaahWordIndex, murojaahErrorWords);
+        }
+        if (adapter != null && currentMurojaahIndex >= 0) {
+            adapter.setKaraokeHighlight(rvAyahs, currentMurojaahIndex, lastMurojaahWordIndex, murojaahErrorWords);
+        }
+
+        if (tvFooterHafalStatus != null) {
+            if (!murojaahErrorWords.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                for (int errIdx : murojaahErrorWords) {
+                    if (errIdx >= 0 && errIdx < rawTargetWords.length) {
+                        if (sb.length() > 0) sb.append(", ");
+                        sb.append(rawTargetWords[errIdx]);
+                    }
+                }
+                tvFooterHafalStatus.setText("❌ Terlewati/salah: " + sb + " (Silakan ulangi)");
+            } else {
+                tvFooterHafalStatus.setText("🎙️ " + spokenText);
+            }
+        }
     }
 
     private void playFooterAyahAudio(AyahModel ayah) {

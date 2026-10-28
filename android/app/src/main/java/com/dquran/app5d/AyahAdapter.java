@@ -32,6 +32,7 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
     // Karaoke state
     private int karaokeAyahIndex = -1;
     private int karaokeWordIndex = -1;
+    private final java.util.Set<Integer> karaokeErrorWordIndices = new java.util.HashSet<>();
 
     public AyahAdapter(Context context, int surahNumber, List<AyahModel> ayahs, float fontSize, OnAyahActionListener listener) {
         this.context = context;
@@ -74,7 +75,7 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
                 holder.flowWbw.setVisibility(View.VISIBLE);
                 renderWordByWord(holder.flowWbw, a);
                 if (position == karaokeAyahIndex && karaokeWordIndex >= 0) {
-                    applyWbwHighlight(holder.flowWbw, karaokeWordIndex);
+                    applyWbwHighlight(holder.flowWbw, karaokeWordIndex, karaokeErrorWordIndices);
                 }
             }
         } else {
@@ -92,7 +93,7 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
             holder.tvArabic.setGravity(android.view.Gravity.RIGHT);
 
             if (position == karaokeAyahIndex && karaokeWordIndex >= 0) {
-                applyKaraokeSpannable(holder.tvArabic, a.getArabic(), karaokeWordIndex);
+                applyKaraokeSpannable(holder.tvArabic, a.getArabic(), karaokeWordIndex, karaokeErrorWordIndices);
             } else {
                 holder.tvArabic.setText(a.getArabic());
                 holder.tvArabic.setTextColor(context.getResources().getColor(R.color.gold_light));
@@ -171,9 +172,17 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
     // ── KARAOKE HIGHLIGHT METHODS ──
 
     public void setKaraokeHighlight(RecyclerView rv, int ayahIndex, int wordIndex) {
+        setKaraokeHighlight(rv, ayahIndex, wordIndex, null);
+    }
+
+    public void setKaraokeHighlight(RecyclerView rv, int ayahIndex, int wordIndex, java.util.Set<Integer> errorWordIndices) {
         int oldAyahIndex = this.karaokeAyahIndex;
         this.karaokeAyahIndex = ayahIndex;
         this.karaokeWordIndex = wordIndex;
+        this.karaokeErrorWordIndices.clear();
+        if (errorWordIndices != null) {
+            this.karaokeErrorWordIndices.addAll(errorWordIndices);
+        }
 
         // If active ayah changed, clear previous
         if (oldAyahIndex != -1 && oldAyahIndex != ayahIndex) {
@@ -205,9 +214,9 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
             if (vh instanceof ViewHolder) {
                 ViewHolder h = (ViewHolder) vh;
                 if (isWordByWordEnabled) {
-                    applyWbwHighlight(h.flowWbw, wordIndex);
+                    applyWbwHighlight(h.flowWbw, wordIndex, this.karaokeErrorWordIndices);
                 } else {
-                    applyKaraokeSpannable(h.tvArabic, ayahs.get(ayahIndex).getArabic(), wordIndex);
+                    applyKaraokeSpannable(h.tvArabic, ayahs.get(ayahIndex).getArabic(), wordIndex, this.karaokeErrorWordIndices);
                 }
                 return;
             }
@@ -220,6 +229,7 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
             int old = karaokeAyahIndex;
             karaokeAyahIndex = -1;
             karaokeWordIndex = -1;
+            karaokeErrorWordIndices.clear();
             if (rv != null && old < ayahs.size()) {
                 RecyclerView.ViewHolder vh = rv.findViewHolderForAdapterPosition(old);
                 if (vh instanceof ViewHolder) {
@@ -242,6 +252,10 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
     }
 
     public static void applyWbwHighlight(FlowLayout flow, int currentWordIndex) {
+        applyWbwHighlight(flow, currentWordIndex, null);
+    }
+
+    public static void applyWbwHighlight(FlowLayout flow, int currentWordIndex, java.util.Set<Integer> errorWordIndices) {
         if (flow == null) return;
         int count = flow.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -249,7 +263,20 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
             TextView tvAr = wordV.findViewById(R.id.tv_wbw_arabic);
             TextView tvTr = wordV.findViewById(R.id.tv_wbw_meaning);
 
-            if (i == currentWordIndex) {
+            boolean isError = (errorWordIndices != null && errorWordIndices.contains(i));
+
+            if (isError) {
+                // WARNA MERAH UNTUK KATA YANG DILEWATI ATAU SALAH
+                wordV.setBackgroundResource(R.drawable.bg_word_karaoke_error);
+                if (tvAr != null) {
+                    tvAr.setTextColor(0xFFFF3333);
+                    tvAr.setTypeface(null, Typeface.BOLD);
+                }
+                if (tvTr != null) {
+                    tvTr.setTextColor(0xFFFF6666);
+                    tvTr.setTypeface(null, Typeface.BOLD);
+                }
+            } else if (i == currentWordIndex) {
                 wordV.setBackgroundResource(R.drawable.bg_word_karaoke_active);
                 if (tvAr != null) {
                     tvAr.setTextColor(0xFF00FFD5);
@@ -304,6 +331,10 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
     }
 
     public static void applyKaraokeSpannable(TextView tv, String arabicText, int currentWordIndex) {
+        applyKaraokeSpannable(tv, arabicText, currentWordIndex, null);
+    }
+
+    public static void applyKaraokeSpannable(TextView tv, String arabicText, int currentWordIndex, java.util.Set<Integer> errorWordIndices) {
         if (tv == null || arabicText == null) return;
         tv.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         tv.setTextDirection(View.TEXT_DIRECTION_RTL);
@@ -318,14 +349,21 @@ public class AyahAdapter extends RecyclerView.Adapter<AyahAdapter.ViewHolder> {
             ssb.append(words[i]);
             int end = ssb.length();
 
-            if (i < currentWordIndex) {
-                // Kata yang sudah dibaca: emas lembut
-                ssb.setSpan(new ForegroundColorSpan(0xFFD4AF37), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            boolean isError = (errorWordIndices != null && errorWordIndices.contains(i));
+
+            if (isError) {
+                // WARNA MERAH UNTUK KATA YANG DILEWATI ATAU SALAH
+                ssb.setSpan(new ForegroundColorSpan(0xFFFF3333), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb.setSpan(new BackgroundColorSpan(0x4DEF4444), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             } else if (i == currentWordIndex) {
                 // KATA YANG SEDANG DIBACA (KARAOKE HIGHLIGHT): Neon Cyan menyala + Background highlight
                 ssb.setSpan(new ForegroundColorSpan(0xFF00FFD5), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 ssb.setSpan(new BackgroundColorSpan(0x4D00FFD5), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 ssb.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else if (i < currentWordIndex) {
+                // Kata yang sudah dibaca: emas lembut
+                ssb.setSpan(new ForegroundColorSpan(0xFFD4AF37), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             } else {
                 // Kata berikutnya yang belum dibaca: agak redup
                 ssb.setSpan(new ForegroundColorSpan(0x66D4AF37), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

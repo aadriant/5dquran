@@ -32,7 +32,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Versi 1.0.2 · Pure Native Android"
+                android:text="Versi 1.0.5 · Pure Native Android"
                 android:textColor="@color/cyan_accent"
                 android:textSize="12sp"
                 android:layout_marginTop="2dp" />

@@ -11,6 +11,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
     private boolean isWordByWordEnabled = false;
     private int karaokeAyahNumber = -1;
     private int karaokeWordIndex = -1;
+    private final java.util.Set<Integer> karaokeErrorWordIndices = new java.util.HashSet<>();
 
     public MushafPageAdapter(Context context, SurahModel surah, List<MushafPageModel> pages, OnPageAyahListener listener) {
         this.context = context;
@@ -93,7 +95,7 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
         }
 
         int rvHeight = rv.getHeight();
-        int targetCenterY = (int) (rvHeight * 0.44f);
+        int targetCenterY = rvHeight / 2;
 
         RecyclerView.ViewHolder vh = rv.findViewHolderForAdapterPosition(pagePos);
         if (vh instanceof PageViewHolder) {
@@ -102,7 +104,7 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
             int currentItemTop = pvh.itemView.getTop();
             int currentAyahScreenTop = currentItemTop + ayahOffsetInPage;
 
-            if (!immediate && currentAyahScreenTop >= rvHeight * 0.36f && currentAyahScreenTop <= rvHeight * 0.52f) {
+            if (!immediate && currentAyahScreenTop >= rvHeight * 0.40f && currentAyahScreenTop <= rvHeight * 0.50f) {
                 // Posisi ayat sudah nyaman di tengah layar, tidak perlu geser layar
                 return;
             }
@@ -203,10 +205,18 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
     }
 
     public void setKaraokeHighlight(RecyclerView rv, int ayahNumber, int wordIndex) {
+        setKaraokeHighlight(rv, ayahNumber, wordIndex, null);
+    }
+
+    public void setKaraokeHighlight(RecyclerView rv, int ayahNumber, int wordIndex, java.util.Set<Integer> errorWordIndices) {
         try {
             int oldAyahNum = this.karaokeAyahNumber;
             this.karaokeAyahNumber = ayahNumber;
             this.karaokeWordIndex = wordIndex;
+            this.karaokeErrorWordIndices.clear();
+            if (errorWordIndices != null) {
+                this.karaokeErrorWordIndices.addAll(errorWordIndices);
+            }
 
             if (oldAyahNum != -1 && oldAyahNum != ayahNumber && rv != null) {
                 int oldPagePos = findPositionForAyah(oldAyahNum);
@@ -230,7 +240,7 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
                     if (isWordByWordEnabled && pvh.layoutPageWbwContainer != null) {
                         FlowLayout targetFlow = pvh.layoutPageWbwContainer.findViewWithTag("flow_ayah_" + ayahNumber);
                         if (targetFlow != null) {
-                            AyahAdapter.applyWbwHighlight(targetFlow, wordIndex);
+                            AyahAdapter.applyWbwHighlight(targetFlow, wordIndex, this.karaokeErrorWordIndices);
                         }
                     } else if (!isWordByWordEnabled) {
                         safeNotifyItemChanged(rv, pagePos);
@@ -249,6 +259,7 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
 
     public void clearKaraokeHighlight(RecyclerView rv) {
         try {
+            this.karaokeErrorWordIndices.clear();
             if (karaokeAyahNumber != -1) {
                 int oldNum = karaokeAyahNumber;
                 karaokeAyahNumber = -1;
@@ -366,34 +377,38 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
                     ssb.append(arText);
                     int end = ssb.length();
 
-                    if (ayah.getNumberInSurah() == karaokeAyahNumber && karaokeWordIndex >= 0) {
-                        // Highlight specific spoken word in karaoke cyan
+                    if (ayah.getNumberInSurah() == karaokeAyahNumber && (karaokeWordIndex >= 0 || !karaokeErrorWordIndices.isEmpty())) {
+                        // Highlight words with karaoke cyan and error red
                         int curToken = 0;
                         int idx = 0;
-                        int wStart = -1, wEnd = -1;
                         while (idx < arText.length()) {
                             while (idx < arText.length() && Character.isWhitespace(arText.charAt(idx))) idx++;
                             if (idx >= arText.length()) break;
                             int tStart = idx;
                             while (idx < arText.length() && !Character.isWhitespace(arText.charAt(idx))) idx++;
                             int tEnd = idx;
-                            if (curToken == karaokeWordIndex) {
-                                wStart = tStart;
-                                wEnd = tEnd;
-                                break;
+
+                            int spanS = Math.max(start, Math.min(start + tStart, end));
+                            int spanE = Math.max(spanS, Math.min(start + tEnd, end));
+
+                            if (spanE > spanS) {
+                                boolean isErr = karaokeErrorWordIndices.contains(curToken);
+                                if (isErr) {
+                                    // WARNA MERAH UNTUK KATA YANG DILEWATI ATAU SALAH
+                                    ssb.setSpan(new BackgroundColorSpan(0x4DEF4444), spanS, spanE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    ssb.setSpan(new ForegroundColorSpan(0xFFFF3333), spanS, spanE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    ssb.setSpan(new StyleSpan(Typeface.BOLD), spanS, spanE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                } else if (curToken == karaokeWordIndex) {
+                                    // KATA YANG SEDANG DIBACA: NEON CYAN
+                                    ssb.setSpan(new BackgroundColorSpan(0x6600FFD5), spanS, spanE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    ssb.setSpan(new ForegroundColorSpan(0xFF00FFD5), spanS, spanE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    ssb.setSpan(new StyleSpan(Typeface.BOLD), spanS, spanE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                } else if (curToken < karaokeWordIndex) {
+                                    // KATA SEBELUMNYA: GOLD LEMBUT
+                                    ssb.setSpan(new ForegroundColorSpan(0xFFD4AF37), spanS, spanE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                }
                             }
                             curToken++;
-                        }
-                        if (wStart >= 0 && wEnd > wStart) {
-                            int spanS = Math.max(start, Math.min(start + wStart, end));
-                            int spanE = Math.max(spanS, Math.min(start + wEnd, end));
-                            if (spanE > spanS) {
-                                ssb.setSpan(new BackgroundColorSpan(0x6600FFD5), spanS, spanE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                ssb.setSpan(new ForegroundColorSpan(0xFF00FFD5), spanS, spanE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            }
-                        } else if (isCurrentActive) {
-                            ssb.setSpan(new BackgroundColorSpan(0x3300FFD5), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            ssb.setSpan(new ForegroundColorSpan(0xFF00FFD5), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
                     } else if (isCurrentActive) {
                         // Highlight active ayah in gold/cyan tint
@@ -515,8 +530,8 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
                 }
             }
 
-            if (ayah.getNumberInSurah() == karaokeAyahNumber && karaokeWordIndex >= 0) {
-                AyahAdapter.applyWbwHighlight(flowWords, karaokeWordIndex);
+            if (ayah.getNumberInSurah() == karaokeAyahNumber && (karaokeWordIndex >= 0 || !karaokeErrorWordIndices.isEmpty())) {
+                AyahAdapter.applyWbwHighlight(flowWords, karaokeWordIndex, karaokeErrorWordIndices);
             }
 
             container.addView(ayahView);
@@ -550,20 +565,38 @@ public class MushafPageAdapter extends RecyclerView.Adapter<MushafPageAdapter.Pa
             layoutPageWbwContainer = itemView.findViewById(R.id.layout_page_wbw_container);
         }
 
+        public int getViewTopRelativeToItem(View target) {
+            if (target == null) return 0;
+            int top = 0;
+            View v = target;
+            while (v != null && v != itemView) {
+                top += v.getTop();
+                if (v.getParent() instanceof View) {
+                    v = (View) v.getParent();
+                } else {
+                    break;
+                }
+            }
+            return top;
+        }
+
         public int getAyahVerticalOffset(int ayahNumber, boolean isWbw) {
             if (isWbw && layoutPageWbwContainer != null) {
                 View ayahRow = layoutPageWbwContainer.findViewWithTag("ayah_row_" + ayahNumber);
                 if (ayahRow != null) {
-                    return layoutPageWbwContainer.getTop() + ayahRow.getTop();
+                    int rowTop = getViewTopRelativeToItem(ayahRow);
+                    int rowHeight = ayahRow.getHeight();
+                    return rowTop + (rowHeight > 0 ? rowHeight / 2 : 0);
                 }
             } else if (!isWbw && tvPageArabicContent != null) {
                 Layout layout = tvPageArabicContent.getLayout();
                 Integer charOffset = ayahCharOffsets.get(ayahNumber);
                 if (layout != null && charOffset != null) {
                     try {
+                        int contentTop = getViewTopRelativeToItem(tvPageArabicContent);
                         int line = layout.getLineForOffset(charOffset);
-                        int lineTop = layout.getLineTop(line);
-                        return tvPageArabicContent.getTop() + lineTop;
+                        int lineMid = (layout.getLineTop(line) + layout.getLineBottom(line)) / 2;
+                        return contentTop + lineMid;
                     } catch (Exception ignored) {}
                 }
             }

@@ -229,7 +229,7 @@ public class PelajariActivity extends AppCompatActivity {
         String text = "📖 QS. " + surahName + " : Ayat " + ayahNumber + "\n\n"
                 + currentAyah.getArabic() + "\n\n"
                 + "Artinya:\n\"" + currentAyah.getIndo() + "\"\n\n"
-                + "Dibagikan via 5D Quran (v1.0.4)";
+                + "Dibagikan via 5D Quran (v1.0.5)";
         shareText("Ayat QS. " + surahName + ":" + ayahNumber, text);
     }
 
@@ -242,7 +242,7 @@ public class PelajariActivity extends AppCompatActivity {
         sb.append("Ayat:\n").append(currentAyah.getArabic()).append("\n\n");
         sb.append("Artinya:\n\"").append(currentAyah.getIndo()).append("\"\n\n");
         sb.append("Penjelasan Tafsir:\n").append(tafsir).append("\n\n");
-        sb.append("Dibagikan via 5D Quran (v1.0.4)");
+        sb.append("Dibagikan via 5D Quran (v1.0.5)");
         shareText("Tafsir Ibnu Katsir QS. " + surahName + ":" + ayahNumber, sb.toString());
     }
 
@@ -264,7 +264,7 @@ public class PelajariActivity extends AppCompatActivity {
             sb.append("【 Hadis Terkait / Asbabun Nuzul 】\n").append(hadis).append("\n\n");
         }
 
-        sb.append("Dibagikan via 5D Quran (v1.0.4)");
+        sb.append("Dibagikan via 5D Quran (v1.0.5)");
         shareText("Tadabur Lengkap QS. " + surahName + ":" + ayahNumber, sb.toString());
     }
 

@@ -14,6 +14,9 @@ android/.externalNativeBuild/
 *.apk
 *.aab
 *.ap_
+release.keystore
+*.keystore
+!android/app/debug.keystore
 
 # Node.js
 node_modules/

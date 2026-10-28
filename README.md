@@ -1,4 +1,4 @@
-# 5D Quran (v1.0.2)
+# 5D Quran (v1.0.5)
 
 <p align="center">
   <img src="assets/icon.jpg" width="120" height="120" style="border-radius:24px;" alt="5D Quran Logo" />
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.2-gold.svg" alt="Version 1.0.2" />
+  <img src="https://img.shields.io/badge/version-1.0.5-gold.svg" alt="Version 1.0.5" />
   <img src="https://img.shields.io/badge/platform-Android%20%7C%20Web-blue.svg" alt="Platform" />
   <img src="https://img.shields.io/badge/architecture-Pure%20Native%20Android%20%2B%20PWA-emerald.svg" alt="Architecture" />
   <img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License" />
@@ -54,7 +54,7 @@
 - Setoran hafalan ayat mandiri menggunakan pengenal suara (*Android SpeechRecognizer*) berkecepatan tinggi.
 - Real-time live speech detection: teks Arab yang Anda ucapkan langsung tampil dan mengikuti bacaan.
 - **Pemeriksaan Akurasi Cerdas**: Menghitung persentase kecocokan hafalan serta menampilkan koreksi kata demi kata (*Word-by-word diff*):
-  - Hijau: Kata benar dan cocok
+  - Hijau / Cyan: Kata benar dan cocok
   - Merah: Kata yang keliru atau terlewat
 - Perekaman audio lokal untuk membandingkan bacaan pengguna langsung dengan suara qari standar.
 
@@ -75,6 +75,24 @@
   - 📤 Bagikan mufradat kata per kata.
   - 📤 Bagikan intisari Tafsir Ibnu Katsir.
   - 📤 Bagikan rangkuman Tadabur lengkap.
+
+---
+
+## 🆕 Pembaruan Fitur Versi 1.0.5
+
+1. **Murojaah Suara Berurutan & Deteksi Kata Salah / Terlewati**:
+   - Bacaan murojaah dievaluasi secara berurutan (*strictly sequential*).
+   - Kata yang dilewati atau keliru diucapkan langsung ditandai dengan **warna merah** (teks merah dan latar merah bergaris tepi) agar pengguna segera mengetahui dan mengulanginya.
+   - Dilengkapi **tanda suara audio yang berbeda**:
+     - 🔔 *Start*: Nada naik lembut saat mulai mendengarkan / membuka murojaah.
+     - 🔕 *Stop*: Nada turun penutup saat murojaah dijeda / ditutup.
+     - ⚠️ *Salah / Terlewati*: Nada peringatan (*alert buzz*) khas saat ada kata yang salah atau terlewat.
+     - Suara selain itu tidak berbunyi pada kata yang benar sehingga pengalaman menyimak tetap tenang dan fokus.
+2. **Halaman Mushaf: Presisi Posisi Ayat saat Terjemahan Per Kata Aktif / Nonaktif**:
+   - Saat beralih antara Terjemahan Per Kata (*Word by Word*) aktif dan nonaktif, ayat yang sedang di-highlight tetap sama dan tidak hilang.
+   - Posisi ayat yang di-highlight otomatis dipusatkan tepat di tengah layar (*centered in viewport*), menjaga kontinuitas visual dan fokus pembaca.
+
+---
 
 ## 🆕 Pembaruan Fitur Versi 1.0.2
 
@@ -112,7 +130,7 @@ Aplikasi ini dilengkapi dengan **Pusat Chat & Bantuan**:
 ## 🚀 Kompilasi & Menjalankan Proyek
 
 ### Prasyarat
-- **Android SDK** (API Level 23 s/d 34)
+- **Android SDK** (API Level 24 s/d 36)
 - **Java JDK 17**
 - **Docker** (Opsional, untuk kompilasi APK otomatis di container `t2p-android-builder`)
 
@@ -126,7 +144,7 @@ Atau menggunakan Gradle wrapper di folder `android/`:
 cd android
 ./gradlew assembleDebug
 ```
-File APK biner yang dihasilkan: `5D-Quran-v1.0.2-Native.apk`.
+File APK biner yang dihasilkan: `5D-Quran-v1.0.5-Native.apk`.
 
 ### Install Langsung ke HP Android (USB/ADB)
 ```bash
